@@ -339,21 +339,21 @@ function checkprivilege($arraymenu, $menuID, $type){
             </a>
 
             <!-- Machine -->
-            <?php if(menucheck($menuprivilegearray, 4) || menucheck($menuprivilegearray, 5) || menucheck($menuprivilegearray, 6) || menucheck($menuprivilegearray, 7)){ ?>
+            <?php if(menucheck($menuprivilegearray, 4)==1 | menucheck($menuprivilegearray, 5)==1 | menucheck($menuprivilegearray, 6)==1 | menucheck($menuprivilegearray, 7)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseMachine" aria-expanded="false">
                 <div class="nav-link-icon"><i class="fas fa-cogs"></i></div>
                 Machine
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="MachineTypes" || $controllermenu=="MachineModels" || $controllermenu=="MachineBrands" || $controllermenu=="MachineIn"){echo 'show';} ?>" id="collapseMachine" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="MachineTypes" | $controllermenu=="MachineModels" | $controllermenu=="MachineBrands" | $controllermenu=="MachineIn"){echo 'show';} ?>" id="collapseMachine" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 4)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 4)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineTypes'; ?>">Machine Types</a>
-                    <?php } if(menucheck($menuprivilegearray, 5)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 5)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineModels'; ?>">Machine Models</a>
-                    <?php } if(menucheck($menuprivilegearray, 6)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 6)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineBrands'; ?>">Machine Brands</a>
-                    <?php } if(menucheck($menuprivilegearray, 7)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 7)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineIn'; ?>">Machine In</a>
                     <?php } ?>
                 </nav>
@@ -361,7 +361,7 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- Spare Parts -->
-            <?php if(menucheck($menuprivilegearray, 8)){ ?>
+            <?php if(menucheck($menuprivilegearray, 8)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'SpareParts'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-tools"></i></div>
                 Spare Parts
@@ -369,21 +369,21 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- Material Data -->
-            <?php if(menucheck($menuprivilegearray, 9) || menucheck($menuprivilegearray, 10) || menucheck($menuprivilegearray, 11) || menucheck($menuprivilegearray, 12)){ ?>
+            <?php if(menucheck($menuprivilegearray, 9)==1 | menucheck($menuprivilegearray, 10)==1 | menucheck($menuprivilegearray, 11)==1 | menucheck($menuprivilegearray, 12)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseMaterialData">
                 <div class="nav-link-icon"><i class="fas fa-boxes"></i></div>
                 Material Data
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="MaterialMainCategory" || $controllermenu=="RowMaterials" || $controllermenu=="FliInformation" || $controllermenu=="CutType"){echo 'show';} ?>" id="collapseMaterialData" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Materialmaincategory" | $controllermenu=="RowMaterials" | $controllermenu=="FliInformation" | $controllermenu=="CutType"){echo 'show';} ?>" id="collapseMaterialData" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 9)){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MaterialMainCategory'; ?>">Material Main Category</a>
-                    <?php } if(menucheck($menuprivilegearray, 10)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 9)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Materialmaincategory'; ?>">Material Main Category</a>
+                    <?php } if(menucheck($menuprivilegearray, 10)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'RowMaterials'; ?>">Row Materials</a>
-                    <?php } if(menucheck($menuprivilegearray, 11)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 11)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'FliInformation'; ?>">Fli Information</a>
-                    <?php } if(menucheck($menuprivilegearray, 12)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 12)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CutType'; ?>">Cut Type</a>
                     <?php } ?>
                 </nav>
@@ -391,23 +391,23 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- Machine Services -->
-            <?php if(menucheck($menuprivilegearray, 13) || menucheck($menuprivilegearray, 14) || menucheck($menuprivilegearray, 15) || menucheck($menuprivilegearray, 16) || menucheck($menuprivilegearray, 17)){ ?>
+            <?php if(menucheck($menuprivilegearray, 13)==1 | menucheck($menuprivilegearray, 14)==1 | menucheck($menuprivilegearray, 15)==1 | menucheck($menuprivilegearray, 16)==1 | menucheck($menuprivilegearray, 17)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseMachineServices">
                 <div class="nav-link-icon"><i class="fas fa-wrench"></i></div>
                 Machine Services
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="MachineService" || $controllermenu=="ServiceItemAllocate" || $controllermenu=="ServiceItemIssue" || $controllermenu=="ServiceItemReceive" || $controllermenu=="ServiceCalendar"){echo 'show';} ?>" id="collapseMachineServices" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="MachineService" | $controllermenu=="ServiceItemAllocate" | $controllermenu=="ServiceItemIssue" | $controllermenu=="ServiceItemReceive" | $controllermenu=="ServiceCalendar"){echo 'show';} ?>" id="collapseMachineServices" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 13)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 13)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService'; ?>">Machine Service</a>
-                    <?php } if(menucheck($menuprivilegearray, 14)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 14)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceItemAllocate'; ?>">Service Item Allocate</a>
-                    <?php } if(menucheck($menuprivilegearray, 15)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 15)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceItemIssue'; ?>">Service Item Issue</a>
-                    <?php } if(menucheck($menuprivilegearray, 16)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 16)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceItemReceive'; ?>">Service Item Receive</a>
-                    <?php } if(menucheck($menuprivilegearray, 17)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 17)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceCalendar'; ?>">Service Calendar</a>
                     <?php } ?>
                 </nav>
@@ -415,7 +415,7 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- Machine Repairs -->
-            <?php if(menucheck($menuprivilegearray, 18)){ ?>
+            <?php if(menucheck($menuprivilegearray, 18)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'MachineRepairs'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-tools"></i></div>
                 Machine Repairs
@@ -423,17 +423,17 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- Purchase Order -->
-            <?php if(menucheck($menuprivilegearray, 19) || menucheck($menuprivilegearray, 20)){ ?>
+            <?php if(menucheck($menuprivilegearray, 19)==1 | menucheck($menuprivilegearray, 20)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapsePurchaseOrder">
                 <div class="nav-link-icon"><i class="fas fa-file-invoice-dollar"></i></div>
                 Purchase Order
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="NewPurchaseRequest" || $controllermenu=="PurchaseOrder"){echo 'show';} ?>" id="collapsePurchaseOrder" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="NewPurchaseRequest" | $controllermenu=="PurchaseOrder"){echo 'show';} ?>" id="collapsePurchaseOrder" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 19)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 19)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'NewPurchaseRequest'; ?>">New Purchase Request</a>
-                    <?php } if(menucheck($menuprivilegearray, 20)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 20)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'PurchaseOrder'; ?>">Purchase Order</a>
                     <?php } ?>
                 </nav>
@@ -441,19 +441,19 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- GRN Section -->
-            <?php if(menucheck($menuprivilegearray, 21) || menucheck($menuprivilegearray, 22) || menucheck($menuprivilegearray, 23)){ ?>
+            <?php if(menucheck($menuprivilegearray, 21)==1 | menucheck($menuprivilegearray, 22)==1 | menucheck($menuprivilegearray, 23)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseGRN">
                 <div class="nav-link-icon"><i class="fas fa-warehouse"></i></div>
                 GRN Section
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="GRN" || $controllermenu=="GRNVoucher" || $controllermenu=="GRNReturn"){echo 'show';} ?>" id="collapseGRN" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="GRN" | $controllermenu=="GRNVoucher" | $controllermenu=="GRNReturn"){echo 'show';} ?>" id="collapseGRN" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 21)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 21)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRN'; ?>">Good Receive Note</a>
-                    <?php } if(menucheck($menuprivilegearray, 22)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 22)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRNVoucher'; ?>">Good Receive Note Voucher</a>
-                    <?php } if(menucheck($menuprivilegearray, 23)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 23)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRNReturn'; ?>">Good Receive Note Return</a>
                     <?php } ?>
                 </nav>
@@ -461,21 +461,21 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- CRM -->
-            <?php if(menucheck($menuprivilegearray, 24) || menucheck($menuprivilegearray, 25) || menucheck($menuprivilegearray, 26) || menucheck($menuprivilegearray, 27)){ ?>
+            <?php if(menucheck($menuprivilegearray, 24)==1 | menucheck($menuprivilegearray, 25)==1 | menucheck($menuprivilegearray, 26)==1 | menucheck($menuprivilegearray, 27)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseCRM">
                 <div class="nav-link-icon"><i class="fas fa-handshake"></i></div>
                 CRM
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="CRMInquiry" || $controllermenu=="CRMQuotation" || $controllermenu=="CRMQuotationStatus" || $controllermenu=="CRMReason"){echo 'show';} ?>" id="collapseCRM" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="CRMInquiry" | $controllermenu=="CRMQuotation" | $controllermenu=="CRMQuotationStatus" | $controllermenu=="CRMReason"){echo 'show';} ?>" id="collapseCRM" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 24)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 24)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMInquiry'; ?>">CRM Inquiry</a>
-                    <?php } if(menucheck($menuprivilegearray, 25)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 25)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMQuotation'; ?>">CRM Quotation</a>
-                    <?php } if(menucheck($menuprivilegearray, 26)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 26)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMQuotationStatus'; ?>">CRM Quotation Status</a>
-                    <?php } if(menucheck($menuprivilegearray, 27)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 27)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMReason'; ?>">CRM Reason</a>
                     <?php } ?>
                 </nav>
@@ -483,23 +483,23 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- CRM Order -->
-            <?php if(menucheck($menuprivilegearray, 28) || menucheck($menuprivilegearray, 29) || menucheck($menuprivilegearray, 30) || menucheck($menuprivilegearray, 31) || menucheck($menuprivilegearray, 32)){ ?>
+            <?php if(menucheck($menuprivilegearray, 28)==1 | menucheck($menuprivilegearray, 29)==1 | menucheck($menuprivilegearray, 30)==1 | menucheck($menuprivilegearray, 31)==1 | menucheck($menuprivilegearray, 32)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseCRMOrder">
                 <div class="nav-link-icon"><i class="fas fa-truck"></i></div>
                 CRM Order
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="CRMOrder" || $controllermenu=="DeliveryDetail" || $controllermenu=="CompletedOrder" || $controllermenu=="MachineAllocation" || $controllermenu=="AllocatedMachines"){echo 'show';} ?>" id="collapseCRMOrder" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="CRMOrder" | $controllermenu=="DeliveryDetail" | $controllermenu=="CompletedOrder" | $controllermenu=="MachineAllocation" | $controllermenu=="AllocatedMachines"){echo 'show';} ?>" id="collapseCRMOrder" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 28)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 28)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMOrder'; ?>">CRM Order</a>
-                    <?php } if(menucheck($menuprivilegearray, 29)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 29)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'DeliveryDetail'; ?>">Delivery Detail</a>
-                    <?php } if(menucheck($menuprivilegearray, 30)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 30)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CompletedOrder'; ?>">Completed Order</a>
-                    <?php } if(menucheck($menuprivilegearray, 31)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 31)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineAllocation'; ?>">Machine Allocation</a>
-                    <?php } if(menucheck($menuprivilegearray, 32)){ ?>
+                    <?php } if(menucheck($menuprivilegearray, 32)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'AllocatedMachines'; ?>">Allocated Machines</a>
                     <?php } ?>
                 </nav>
@@ -507,71 +507,71 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- Reports -->
-            <?php if(menucheck($menuprivilegearray, 33) || menucheck($menuprivilegearray, 34) || menucheck($menuprivilegearray, 35) || menucheck($menuprivilegearray, 36) || menucheck($menuprivilegearray, 37) || menucheck($menuprivilegearray, 38) || menucheck($menuprivilegearray, 39) || menucheck($menuprivilegearray, 40) || menucheck($menuprivilegearray, 41) || menucheck($menuprivilegearray, 42) || menucheck($menuprivilegearray, 43) || menucheck($menuprivilegearray, 44)){ ?>
+            <?php if(menucheck($menuprivilegearray, 33)==1 | menucheck($menuprivilegearray, 34)==1 | menucheck($menuprivilegearray, 35)==1 | menucheck($menuprivilegearray, 36)==1 | menucheck($menuprivilegearray, 37)==1 | menucheck($menuprivilegearray, 38)==1 | menucheck($menuprivilegearray, 39)==1 | menucheck($menuprivilegearray, 40)==1 | menucheck($menuprivilegearray, 41)==1 | menucheck($menuprivilegearray, 42)==1 | menucheck($menuprivilegearray, 43)==1 | menucheck($menuprivilegearray, 44)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseReports">
                 <div class="nav-link-icon"><i class="fas fa-chart-bar"></i></div>
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if(in_array($controllermenu, ['Stock','GRN','Servicecreatedlist','Employeeservices','Servicecostanalysis','Usedserviceitems','Repaircreatedlist','Employeerepairs','Repaircostanalysis','Usedrepairitems','MachineWIP','CustomerPOWIP'])){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="GRN" | $controllermenu=="Servicecreatedlist" | $controllermenu=="Employeeservices" | $controllermenu=="Servicecostanalysis" | $controllermenu=="Usedserviceitems" | $controllermenu=="Repaircreatedlist" | $controllermenu=="Employeerepairs" | $controllermenu=="Repaircostanalysis" | $controllermenu=="Usedrepairitems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 33)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 33)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Stock'; ?>">Stock</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 34)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 34)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRN'; ?>">GRN</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 35)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 35)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Servicecreatedlist'; ?>">Service Created List</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 36)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 36)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Employeeservices'; ?>">Employee Services</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 37)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 37)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Servicecostanalysis'; ?>">Service Cost Analysis</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 38)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 38)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Usedserviceitems'; ?>">Used Service Items</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 39)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 39)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Repaircreatedlist'; ?>">Repair Created List</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 40)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 40)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Employeerepairs'; ?>">Employee Repairs</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 41)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 41)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Repaircostanalysis'; ?>">Repair Cost Analysis</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 42)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 42)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Usedrepairitems'; ?>">Used Repair Items</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 43)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 43)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineWIP'; ?>">Machine WIP</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 44)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 44)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CustomerPOWIP'; ?>">Customer PO WIP</a><?php } ?>
                 </nav>
             </div>
             <?php } ?>
 
             <!-- Return -->
-            <?php if(menucheck($menuprivilegearray, 45) || menucheck($menuprivilegearray, 46) || menucheck($menuprivilegearray, 47) || menucheck($menuprivilegearray, 48)){ ?>
+            <?php if(menucheck($menuprivilegearray, 45)==1 | menucheck($menuprivilegearray, 46)==1 | menucheck($menuprivilegearray, 47)==1 | menucheck($menuprivilegearray, 48)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseReturn">
                 <div class="nav-link-icon"><i class="fas fa-undo-alt"></i></div>
                 Return
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if(in_array($controllermenu, ['Returntostock','Acceptedreturnitems','Returntosupplier','Returntosupplierapprove'])){echo 'show';} ?>" id="collapseReturn" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Returntostock" | $controllermenu=="Acceptedreturnitems" | $controllermenu=="Returntosupplier" | $controllermenu=="Returntosupplierapprove"){echo 'show';} ?>" id="collapseReturn" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
-                    <?php if(menucheck($menuprivilegearray, 45)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 45)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Returntostock'; ?>">Return to Stock</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 46)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 46)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Acceptedreturnitems'; ?>">Accepted Return Items</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 47)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 47)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Returntosupplier'; ?>">Return to Supplier</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 48)){ ?>
+                    <?php if(menucheck($menuprivilegearray, 48)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Returntosupplierapprove'; ?>">Return to Supplier Approve</a><?php } ?>
                 </nav>
             </div>
             <?php } ?>
 
-            <?php if(menucheck($menuprivilegearray, 49)){ ?>
+            <?php if(menucheck($menuprivilegearray, 49)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'Customerinfo'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-user-friends"></i></div>
                 Customer Info
             </a>
             <?php } ?>
 
-            <?php if(menucheck($menuprivilegearray, 50)){ ?>
+            <?php if(menucheck($menuprivilegearray, 50)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'Supplierinfo'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-industry"></i></div>
                 Supplier Info

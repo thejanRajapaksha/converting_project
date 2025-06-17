@@ -1,10 +1,10 @@
 <?php 
-include "include/header.php";  
-include "include/topnavbar.php"; 
+include_once "include/header.php";  
+include_once "include/topnavbar.php"; 
 ?>
 <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
-        <?php include "include/menubar.php"; ?>
+        <?php include_once "include/menubar.php"; ?>
     </div>
     <div id="layoutSidenav_content">
         <main>
