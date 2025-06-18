@@ -23,283 +23,283 @@ else if ($functionmenu2 == 'Userprivilege') {
     $statuscheck = checkprivilege($menuprivilegearray, 3, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 3, 4);
 } 
-else if ($functionmenu2 == 'Machinetypes') {
+else if($functionmenu=='MachineTypes') {
     $addcheck = checkprivilege($menuprivilegearray, 4, 1);
     $editcheck = checkprivilege($menuprivilegearray, 4, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 4, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 4, 4);
 } 
-else if ($functionmenu2 == 'Machinemodels') {
+else if ($functionmenu == 'MachineModels') {
     $addcheck = checkprivilege($menuprivilegearray, 5, 1);
     $editcheck = checkprivilege($menuprivilegearray, 5, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 5, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 5, 4);
 } 
-else if ($functionmenu2 == 'Machinebrands') {
+else if ($functionmenu == 'MachineBrands') {
     $addcheck = checkprivilege($menuprivilegearray, 6, 1);
     $editcheck = checkprivilege($menuprivilegearray, 6, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 6, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 6, 4);
 } 
-else if ($functionmenu2 == 'Machinein') {
+else if ($functionmenu == 'MachineIn') {
     $addcheck = checkprivilege($menuprivilegearray, 7, 1);
     $editcheck = checkprivilege($menuprivilegearray, 7, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 7, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 7, 4);
 } 
-else if ($functionmenu2 == 'Spareparts') {
+else if ($functionmenu == 'SpareParts') {
     $addcheck = checkprivilege($menuprivilegearray, 8, 1);
     $editcheck = checkprivilege($menuprivilegearray, 8, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 8, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 8, 4);
 } 
-else if ($functionmenu2 == 'Materialmaincategory') {
+else if ($functionmenu == 'Materialmaincategory') {
     $addcheck = checkprivilege($menuprivilegearray, 9, 1);
     $editcheck = checkprivilege($menuprivilegearray, 9, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 9, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 9, 4);
 } 
-else if ($functionmenu2 == 'Rowmaterials') {
+else if ($functionmenu == 'RowMaterials') {
     $addcheck = checkprivilege($menuprivilegearray, 10, 1);
     $editcheck = checkprivilege($menuprivilegearray, 10, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 10, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 10, 4);
 } 
-else if ($functionmenu2 == 'Fliinformation') {
+else if ($functionmenu == 'Fliinformation') {
     $addcheck = checkprivilege($menuprivilegearray, 11, 1);
     $editcheck = checkprivilege($menuprivilegearray, 11, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 11, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 11, 4);
 } 
-else if ($functionmenu2 == 'Cuttype') {
+else if ($functionmenu == 'Cuttype') {
     $addcheck = checkprivilege($menuprivilegearray, 12, 1);
     $editcheck = checkprivilege($menuprivilegearray, 12, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 12, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 12, 4);
 } 
-else if ($functionmenu2 == 'Machineservice') {
+else if ($functionmenu == 'Machineservice') {
     $addcheck = checkprivilege($menuprivilegearray, 13, 1);
     $editcheck = checkprivilege($menuprivilegearray, 13, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 13, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 13, 4);
 } 
-else if ($functionmenu2 == 'Serviceitemallocate') {
+else if ($functionmenu == 'Serviceitemallocate') {
     $addcheck = checkprivilege($menuprivilegearray, 14, 1);
     $editcheck = checkprivilege($menuprivilegearray, 14, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 14, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 14, 4);
 } 
-else if ($functionmenu2 == 'Serviceitemissue') {
+else if ($functionmenu == 'Serviceitemissue') {
     $addcheck = checkprivilege($menuprivilegearray, 15, 1);
     $editcheck = checkprivilege($menuprivilegearray, 15, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 15, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 15, 4);
 } 
-else if ($functionmenu2 == 'Serviceitemreceive') {
+else if ($functionmenu == 'Serviceitemreceive') {
     $addcheck = checkprivilege($menuprivilegearray, 16, 1);
     $editcheck = checkprivilege($menuprivilegearray, 16, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 16, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 16, 4);
 } 
-else if ($functionmenu2 == 'Servicecalendar') {
+else if ($functionmenu == 'Servicecalendar') {
     $addcheck = checkprivilege($menuprivilegearray, 17, 1);
     $editcheck = checkprivilege($menuprivilegearray, 17, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 17, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 17, 4);
 } 
-else if ($functionmenu2 == 'Machinerepairs') {
+else if ($functionmenu == 'Machinerepairs') {
     $addcheck = checkprivilege($menuprivilegearray, 18, 1);
     $editcheck = checkprivilege($menuprivilegearray, 18, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 18, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 18, 4);
 } 
-else if ($functionmenu2 == 'Newpurchaserequest') {
+else if ($functionmenu == 'Newpurchaserequest') {
     $addcheck = checkprivilege($menuprivilegearray, 19, 1);
     $editcheck = checkprivilege($menuprivilegearray, 19, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 19, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 19, 4);
 } 
-else if ($functionmenu2 == 'Purchaseorder') {
+else if ($functionmenu == 'Purchaseorder') {
     $addcheck = checkprivilege($menuprivilegearray, 20, 1);
     $editcheck = checkprivilege($menuprivilegearray, 20, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 20, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 20, 4);
 } 
-else if ($functionmenu2 == 'Goodreceivenote') {
+else if ($functionmenu == 'Goodreceivenote') {
     $addcheck = checkprivilege($menuprivilegearray, 21, 1);
     $editcheck = checkprivilege($menuprivilegearray, 21, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 21, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 21, 4);
 } 
-else if ($functionmenu2 == 'Goodreceivenotevoucher') {
+else if ($functionmenu == 'Goodreceivenotevoucher') {
     $addcheck = checkprivilege($menuprivilegearray, 22, 1);
     $editcheck = checkprivilege($menuprivilegearray, 22, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 22, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 22, 4);
 } 
-else if ($functionmenu2 == 'Goodreceivenotereturn') {
+else if ($functionmenu == 'Goodreceivenotereturn') {
     $addcheck = checkprivilege($menuprivilegearray, 23, 1);
     $editcheck = checkprivilege($menuprivilegearray, 23, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 23, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 23, 4);
 } 
-else if ($functionmenu2 == 'Crminquiry') {
+else if ($functionmenu == 'Crminquiry') {
     $addcheck = checkprivilege($menuprivilegearray, 24, 1);
     $editcheck = checkprivilege($menuprivilegearray, 24, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 24, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 24, 4);
 } 
-else if ($functionmenu2 == 'Crmquotation') {
+else if ($functionmenu == 'Crmquotation') {
     $addcheck = checkprivilege($menuprivilegearray, 25, 1);
     $editcheck = checkprivilege($menuprivilegearray, 25, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 25, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 25, 4);
 } 
-else if ($functionmenu2 == 'Crmquotationstatus') {
+else if ($functionmenu == 'Crmquotationstatus') {
     $addcheck = checkprivilege($menuprivilegearray, 26, 1);
     $editcheck = checkprivilege($menuprivilegearray, 26, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 26, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 26, 4);
 } 
-else if ($functionmenu2 == 'Crmreason') {
+else if ($functionmenu == 'Crmreason') {
     $addcheck = checkprivilege($menuprivilegearray, 27, 1);
     $editcheck = checkprivilege($menuprivilegearray, 27, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 27, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 27, 4);
 } 
-else if ($functionmenu2 == 'Crmorder') {
+else if ($functionmenu == 'Crmorder') {
     $addcheck = checkprivilege($menuprivilegearray, 28, 1);
     $editcheck = checkprivilege($menuprivilegearray, 28, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 28, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 28, 4);
 } 
-else if ($functionmenu2 == 'Deliverydetail') {
+else if ($functionmenu == 'Deliverydetail') {
     $addcheck = checkprivilege($menuprivilegearray, 29, 1);
     $editcheck = checkprivilege($menuprivilegearray, 29, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 29, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 29, 4);
 } 
-else if ($functionmenu2 == 'Completedorder') {
+else if ($functionmenu == 'Completedorder') {
     $addcheck = checkprivilege($menuprivilegearray, 30, 1);
     $editcheck = checkprivilege($menuprivilegearray, 30, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 30, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 30, 4);
 } 
-else if ($functionmenu2 == 'Machineallocation') {
+else if ($functionmenu == 'Machineallocation') {
     $addcheck = checkprivilege($menuprivilegearray, 31, 1);
     $editcheck = checkprivilege($menuprivilegearray, 31, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 31, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 31, 4);
 } 
-else if ($functionmenu2 == 'Allocatedmachines') {
+else if ($functionmenu == 'Allocatedmachines') {
     $addcheck = checkprivilege($menuprivilegearray, 32, 1);
     $editcheck = checkprivilege($menuprivilegearray, 32, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 32, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 32, 4);
 } 
-else if ($functionmenu2 == 'Stock') {
+else if ($functionmenu == 'Stock') {
     $addcheck = checkprivilege($menuprivilegearray, 33, 1);
     $editcheck = checkprivilege($menuprivilegearray, 33, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 33, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 33, 4);
 } 
-else if ($functionmenu2 == 'Grn') {
+else if ($functionmenu == 'Grn') {
     $addcheck = checkprivilege($menuprivilegearray, 34, 1);
     $editcheck = checkprivilege($menuprivilegearray, 34, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 34, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 34, 4);
 } 
-else if ($functionmenu2 == 'Servicecreatedlist') {
+else if ($functionmenu == 'Servicecreatedlist') {
     $addcheck = checkprivilege($menuprivilegearray, 35, 1);
     $editcheck = checkprivilege($menuprivilegearray, 35, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 35, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 35, 4);
 } 
-else if ($functionmenu2 == 'Employeeservices') {
+else if ($functionmenu == 'Employeeservices') {
     $addcheck = checkprivilege($menuprivilegearray, 36, 1);
     $editcheck = checkprivilege($menuprivilegearray, 36, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 36, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 36, 4);
 } 
-else if ($functionmenu2 == 'Servicecostanalysis') {
+else if ($functionmenu == 'Servicecostanalysis') {
     $addcheck = checkprivilege($menuprivilegearray, 37, 1);
     $editcheck = checkprivilege($menuprivilegearray, 37, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 37, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 37, 4);
 } 
-else if ($functionmenu2 == 'Usedserviceitems') {
+else if ($functionmenu == 'Usedserviceitems') {
     $addcheck = checkprivilege($menuprivilegearray, 38, 1);
     $editcheck = checkprivilege($menuprivilegearray, 38, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 38, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 38, 4);
 } 
-else if ($functionmenu2 == 'Repaircreatedlist') {
+else if ($functionmenu == 'Repaircreatedlist') {
     $addcheck = checkprivilege($menuprivilegearray, 39, 1);
     $editcheck = checkprivilege($menuprivilegearray, 39, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 39, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 39, 4);
 } 
-else if ($functionmenu2 == 'Employeerepairs') {
+else if ($functionmenu == 'Employeerepairs') {
     $addcheck = checkprivilege($menuprivilegearray, 40, 1);
     $editcheck = checkprivilege($menuprivilegearray, 40, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 40, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 40, 4);
 } 
-else if ($functionmenu2 == 'Repaircostanalysis') {
+else if ($functionmenu == 'Repaircostanalysis') {
     $addcheck = checkprivilege($menuprivilegearray, 41, 1);
     $editcheck = checkprivilege($menuprivilegearray, 41, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 41, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 41, 4);
 } 
-else if ($functionmenu2 == 'Usedrepairitems') {
+else if ($functionmenu == 'Usedrepairitems') {
     $addcheck = checkprivilege($menuprivilegearray, 42, 1);
     $editcheck = checkprivilege($menuprivilegearray, 42, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 42, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 42, 4);
 } 
-else if ($functionmenu2 == 'Machinewip') {
+else if ($functionmenu == 'Machinewip') {
     $addcheck = checkprivilege($menuprivilegearray, 43, 1);
     $editcheck = checkprivilege($menuprivilegearray, 43, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 43, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 43, 4);
 } 
-else if ($functionmenu2 == 'Customerpowip') {
+else if ($functionmenu == 'Customerpowip') {
     $addcheck = checkprivilege($menuprivilegearray, 44, 1);
     $editcheck = checkprivilege($menuprivilegearray, 44, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 44, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 44, 4);
 } 
-else if ($functionmenu2 == 'Returntostock') {
+else if ($functionmenu == 'Returntostock') {
     $addcheck = checkprivilege($menuprivilegearray, 45, 1);
     $editcheck = checkprivilege($menuprivilegearray, 45, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 45, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 45, 4);
 } 
-else if ($functionmenu2 == 'Acceptedreturnitems') {
+else if ($functionmenu == 'Acceptedreturnitems') {
     $addcheck = checkprivilege($menuprivilegearray, 46, 1);
     $editcheck = checkprivilege($menuprivilegearray, 46, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 46, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 46, 4);
 } 
-else if ($functionmenu2 == 'Returntosupplier') {
+else if ($functionmenu == 'Returntosupplier') {
     $addcheck = checkprivilege($menuprivilegearray, 47, 1);
     $editcheck = checkprivilege($menuprivilegearray, 47, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 47, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 47, 4);
 } 
-else if ($functionmenu2 == 'Returntosupplierapprove') {
+else if ($functionmenu == 'Returntosupplierapprove') {
     $addcheck = checkprivilege($menuprivilegearray, 48, 1);
     $editcheck = checkprivilege($menuprivilegearray, 48, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 48, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 48, 4);
 } 
-else if ($functionmenu2 == 'Customerinfo') {
+else if ($functionmenu == 'Customerinfo') {
     $addcheck = checkprivilege($menuprivilegearray, 49, 1);
     $editcheck = checkprivilege($menuprivilegearray, 49, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 49, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 49, 4);
 } 
-else if ($functionmenu2 == 'Supplierinfo') {
+else if ($functionmenu == 'Supplierinfo') {
     $addcheck = checkprivilege($menuprivilegearray, 50, 1);
     $editcheck = checkprivilege($menuprivilegearray, 50, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 50, 3);
@@ -339,7 +339,7 @@ function checkprivilege($arraymenu, $menuID, $type){
             </a>
 
             <!-- Machine -->
-            <?php if(menucheck($menuprivilegearray, 4)==1 | menucheck($menuprivilegearray, 5)==1 | menucheck($menuprivilegearray, 6)==1 | menucheck($menuprivilegearray, 7)==1){ ?>
+            <?php if(menucheck($menuprivilegearray, 4)==1 | menucheck($menuprivilegearray, 4)==1 | menucheck($menuprivilegearray, 5)==1 | menucheck($menuprivilegearray, 6)==1 | menucheck($menuprivilegearray, 7)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseMachine" aria-expanded="false">
                 <div class="nav-link-icon"><i class="fas fa-cogs"></i></div>
                 Machine

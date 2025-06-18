@@ -16,7 +16,7 @@ include "include/topnavbar.php";
                                 <h2 class="">Spare Parts</h2>
                             </div>
                             <div class="col">
-                                <button class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target="#addModal">Add Spare Part</button>
+                                <button class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target="#addModal" <?php if($addcheck==0){echo 'disabled';} ?>>Add Spare Part</button>
                             </div>
                         </div>
                         <hr>
@@ -239,13 +239,10 @@ var base_url = "<?php echo base_url(); ?>";
 
 $(document).ready(function() {
 
-    //$('#machines_main_nav_link').prop('aria-expanded', 'true').removeClass('collapsed');
-   // $('#collapseLayoutsMachines').addClass('show');
-
-    var addcheck = '<?php echo isset($addcheck) ? $addcheck : ''; ?>';
-    var editcheck = '<?php echo isset($editcheck) ? $editcheck : ''; ?>';
-    var statuscheck = '<?php echo isset($statuscheck) ? $statuscheck : ''; ?>';
-    var deletecheck = '<?php echo isset($deletecheck) ? $deletecheck : ''; ?>';
+        var addcheck='<?php echo $addcheck; ?>';
+        var editcheck='<?php echo $editcheck; ?>';
+        var statuscheck='<?php echo $statuscheck; ?>';
+        var deletecheck='<?php echo $deletecheck; ?>';
 
     var manageTable = $('#manageTable').DataTable({
         "destroy": true,

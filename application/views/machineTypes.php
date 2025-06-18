@@ -16,7 +16,7 @@ include_once "include/topnavbar.php";
                                 <h2 class="">Machine Types</h2>
                             </div>
                             <div class="col">
-                                <button class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target="#addModal">Add Machine Type</button>
+                                <button class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target="#addModal" <?php if($addcheck==0){echo 'disabled';} ?>>Add Machine Type</button>
                             </div>
                         </div>
                         <hr>
@@ -155,10 +155,10 @@ var base_url = "<?php echo base_url(); ?>";
 
 
 $(document).ready(function() {
-
-    $('#machines_main_nav_link').prop('aria-expanded', 'true').removeClass('collapsed');
-    $('#collapseLayoutsMachines').addClass('show');
-
+    var addcheck='<?php echo $addcheck; ?>';
+    var editcheck='<?php echo $editcheck; ?>';
+    var statuscheck='<?php echo $statuscheck; ?>';
+    var deletecheck='<?php echo $deletecheck; ?>';
   // initialize the datatable 
   manageTable = $('#manageTable').DataTable({
     'ajax': base_url + 'MachineTypes/fetchCategoryData',
