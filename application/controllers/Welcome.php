@@ -32,6 +32,10 @@ class Welcome extends CI_Controller {
                 'name'=>$result->name,
                 'type'=>$result->idtbl_user_type,
                 'typename'=>$result->usertype,
+				'company_id'=>1,
+				'companyname'=>'LANKASPIN',
+				'branch_id'=>1,
+				'branchname'=>'Colombo',
                 'loggedin'=>true
             );
 

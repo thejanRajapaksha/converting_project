@@ -41,6 +41,10 @@ if (!function_exists('menucheck')) {
         <link rel="stylesheet" href="<?php echo base_url() ?>assets/slick/slick.css">
         <link rel="stylesheet" href="<?php echo base_url() ?>assets/icofont/icofont.min.css">
         <link rel="stylesheet" href="<?php echo base_url() ?>assets/flaticon/flaticon.css">
+        <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         <style>
             .table tr {
                 cursor: pointer;

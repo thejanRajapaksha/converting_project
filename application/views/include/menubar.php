@@ -77,37 +77,37 @@ else if ($functionmenu == 'Cuttype') {
     $statuscheck = checkprivilege($menuprivilegearray, 12, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 12, 4);
 } 
-else if ($functionmenu == 'Machineservice') {
+else if ($functionmenu == 'MachineService') {
     $addcheck = checkprivilege($menuprivilegearray, 13, 1);
     $editcheck = checkprivilege($menuprivilegearray, 13, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 13, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 13, 4);
 } 
-else if ($functionmenu == 'Serviceitemallocate') {
+else if ($functionmenu2 == 'allocate') {
     $addcheck = checkprivilege($menuprivilegearray, 14, 1);
     $editcheck = checkprivilege($menuprivilegearray, 14, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 14, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 14, 4);
 } 
-else if ($functionmenu == 'Serviceitemissue') {
+else if ($functionmenu2 == 'issue') {
     $addcheck = checkprivilege($menuprivilegearray, 15, 1);
     $editcheck = checkprivilege($menuprivilegearray, 15, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 15, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 15, 4);
 } 
-else if ($functionmenu == 'Serviceitemreceive') {
+else if ($functionmenu2 == 'receive') {
     $addcheck = checkprivilege($menuprivilegearray, 16, 1);
     $editcheck = checkprivilege($menuprivilegearray, 16, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 16, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 16, 4);
 } 
-else if ($functionmenu == 'Servicecalendar') {
+else if ($functionmenu == 'MachineServicesCalendar') {
     $addcheck = checkprivilege($menuprivilegearray, 17, 1);
     $editcheck = checkprivilege($menuprivilegearray, 17, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 17, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 17, 4);
 } 
-else if ($functionmenu == 'Machinerepairs') {
+else if ($functionmenu == 'MachineRepairRequests') {
     $addcheck = checkprivilege($menuprivilegearray, 18, 1);
     $editcheck = checkprivilege($menuprivilegearray, 18, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 18, 3);
@@ -203,7 +203,7 @@ else if ($functionmenu == 'Stock') {
     $statuscheck = checkprivilege($menuprivilegearray, 33, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 33, 4);
 } 
-else if ($functionmenu == 'Grn') {
+else if ($functionmenu == 'Goodreceive') {
     $addcheck = checkprivilege($menuprivilegearray, 34, 1);
     $editcheck = checkprivilege($menuprivilegearray, 34, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 34, 3);
@@ -375,16 +375,14 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Material Data
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="Materialmaincategory" | $controllermenu=="RowMaterials" | $controllermenu=="FliInformation" | $controllermenu=="CutType"){echo 'show';} ?>" id="collapseMaterialData" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Materialmaincategory" | $controllermenu=="RowMaterials" | $controllermenu=="Fliinformation" | $controllermenu=="CutType"){echo 'show';} ?>" id="collapseMaterialData" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 9)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Materialmaincategory'; ?>">Material Main Category</a>
                     <?php } if(menucheck($menuprivilegearray, 10)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'RowMaterials'; ?>">Row Materials</a>
                     <?php } if(menucheck($menuprivilegearray, 11)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'FliInformation'; ?>">Fli Information</a>
-                    <?php } if(menucheck($menuprivilegearray, 12)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CutType'; ?>">Cut Type</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Fliinformation'; ?>">Fli Information</a>
                     <?php } ?>
                 </nav>
             </div>
@@ -397,18 +395,18 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Machine Services
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="MachineService" | $controllermenu=="ServiceItemAllocate" | $controllermenu=="ServiceItemIssue" | $controllermenu=="ServiceItemReceive" | $controllermenu=="ServiceCalendar"){echo 'show';} ?>" id="collapseMachineServices" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="MachineService" | $controllermenu=="allocate" | $controllermenu=="issue" | $controllermenu=="receive" | $controllermenu=="MachineServicesCalendar"){echo 'show';} ?>" id="collapseMachineServices" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 13)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService'; ?>">Machine Service</a>
                     <?php } if(menucheck($menuprivilegearray, 14)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceItemAllocate'; ?>">Service Item Allocate</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService/allocate'; ?>">Service Item Allocate</a>
                     <?php } if(menucheck($menuprivilegearray, 15)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceItemIssue'; ?>">Service Item Issue</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService/issue'; ?>">Service Item Issue</a>
                     <?php } if(menucheck($menuprivilegearray, 16)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceItemReceive'; ?>">Service Item Receive</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService/receive'; ?>">Service Item Receive</a>
                     <?php } if(menucheck($menuprivilegearray, 17)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'ServiceCalendar'; ?>">Service Calendar</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineServicesCalendar'; ?>">Service Calendar</a>
                     <?php } ?>
                 </nav>
             </div>
@@ -416,7 +414,7 @@ function checkprivilege($arraymenu, $menuID, $type){
 
             <!-- Machine Repairs -->
             <?php if(menucheck($menuprivilegearray, 18)==1){ ?>
-            <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'MachineRepairs'; ?>">
+            <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'MachineRepairRequests'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-tools"></i></div>
                 Machine Repairs
             </a>
@@ -429,12 +427,12 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Purchase Order
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="NewPurchaseRequest" | $controllermenu=="PurchaseOrder"){echo 'show';} ?>" id="collapsePurchaseOrder" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Newpurchaserequest" | $controllermenu=="Purchaseorder"){echo 'show';} ?>" id="collapsePurchaseOrder" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 19)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'NewPurchaseRequest'; ?>">New Purchase Request</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Newpurchaserequest'; ?>">New Purchase Request</a>
                     <?php } if(menucheck($menuprivilegearray, 20)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'PurchaseOrder'; ?>">Purchase Order</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Purchaseorder'; ?>">Purchase Order</a>
                     <?php } ?>
                 </nav>
             </div>
@@ -447,14 +445,10 @@ function checkprivilege($arraymenu, $menuID, $type){
                 GRN Section
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="GRN" | $controllermenu=="GRNVoucher" | $controllermenu=="GRNReturn"){echo 'show';} ?>" id="collapseGRN" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Goodreceive" | $controllermenu=="GRNVoucher" | $controllermenu=="GRNReturn"){echo 'show';} ?>" id="collapseGRN" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 21)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRN'; ?>">Good Receive Note</a>
-                    <?php } if(menucheck($menuprivilegearray, 22)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRNVoucher'; ?>">Good Receive Note Voucher</a>
-                    <?php } if(menucheck($menuprivilegearray, 23)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRNReturn'; ?>">Good Receive Note Return</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Goodreceive'; ?>">Good Receive Note</a>
                     <?php } ?>
                 </nav>
             </div>
@@ -513,12 +507,12 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="GRN" | $controllermenu=="Servicecreatedlist" | $controllermenu=="Employeeservices" | $controllermenu=="Servicecostanalysis" | $controllermenu=="Usedserviceitems" | $controllermenu=="Repaircreatedlist" | $controllermenu=="Employeerepairs" | $controllermenu=="Repaircostanalysis" | $controllermenu=="Usedrepairitems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="Goodreceive" | $controllermenu=="Servicecreatedlist" | $controllermenu=="Employeeservices" | $controllermenu=="Servicecostanalysis" | $controllermenu=="Usedserviceitems" | $controllermenu=="Repaircreatedlist" | $controllermenu=="Employeerepairs" | $controllermenu=="Repaircostanalysis" | $controllermenu=="Usedrepairitems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 33)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Stock'; ?>">Stock</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 34)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GRN'; ?>">GRN</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Goodreceive'; ?>">GRN</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 35)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Servicecreatedlist'; ?>">Service Created List</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 36)==1){ ?>
