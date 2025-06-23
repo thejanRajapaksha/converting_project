@@ -269,25 +269,25 @@ else if ($functionmenu == 'Customerpowip') {
     $statuscheck = checkprivilege($menuprivilegearray, 44, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 44, 4);
 } 
-else if ($functionmenu == 'Returntostock') {
+else if ($functionmenu2 == 'return_to_stock') {
     $addcheck = checkprivilege($menuprivilegearray, 45, 1);
     $editcheck = checkprivilege($menuprivilegearray, 45, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 45, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 45, 4);
 } 
-else if ($functionmenu == 'Acceptedreturnitems') {
+else if ($functionmenu2 == 'return_accept') {
     $addcheck = checkprivilege($menuprivilegearray, 46, 1);
     $editcheck = checkprivilege($menuprivilegearray, 46, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 46, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 46, 4);
 } 
-else if ($functionmenu == 'Returntosupplier') {
+else if ($functionmenu2 == 'return_to_supplier') {
     $addcheck = checkprivilege($menuprivilegearray, 47, 1);
     $editcheck = checkprivilege($menuprivilegearray, 47, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 47, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 47, 4);
 } 
-else if ($functionmenu == 'Returntosupplierapprove') {
+else if ($functionmenu2 == 'return_to_supplier_approve_front') {
     $addcheck = checkprivilege($menuprivilegearray, 48, 1);
     $editcheck = checkprivilege($menuprivilegearray, 48, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 48, 3);
@@ -557,16 +557,16 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Return
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="Returntostock" | $controllermenu=="Acceptedreturnitems" | $controllermenu=="Returntosupplier" | $controllermenu=="Returntosupplierapprove"){echo 'show';} ?>" id="collapseReturn" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="return_to_stock" | $controllermenu=="return_accept" | $controllermenu=="return_to_supplier" | $controllermenu=="return_to_supplier_approve_front"){echo 'show';} ?>" id="collapseReturn" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 45)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Returntostock'; ?>">Return to Stock</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService/return_to_stock'; ?>">Return to Stock</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 46)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Acceptedreturnitems'; ?>">Accepted Return Items</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService/return_accept'; ?>">Accepted Return Items</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 47)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Returntosupplier'; ?>">Return to Supplier</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService/return_to_supplier'; ?>">Return to Supplier</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 48)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Returntosupplierapprove'; ?>">Return to Supplier Approve</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineService/return_to_supplier_approve_front'; ?>">Return to Supplier Approve</a><?php } ?>
                 </nav>
             </div>
             <?php } ?>

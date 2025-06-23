@@ -212,8 +212,11 @@ include_once "include/topnavbar.php";
 
     $(document).ready(function() {
 
-        $('#return_main_nav_link').prop('aria-expanded', 'true').removeClass('collapsed');
-        $('#collapseLayoutsReturn').addClass('show');
+        var addcheck = '<?php echo $addcheck; ?>';
+		var editcheck = '<?php echo $editcheck; ?>';
+		var statuscheck = '<?php echo $statuscheck; ?>';
+		var deletecheck = '<?php echo $deletecheck; ?>';
+        console.log(addcheck);
 
         $('#service_no').select2({
             placeholder: 'Select...',

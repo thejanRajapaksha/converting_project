@@ -1436,6 +1436,7 @@ class MachineService extends CI_Controller
 
     public function return_to_stock()
     {
+        $data['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
         $this->load->view('return_to_stock', $data);
     }
 
@@ -1719,6 +1720,7 @@ class MachineService extends CI_Controller
 
     public function return_accept()
     {
+        $data['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
         $this->load->view('return_to_stock_accept', $data);
     }
 
@@ -1999,6 +2001,7 @@ class MachineService extends CI_Controller
 
     public function return_to_supplier()
     {
+        $data['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
         $this->load->view('return_to_supplier', $data);
     }
 
@@ -2205,6 +2208,7 @@ class MachineService extends CI_Controller
 
     public function return_to_supplier_approve_front()
     {
+        $data['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
         $this->load->view('return_to_supplier_approve', $data);
     }
 
