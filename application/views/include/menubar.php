@@ -143,13 +143,13 @@ else if ($functionmenu == 'Goodreceivenotereturn') {
     $statuscheck = checkprivilege($menuprivilegearray, 23, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 23, 4);
 } 
-else if ($functionmenu == 'Crminquiry') {
+else if ($functionmenu == 'CRMInquiry') {
     $addcheck = checkprivilege($menuprivilegearray, 24, 1);
     $editcheck = checkprivilege($menuprivilegearray, 24, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 24, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 24, 4);
 } 
-else if ($functionmenu == 'Crmquotation') {
+else if ($functionmenu == 'CRMQuotation') {
     $addcheck = checkprivilege($menuprivilegearray, 25, 1);
     $editcheck = checkprivilege($menuprivilegearray, 25, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 25, 3);
@@ -161,37 +161,37 @@ else if ($functionmenu == 'Crmquotationstatus') {
     $statuscheck = checkprivilege($menuprivilegearray, 26, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 26, 4);
 } 
-else if ($functionmenu == 'Crmreason') {
+else if ($functionmenu == 'CRMReason') {
     $addcheck = checkprivilege($menuprivilegearray, 27, 1);
     $editcheck = checkprivilege($menuprivilegearray, 27, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 27, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 27, 4);
 } 
-else if ($functionmenu == 'Crmorder') {
+else if ($functionmenu == 'CRMOrderdetail') {
     $addcheck = checkprivilege($menuprivilegearray, 28, 1);
     $editcheck = checkprivilege($menuprivilegearray, 28, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 28, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 28, 4);
 } 
-else if ($functionmenu == 'Deliverydetail') {
+else if ($functionmenu == 'CRMDeliverydetail') {
     $addcheck = checkprivilege($menuprivilegearray, 29, 1);
     $editcheck = checkprivilege($menuprivilegearray, 29, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 29, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 29, 4);
 } 
-else if ($functionmenu == 'Completedorder') {
+else if ($functionmenu == 'CRMCompletedorder') {
     $addcheck = checkprivilege($menuprivilegearray, 30, 1);
     $editcheck = checkprivilege($menuprivilegearray, 30, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 30, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 30, 4);
 } 
-else if ($functionmenu == 'Machineallocation') {
+else if ($functionmenu == 'Machinealloction') {
     $addcheck = checkprivilege($menuprivilegearray, 31, 1);
     $editcheck = checkprivilege($menuprivilegearray, 31, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 31, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 31, 4);
 } 
-else if ($functionmenu == 'Allocatedmachines') {
+else if ($functionmenu == 'AllocatedMachines') {
     $addcheck = checkprivilege($menuprivilegearray, 32, 1);
     $editcheck = checkprivilege($menuprivilegearray, 32, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 32, 3);
@@ -293,17 +293,23 @@ else if ($functionmenu == 'Returntosupplierapprove') {
     $statuscheck = checkprivilege($menuprivilegearray, 48, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 48, 4);
 } 
-else if ($functionmenu == 'Customerinfo') {
+else if ($functionmenu == 'Customer') {
     $addcheck = checkprivilege($menuprivilegearray, 49, 1);
     $editcheck = checkprivilege($menuprivilegearray, 49, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 49, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 49, 4);
 } 
-else if ($functionmenu == 'Supplierinfo') {
+else if ($functionmenu == 'Supplier') {
     $addcheck = checkprivilege($menuprivilegearray, 50, 1);
     $editcheck = checkprivilege($menuprivilegearray, 50, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 50, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 50, 4);
+}
+else if ($functionmenu == 'CRMQuotationform') {
+    $addcheck = checkprivilege($menuprivilegearray, 51, 1);
+    $editcheck = checkprivilege($menuprivilegearray, 51, 2);
+    $statuscheck = checkprivilege($menuprivilegearray, 51, 3);
+    $deletecheck = checkprivilege($menuprivilegearray, 51, 4);
 }
 
 
@@ -365,6 +371,13 @@ function checkprivilege($arraymenu, $menuID, $type){
             <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'SpareParts'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-tools"></i></div>
                 Spare Parts
+            </a>
+            <?php } ?>
+
+            <?php if(menucheck($menuprivilegearray, 51)==1){ ?>
+            <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'CRMQuotationform/Getquotation'; ?>">
+                <div class="nav-link-icon"><i class="fas fa-tools"></i></div>
+                CRM Quotation Form
             </a>
             <?php } ?>
 
@@ -483,16 +496,16 @@ function checkprivilege($arraymenu, $menuID, $type){
                 CRM Order
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="CRMOrder" | $controllermenu=="DeliveryDetail" | $controllermenu=="CompletedOrder" | $controllermenu=="MachineAllocation" | $controllermenu=="AllocatedMachines"){echo 'show';} ?>" id="collapseCRMOrder" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="CRMOrderdetail" | $controllermenu=="CRMDeliverydetail" | $controllermenu=="CRMCompletedorder" | $controllermenu=="Machinealloction" | $controllermenu=="AllocatedMachines"){echo 'show';} ?>" id="collapseCRMOrder" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 28)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMOrder'; ?>">CRM Order</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMOrderdetail'; ?>">CRM Order</a>
                     <?php } if(menucheck($menuprivilegearray, 29)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'DeliveryDetail'; ?>">Delivery Detail</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMDeliverydetail'; ?>">Delivery Detail</a>
                     <?php } if(menucheck($menuprivilegearray, 30)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CompletedOrder'; ?>">Completed Order</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CRMCompletedorder'; ?>">Completed Order</a>
                     <?php } if(menucheck($menuprivilegearray, 31)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineAllocation'; ?>">Machine Allocation</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Machinealloction'; ?>">Machine Allocation</a>
                     <?php } if(menucheck($menuprivilegearray, 32)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'AllocatedMachines'; ?>">Allocated Machines</a>
                     <?php } ?>
@@ -559,14 +572,14 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <?php if(menucheck($menuprivilegearray, 49)==1){ ?>
-            <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'Customerinfo'; ?>">
+            <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'Customer'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-user-friends"></i></div>
                 Customer Info
             </a>
             <?php } ?>
 
             <?php if(menucheck($menuprivilegearray, 50)==1){ ?>
-            <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'Supplierinfo'; ?>">
+            <a class="nav-link p-0 px-3 py-2 text-dark" href="<?php echo base_url().'Supplier'; ?>">
                 <div class="nav-link-icon"><i class="fas fa-industry"></i></div>
                 Supplier Info
             </a>
