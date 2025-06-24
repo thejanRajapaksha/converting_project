@@ -159,17 +159,9 @@ include "include/topnavbar.php";
                     "render": function(data, type, full) {
                         var button = '';
                         button += '<button class="btn btn-primary btn-sm btnview mr-1" id="' + full['idtbl_inquiry'] + '" data-toggle="tooltip" data-placement="bottom" title="Inquiry Details"><i class="fas fa-eye"></i></button>';
-                        button += '<a href="javascript:void(0);" ' +
-                        'id="' + full['idtbl_inquiry'] + '" ' +
-                        'data-customer="' + full['idtbl_customer'] + '" ' +
-                        'data-addcheck="' + addcheck + '" ' +
-                        'data-editcheck="' + editcheck + '" ' +
-                        'data-statuscheck="' + statuscheck + '" ' +
-                        'data-deletecheck="' + deletecheck + '" ' +
-                        'class="btn btn-success btn-sm btnquotation mr-1" ' +
-                        'data-toggle="tooltip" title="Create Quotation">' +
-                        '<i class="fas fa-list"></i></a>';
-
+                        if(addcheck == 1){
+                        button += '<a href="<?php echo base_url() ?>CRMQuotationform/Getquotation/' + full['idtbl_inquiry'] + '/' + full['idtbl_customer'] + '" class="btn btn-success btn-sm btnquotation mr-1" data-toggle="tooltip" data-placement="bottom" title="Create Quotation"><i class="fas fa-list"></i></a>';
+                        }
                         return button;
                     }
                 }
@@ -179,22 +171,9 @@ include "include/topnavbar.php";
             }
         });
 
-        $('#dataTable tbody').on('click', '.btnquotation', function () {
+
+        $('#dataTable tbody').on('click', '.btnquotation', function() {
             var idtbl_inquiry = $(this).attr('id');
-            var idtbl_customer = $(this).data('customer');
-            var addcheck = $(this).data('addcheck');
-            var editcheck = $(this).data('editcheck');
-            var statuscheck = $(this).data('statuscheck');
-            var deletecheck = $(this).data('deletecheck');
-
-            // Example: Use these values in logic
-            // console.log("Add:", addcheck, "Edit:", editcheck, "Status:", statuscheck, "Delete:", deletecheck);
-
-            if (addcheck == 1) {
-                window.location.href = "<?php echo base_url(); ?>CRMQuotationform/Getquotation/" + idtbl_inquiry + "/" + idtbl_customer;
-            } else {
-                alert("You don't have permission to add quotations.");
-            }
         });
 
         $('#dataTable tbody').on('click', '.btnview', function() {

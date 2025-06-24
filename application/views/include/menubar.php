@@ -155,7 +155,7 @@ else if ($functionmenu == 'CRMQuotation') {
     $statuscheck = checkprivilege($menuprivilegearray, 25, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 25, 4);
 } 
-else if ($functionmenu == 'Crmquotationstatus') {
+else if ($functionmenu == 'CRMQuotationStatus') {
     $addcheck = checkprivilege($menuprivilegearray, 26, 1);
     $editcheck = checkprivilege($menuprivilegearray, 26, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 26, 3);
@@ -215,7 +215,7 @@ else if ($functionmenu == 'Servicecreatedlist') {
     $statuscheck = checkprivilege($menuprivilegearray, 35, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 35, 4);
 } 
-else if ($functionmenu == 'Employeeservices') {
+else if ($functionmenu == 'MachineRepairsEmployee') {
     $addcheck = checkprivilege($menuprivilegearray, 36, 1);
     $editcheck = checkprivilege($menuprivilegearray, 36, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 36, 3);
@@ -245,25 +245,25 @@ else if ($functionmenu == 'Employeerepairs') {
     $statuscheck = checkprivilege($menuprivilegearray, 40, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 40, 4);
 } 
-else if ($functionmenu == 'Repaircostanalysis') {
+else if ($functionmenu == 'MachineRepairsCostAnalysis') {
     $addcheck = checkprivilege($menuprivilegearray, 41, 1);
     $editcheck = checkprivilege($menuprivilegearray, 41, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 41, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 41, 4);
 } 
-else if ($functionmenu == 'Usedrepairitems') {
+else if ($functionmenu == 'UsedRepairItems') {
     $addcheck = checkprivilege($menuprivilegearray, 42, 1);
     $editcheck = checkprivilege($menuprivilegearray, 42, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 42, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 42, 4);
 } 
-else if ($functionmenu == 'Machinewip') {
+else if ($functionmenu == 'MachineWIP') {
     $addcheck = checkprivilege($menuprivilegearray, 43, 1);
     $editcheck = checkprivilege($menuprivilegearray, 43, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 43, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 43, 4);
 } 
-else if ($functionmenu == 'Customerpowip') {
+else if ($functionmenu == 'CustomerPOWIP') {
     $addcheck = checkprivilege($menuprivilegearray, 44, 1);
     $editcheck = checkprivilege($menuprivilegearray, 44, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 44, 3);
@@ -520,7 +520,7 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="Goodreceive" | $controllermenu=="Servicecreatedlist" | $controllermenu=="Employeeservices" | $controllermenu=="Servicecostanalysis" | $controllermenu=="Usedserviceitems" | $controllermenu=="Repaircreatedlist" | $controllermenu=="Employeerepairs" | $controllermenu=="Repaircostanalysis" | $controllermenu=="Usedrepairitems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="Goodreceive" | $controllermenu=="Servicecreatedlist" | $controllermenu=="Employeeservices" | $controllermenu=="Servicecostanalysis" | $controllermenu=="Usedserviceitems" | $controllermenu=="Repaircreatedlist" | $controllermenu=="MachineRepairsEmployee" | $controllermenu=="MachineRepairsCostAnalysis" | $controllermenu=="UsedRepairItems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 33)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Stock'; ?>">Stock</a><?php } ?>
@@ -537,11 +537,11 @@ function checkprivilege($arraymenu, $menuID, $type){
                     <?php if(menucheck($menuprivilegearray, 39)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Repaircreatedlist'; ?>">Repair Created List</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 40)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Employeerepairs'; ?>">Employee Repairs</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineRepairsEmployee'; ?>">Employee Repairs</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 41)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Repaircostanalysis'; ?>">Repair Cost Analysis</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineRepairsCostAnalysis'; ?>">Repair Cost Analysis</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 42)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Usedrepairitems'; ?>">Used Repair Items</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'UsedRepairItems'; ?>">Used Repair Items</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 43)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineWIP'; ?>">Machine WIP</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 44)==1){ ?>

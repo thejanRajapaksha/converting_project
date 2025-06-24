@@ -5,53 +5,17 @@ date_default_timezone_set('Asia/Colombo');
 
 class CRMQuotationform extends CI_Controller
 {	
-	// public function Getquotation($z,$y)
-	// {
-	// 	$addcheck = $this->session->userdata('addcheck');
-	// 	$editcheck = $this->session->userdata('editcheck');
-	// 	$statuscheck = $this->session->userdata('statuscheck');
-	// 	$deletecheck = $this->session->userdata('deletecheck');
-
-	// 	$this->load->model('Commeninfo');
-	// 	$this->load->model('CRMQuotationforminfo');
-	// 	$this->load->model('Productinfo');
-	// 	$result['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
-	// 	$result['product'] = $this->Productinfo->getProduct();
-	// 	$result['customerlist'] = $this->CRMQuotationforminfo->Getcustomer($z,$y);	
-	// 	$result['getid'] = $this->CRMQuotationforminfo->Getquotationid($z,$y);
-		
-	// 	$result = array(
-    //     // 'inquiryID' => $z,
-    //     // 'customerID' => $y,
-    //     'addcheck' => $addcheck,
-    //     'editcheck' => $editcheck,
-    //     'statuscheck' => $statuscheck,
-    //     'deletecheck' => $deletecheck
-    // );
-	// 	$this->load->view('quotationform', $result);
-	// }
 	
 	public function Getquotation($z, $y)
 {
-    $addcheck = $this->session->userdata('addcheck');
-    $editcheck = $this->session->userdata('editcheck');
-    $statuscheck = $this->session->userdata('statuscheck');
-    $deletecheck = $this->session->userdata('deletecheck');
-
     $this->load->model('Commeninfo');
     $this->load->model('CRMQuotationforminfo');
     $this->load->model('Productinfo');
 
-    $result = array(
-        'menuaccess'    => $this->Commeninfo->Getmenuprivilege(),
-        'product'       => $this->Productinfo->getProduct(),
-        'customerlist'  => $this->CRMQuotationforminfo->Getcustomer($z, $y),
-        'getid'         => $this->CRMQuotationforminfo->Getquotationid($z, $y),
-        'addcheck'      => $addcheck,
-        'editcheck'     => $editcheck,
-        'statuscheck'   => $statuscheck,
-        'deletecheck'   => $deletecheck
-    );
+		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+ 		$result['product'] = $this->Productinfo->getProduct();
+		$result['customerlist'] = $this->CRMQuotationforminfo->Getcustomer($z,$y);	
+		$result['getid'] = $this->CRMQuotationforminfo->Getquotationid($z,$y);
 
     $this->load->view('quotationform', $result);
 }
