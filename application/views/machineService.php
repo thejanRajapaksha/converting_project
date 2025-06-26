@@ -6,13 +6,20 @@ include_once "include/topnavbar.php";
     <div id="layoutSidenav_nav"><?php include_once "include/menubar.php"; ?></div>
         <div id="layoutSidenav_content">
             <main>
-                <div class="container-fluid mt-2">
+                <div class="page-header page-header-light bg-white shadow">
+                    <div class="container-fluid">
+                        <div class="page-header-content py-3">
+                            <h1 class="page-header-title font-weight-light">
+                                <div class="page-header-icon"><i class="fas fa-wrench"></i></div>
+                                <span>Machine Services</span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid mt-2p-0 p-2">
                     <div class="card">
-                        <div class="card-body">
+                        <div class="card-body p-0 p-2">
                             <div class="row">
-                                <div class="col">
-                                    <h2 class="">Machine Services</h2>
-                                </div>
                                 <div class="col">
                                     <button class="btn btn-primary float-right btn-sm" <?php if($addcheck==0){echo 'disabled';} ?> data-toggle="modal" data-target="#addModal">
                                         Add Machine Service
@@ -54,7 +61,7 @@ include_once "include/topnavbar.php";
                                                 aria-hidden="true">&times;</span></button>
                                 </div>
 
-                                <form role="form" action="<?php echo base_url('MachineServices/create') ?>" method="post"
+                                <form role="form" action="<?php echo base_url('MachineService/create') ?>" method="post"
                                     id="createForm">
 
                                     <div class="modal-body">
@@ -379,7 +386,7 @@ $(document).ready(function() {
         allowClear: true,
         dropdownParent: $('#addModal'),
         ajax: {
-            url: base_url + 'MachineIns/get_machine_ins_select_id',
+            url: base_url + 'MachineIn/get_machine_ins_select_id',
             dataType: 'json',
             data: function (params) {
                 return {
@@ -451,7 +458,7 @@ $(document).ready(function() {
         allowClear: true,
         dropdownParent: $('#editModal'),
         ajax: {
-            url: base_url + 'MachineIns/get_machine_ins_select_id',
+            url: base_url + 'MachineIn/get_machine_ins_select_id',
             dataType: 'json',
             data: function (params) {
                 return {
@@ -486,7 +493,7 @@ $(document).ready(function() {
         var machine_in_id = $(this).val();
         if (machine_in_id) {
             $.ajax({
-                url: base_url + 'MachineIns/getFactoryCodeByMachineInId',
+                url: base_url + 'MachineIn/getFactoryCodeByMachineInId',
                 type: 'POST',
                 data: {
                     machine_in_id: machine_in_id
@@ -503,7 +510,7 @@ $(document).ready(function() {
         var machine_in_id = $(this).val();
         if (machine_in_id) {
             $.ajax({
-                url: base_url + 'MachineIns/getFactoryCodeByMachineInId',
+                url: base_url + 'MachineIn/getFactoryCodeByMachineInId',
                 type: 'POST',
                 data: {
                     machine_in_id: machine_in_id

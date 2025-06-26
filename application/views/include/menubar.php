@@ -59,7 +59,7 @@ else if ($functionmenu == 'Materialmaincategory') {
     $statuscheck = checkprivilege($menuprivilegearray, 9, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 9, 4);
 } 
-else if ($functionmenu == 'RowMaterials') {
+else if ($functionmenu == 'Rowmaterials') {
     $addcheck = checkprivilege($menuprivilegearray, 10, 1);
     $editcheck = checkprivilege($menuprivilegearray, 10, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 10, 3);
@@ -118,12 +118,15 @@ else if ($functionmenu == 'Newpurchaserequest') {
     $editcheck = checkprivilege($menuprivilegearray, 19, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 19, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 19, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 19, 5);
+    $checkstatus=checkprivilege($menuprivilegearray, 19, 6);
 } 
 else if ($functionmenu == 'Purchaseorder') {
     $addcheck = checkprivilege($menuprivilegearray, 20, 1);
     $editcheck = checkprivilege($menuprivilegearray, 20, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 20, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 20, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 20, 5);
 } 
 else if ($functionmenu == 'Goodreceivenote') {
     $addcheck = checkprivilege($menuprivilegearray, 21, 1);
@@ -208,6 +211,7 @@ else if ($functionmenu == 'Goodreceive') {
     $editcheck = checkprivilege($menuprivilegearray, 34, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 34, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 34, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 34, 5);
 } 
 else if ($functionmenu == 'Servicecreatedlist') {
     $addcheck = checkprivilege($menuprivilegearray, 35, 1);
@@ -329,6 +333,12 @@ function checkprivilege($arraymenu, $menuID, $type){
             else if($type==4){
                 return $array->remove;
             }
+            else if($type==5){
+                return $array->approvestatus;
+            }
+            else if($type==6){
+                return $array->checkstatus;
+            }
         }
     }
 }
@@ -388,12 +398,12 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Material Data
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="Materialmaincategory" | $controllermenu=="RowMaterials" | $controllermenu=="Fliinformation" | $controllermenu=="CutType"){echo 'show';} ?>" id="collapseMaterialData" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Materialmaincategory" | $controllermenu=="Rowmaterials" | $controllermenu=="Fliinformation" | $controllermenu=="CutType"){echo 'show';} ?>" id="collapseMaterialData" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 9)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Materialmaincategory'; ?>">Material Main Category</a>
                     <?php } if(menucheck($menuprivilegearray, 10)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'RowMaterials'; ?>">Row Materials</a>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Rowmaterials'; ?>">Row Materials</a>
                     <?php } if(menucheck($menuprivilegearray, 11)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Fliinformation'; ?>">Fli Information</a>
                     <?php } ?>

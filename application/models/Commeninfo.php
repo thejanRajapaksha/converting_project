@@ -12,7 +12,7 @@ class Commeninfo extends CI_Model{
             $menucheckID=$row->idtbl_menu_list;
             $menuname=str_replace(" ","_",$row->menu);
             
-            $sqlprivilegecheck="SELECT `add`, `edit`, `statuschange`, `remove`, `access_status`, `approvestatus`, `tbl_menu_list_idtbl_menu_list` FROM `tbl_user_privilege` WHERE `tbl_user_idtbl_user`=? AND `tbl_menu_list_idtbl_menu_list`=? AND `status`=?";
+            $sqlprivilegecheck="SELECT `add`, `edit`, `statuschange`, `remove`, `access_status`, `approvestatus`, `checkstatus`, `tbl_menu_list_idtbl_menu_list` FROM `tbl_user_privilege` WHERE `tbl_user_idtbl_user`=? AND `tbl_menu_list_idtbl_menu_list`=? AND `status`=?";
             $respondprivilegecheck=$this->db->query($sqlprivilegecheck, array($userID, $menucheckID, 1));
             
             if($respondprivilegecheck->num_rows()>0){
@@ -23,6 +23,7 @@ class Commeninfo extends CI_Model{
                 $objmenu->remove=$respondprivilegecheck->row(0)->remove;
                 $objmenu->access_status=$respondprivilegecheck->row(0)->access_status;
                 $objmenu->approvestatus=$respondprivilegecheck->row(0)->approvestatus;
+                $objmenu->checkstatus=$respondprivilegecheck->row(0)->checkstatus;
                 $objmenu->menuid=$respondprivilegecheck->row(0)->tbl_menu_list_idtbl_menu_list;
                 array_push($menuprivilegearray, $objmenu);
             }

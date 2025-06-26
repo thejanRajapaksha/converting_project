@@ -16,8 +16,8 @@ class MachineIn extends CI_Controller
     {
         $this->load->model('Commeninfo');
         $data['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
-        $this->data['machine_types'] = $this->model_machine_types->getMachineTypesData();
-        $this->data['machine_models'] = $this->model_machine_models->getMachineModelsData();
+        $data['machine_types'] = $this->model_machine_types->getMachineTypesData();
+        $data['machine_models'] = $this->model_machine_models->getMachineModelsData();
        // $this->data['factories'] = $this->model_factories->getFactoriesData();
 
         $this->db->select('*');
@@ -360,7 +360,7 @@ class MachineIn extends CI_Controller
     }
 
     //getFactoryCodeByMachineInId
-   /* public function getFactoryCodeByMachineInId()
+    public function getFactoryCodeByMachineInId()
     {
         $machine_in_id = $this->input->post('machine_in_id');
         $this->db->select('br_code');
@@ -370,6 +370,6 @@ class MachineIn extends CI_Controller
         $query = $this->db->get();
         $factory_code = $query->row()->br_code;
         echo json_encode($factory_code);
-    }*/
+    }
 
 }

@@ -6,7 +6,10 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-4">
                         <div class="card shadow-lg rounded-0 mt-5">
-                            <div class="card-header justify-content-center bg-transparent"><img src="<?php echo base_url() ?>images/logo1.png" class="img-fluid" alt=""></div>
+                            <div class="card-header justify-content-center bg-transparent"><img src="<?php echo base_url() ?>images/logo1.png" class="img-fluid" alt="">
+                        </div>
+                            <h4 class="login-box-msg text-center">LANKA SPIN (PVT) LTD.</h4>
+
                             <div class="card-body pt-3">
                                 <form action="<?php echo base_url() ?>Welcome/LoginUser" method="post" autocomplete="off">
                                     <div class="form-group"><label class="small mb-1" for="inputEmailAddress">Username</label><input class="form-control form-control-sm rounded-0 py-3" id="username" name="username" type="text" placeholder="username" autofocus /></div>

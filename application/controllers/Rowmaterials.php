@@ -14,7 +14,7 @@ class Rowmaterials extends CI_Controller {
 		$result['supplierlist']=$this->Supplierinfo->GetSupplierList();
 		$result['maincategorylist']=$this->Materialmaincategoryinfo->GetMainCatList();
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
-		$this->load->view('rowmaterials', $result);
+		$this->load->view('rowmaterials',$result);
 	}
    
 	public function Rowmaterialsinsertupdate(){

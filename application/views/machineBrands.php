@@ -8,13 +8,20 @@ include "include/topnavbar.php";
     </div>
     <div id="layoutSidenav_content">
         <main>
-            <div class="container-fluid mt-2">
+            <div class="page-header page-header-light bg-white shadow">
+                <div class="container-fluid">
+                    <div class="page-header-content py-3">
+                        <h1 class="page-header-title font-weight-light">
+                            <div class="page-header-icon"><i class="fas fa-cogs"></i></div>
+                            <span>Machine Brands</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid mt-2p-0 p-2">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-0 p-2">
                         <div class="row">
-                            <div class="col">
-                                <h2 class="">Machine Brands</h2>
-                            </div>
                             <div class="col">
                                 <button class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target="#addModal" <?php if($addcheck==0){echo 'disabled';} ?>>Add Machine Brand</button>
                             </div>

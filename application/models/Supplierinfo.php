@@ -12,11 +12,7 @@
 	public function Supplierinsertupdate() {
 		$this->db->trans_begin();
 
-<<<<<<< Updated upstream
-		$userID=$_SESSION['id'];
-=======
 		$userID=$_SESSION['userid'];
->>>>>>> Stashed changes
 
 		$supplier_name=$this->input->post('supplier_name');
 		$suppliertype=$this->input->post('suppliertype');

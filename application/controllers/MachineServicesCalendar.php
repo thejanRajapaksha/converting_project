@@ -152,18 +152,9 @@ class MachineServicesCalendar extends CI_Controller
             if(empty($service_detail)){
 
                 $html .= '<button type="button" style="margin:1px;" class="btn btn-success btn-sm" onclick="viewFunc(' . $data['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-white"></i></button>';
-
-                if(in_array('createMachineService', $this->permission)) {
-                    $html .= '<button type="button" style="margin:1px;" class="btn btn-primary btn-sm btn_create" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Create Service" > <i class="fa fa-wrench"></i> </button>';
-                }
-
-                if(in_array('createMachineServicePostpone', $this->permission)) {
-                    $html .= '<button type="button" style="margin:1px;" class="btn btn-warning btn-sm btn_postpone" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Postpone"> <i class="fa fa-stop-circle"></i> </button>';
-                }
-
-                if(in_array('deleteMachineService', $this->permission)) {
-                    $html .= '<button type="button" style="margin:1px;" class="btn btn-danger btn-sm btn_delete" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Delete"> <i class="fa fa-trash"></i> </button>';
-                }
+                $html .= '<button type="button" style="margin:1px;" class="btn btn-primary btn-sm btn_create" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Create Service" > <i class="fa fa-wrench"></i> </button>';
+                $html .= '<button type="button" style="margin:1px;" class="btn btn-warning btn-sm btn_postpone" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Postpone"> <i class="fa fa-stop-circle"></i> </button>';
+                $html .= '<button type="button" style="margin:1px;" class="btn btn-danger btn-sm btn_delete" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Delete"> <i class="fa fa-trash"></i> </button>';
 
             }
 
@@ -179,10 +170,6 @@ class MachineServicesCalendar extends CI_Controller
 
     public function createService()
     {
-        if(!in_array('createMachineService', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
         $response = array();
 
         $data = array(
@@ -235,10 +222,6 @@ class MachineServicesCalendar extends CI_Controller
     //postponeService
     public function postponeService()
     {
-        if(!in_array('createMachineService', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
         $response = array();
         $service_id = $this->input->post('id');
 
@@ -268,10 +251,6 @@ class MachineServicesCalendar extends CI_Controller
     //deleteService
     public function deleteService()
     {
-        if(!in_array('createMachineService', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
         $data = array(
             'is_deleted' => 1,
             'deleted_by' => $this->session->userdata('id'),

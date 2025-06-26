@@ -8,13 +8,20 @@ include "include/topnavbar.php";
     </div>
     <div id="layoutSidenav_content">
         <main>
-            <div class="container-fluid mt-2">
+            <div class="page-header page-header-light bg-white shadow">
+                <div class="container-fluid">
+                    <div class="page-header-content py-3">
+                        <h1 class="page-header-title font-weight-light">
+                            <div class="page-header-icon"><i class="fas fa-cogs"></i></div>
+                            <span>Machine In</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid mt-2p-0 p-2">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-0 p-2">
                         <div class="row">
-                            <div class="col">
-                                <h2 class="">Machine In</h2>
-                            </div>
                             <div class="col">
                                 <button class="btn btn-primary float-right btn-sm" data-toggle="modal" data-target="#addModal" <?php if($addcheck==0){echo 'disabled';} ?>>
                                     Add Machine In
@@ -64,14 +71,12 @@ include "include/topnavbar.php";
                                     <div class="col-md-6 form-group">
                                         <label for="machine_type_id">Machine Type <span class="text-danger">*</span></label>
                                         <select name="machine_type_id" id="machine_type_id" class="select2 form-control-sm">
-                                            <option value="">Select Machine Type</option>
-                                            <?php if (!empty($machine_types) && is_array($machine_types)): ?>
-                                                <?php foreach ($machine_types as $machine_type): ?>
-                                                    <option value="<?php echo $machine_type['id']; ?>">
-                                                        <?php echo $machine_type['name']; ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
+                                            <option value="">Select</option>
+                                            <?php foreach ($machine_types as $machine_type): ?>
+                                                <option value="<?php echo $machine_type['id']; ?>">
+                                                    <?php echo $machine_type['name']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
                                         </select>
                                         <div id="machine_type_id_error"></div>
                                     </div>
@@ -79,14 +84,12 @@ include "include/topnavbar.php";
                                     <div class="col-md-6 form-group">
                                         <label for="machine_model_id">Machine Model <span class="text-danger">*</span></label>
                                         <select name="machine_model_id" id="machine_model_id" class="select2 form-control-sm">
-                                            <option value="">Select Machine Model</option>
-                                            <?php if (!empty($machine_models) && is_array($machine_models)): ?>
-                                                <?php foreach ($machine_models as $machine_model): ?>
-                                                    <option value="<?php echo $machine_model['id']; ?>">
-                                                        <?php echo $machine_model['name']; ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
+                                            <<option value="">Select</option>
+                                            <?php foreach ($machine_models as $machine_model): ?>
+                                                <option value="<?php echo $machine_model['id']; ?>">
+                                                    <?php echo $machine_model['name']; ?>
+                                                </option>
+                                            <?php endforeach; ?>
                                         </select>
                                         <div id="machine_model_id_error"></div>
                                     </div>

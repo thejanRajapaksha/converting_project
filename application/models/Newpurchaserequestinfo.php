@@ -85,7 +85,7 @@
 	}
 	
 	public function Getsparepartaccosupplier() {
-		$sql = "SELECT `idtbl_spareparts`, `spare_part_name` FROM `tbl_spareparts` WHERE `status`=1";
+		$sql = "SELECT `id`, `spare_part_name` FROM `spare_parts` WHERE `active`=1";
 		$respond = $this->db->query($sql);
 		
 		echo json_encode($respond->result());
@@ -109,7 +109,7 @@
 
 	public function Getproductforsparepart() {
 		$recordID=$this->input->post('recordID');
-		$sql="SELECT `idtbl_spareparts`, `name` FROM `tbl_spareparts` WHERE `status`=1";
+		$sql="SELECT `id`, `name` FROM `spare_parts` WHERE `active`=1";
 		$respond=$this->db->query($sql, array($recordID));
 
 		echo json_encode($respond->result());
@@ -123,16 +123,16 @@
 		$this->db->from('tbl_print_material_info');
 		$this->db->like('materialname', $query);
 		$this->db->where('status', 1);
-		$this->db->where('tbl_company_idtbl_company', $companyID);
-		$this->db->where('tbl_company_branch_idtbl_company_branch', $branchID);
+		$this->db->where('company_id', $companyID);
+		$this->db->where('company_branch_id', $branchID);
 		
 		$printMaterialsQuery = $this->db->get();
 		$printMaterials = $printMaterialsQuery->result_array();
 	
-		$this->db->select('TRIM(spare_part_name) as materialname');
-		$this->db->from('tbl_spareparts');
-		$this->db->like('spare_part_name', $query);
-		$this->db->where('status', 1);
+		$this->db->select('TRIM(name) as materialname');
+		$this->db->from('spare_parts');
+		$this->db->like('name', $query);
+		$this->db->where('active', 1);
 		$sparePartsQuery = $this->db->get();
 		$spareParts = $sparePartsQuery->result_array();
 
@@ -185,9 +185,9 @@
         $recordID=$this->input->post('recordID');
 
 		$this->db->select('*'); 
-        $this->db->from('tbl_spareparts');
-        $this->db->where('status', 1);
-        $this->db->where('idtbl_spareparts', $recordID);
+        $this->db->from('spare_parts');
+        $this->db->where('active', 1);
+        $this->db->where('id', $recordID);
 
         $respond=$this->db->get();
 

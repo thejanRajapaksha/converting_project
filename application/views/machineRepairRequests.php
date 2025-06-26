@@ -8,14 +8,21 @@ include "include/topnavbar.php";
     </div>
     <div id="layoutSidenav_content">
         <main>
-            <div class="container-fluid mt-2">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col">
-                                <h2 class="">Machine Repair Requests</h2>
-                            </div>
-                            <div class="col">
+                <div class="page-header page-header-light bg-white shadow">
+                    <div class="container-fluid">
+                        <div class="page-header-content py-3">
+                            <h1 class="page-header-title font-weight-light">
+                                <div class="page-header-icon"><i class="fas fa-tools"></i></div>
+                                <span>Machine Repair Requests</span>
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid mt-2p-0 p-2">
+                    <div class="card">
+                        <div class="card-body p-0 p-2">
+                            <div class="row">
+                                <div class="col">
                                 <button class="btn btn-primary float-right btn-sm <?php if($addcheck==0){echo 'disabled';} ?>" data-toggle="modal" data-target="#addModal">
                                     Add Machine Repair Request
                                 </button>
@@ -408,7 +415,7 @@ $(document).ready(function() {
 
     function get_service_no(){
         $.ajax({
-            url: base_url + 'MachineServices/getServiceNo',
+            url: base_url + 'MachineService/getServiceNo',
             type: 'POST',
             dataType: 'json',
             success: function(response) {
@@ -423,7 +430,7 @@ $(document).ready(function() {
         allowClear: true,
         dropdownParent: $('#addModal'),
         ajax: {
-            url: base_url + 'MachineIns/get_machine_ins_select_id',
+            url: base_url + 'MachineIn/get_machine_ins_select_id',
             dataType: 'json',
             data: function (params) {
                 return {
@@ -441,7 +448,7 @@ $(document).ready(function() {
         allowClear: true,
         dropdownParent: $('#editModal'),
         ajax: {
-            url: base_url + 'MachineIns/get_machine_ins_select_id',
+            url: base_url + 'MachineIn/get_machine_ins_select_id',
             dataType: 'json',
             data: function (params) {
                 return {
@@ -458,7 +465,7 @@ $(document).ready(function() {
         var machine_in_id = $(this).val();
         if (machine_in_id) {
             $.ajax({
-                url: base_url + 'MachineIns/getFactoryCodeByMachineInId',
+                url: base_url + 'MachineIn/getFactoryCodeByMachineInId',
                 type: 'POST',
                 data: {
                     machine_in_id: machine_in_id
@@ -475,7 +482,7 @@ $(document).ready(function() {
         var machine_in_id = $(this).val();
         if (machine_in_id) {
             $.ajax({
-                url: base_url + 'MachineIns/getFactoryCodeByMachineInId',
+                url: base_url + 'MachineIn/getFactoryCodeByMachineInId',
                 type: 'POST',
                 data: {
                     machine_in_id: machine_in_id

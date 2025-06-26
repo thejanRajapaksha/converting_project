@@ -18,18 +18,18 @@ include_once "include/topnavbar.php";
                     </div>
                 </div>
             </div>
-            <div class="container-fluid mt-2">
-                <div class="row mt-2 equal">
+            <div class="container-fluid mt-2p-0 p-2">
+                <div class="row mt-1 equal">
                     <div class="col-md-3 pr-0" >
                         <div class="card" style="height: 100%; width: 100%;">
-                            <div class="card-body">
+                            <div class="card-body ">
                                 <h5 class="card-title">All Machine List</h5>
                                 <p class="card-text text-center text-success p-5" style="font-size: 5rem">
                                     <?php echo $count_machine_ins; ?>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="<?php echo base_url(); ?>MachineIns" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i> </a>
+                                <a href="<?php echo base_url(); ?>MachineIn" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i> </a>
                             </div>
                         </div>
                     </div>
@@ -40,7 +40,7 @@ include_once "include/topnavbar.php";
                                     <canvas id="machine_ins_pie_chart"></canvas>
                             </div>
                             <div class="card-footer">
-                                <a href="<?php echo base_url(); ?>MachineIns" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i> </a>
+                                <a href="<?php echo base_url(); ?>MachineIn" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i> </a>
                             </div>
                         </div>
                     </div>

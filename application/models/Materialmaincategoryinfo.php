@@ -3,7 +3,7 @@ class Materialmaincategoryinfo extends CI_Model{
     public function Materialmaincategoryinsertupdate(){
         $this->db->trans_begin();
 
-        $userID=$_SESSION['id'];
+        $userID=$_SESSION['userid'];
 
         $maincategory=$this->input->post('maincategory');
       
