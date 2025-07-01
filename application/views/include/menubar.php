@@ -213,31 +213,31 @@ else if ($functionmenu == 'Goodreceive') {
     $deletecheck = checkprivilege($menuprivilegearray, 34, 4);
     $approvecheck=checkprivilege($menuprivilegearray, 34, 5);
 } 
-else if ($functionmenu == 'Servicecreatedlist') {
+else if ($functionmenu == 'MachineServicesCreated') {
     $addcheck = checkprivilege($menuprivilegearray, 35, 1);
     $editcheck = checkprivilege($menuprivilegearray, 35, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 35, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 35, 4);
 } 
-else if ($functionmenu == 'MachineRepairsEmployee') {
+else if ($functionmenu == 'MachineServicesEmployee') {
     $addcheck = checkprivilege($menuprivilegearray, 36, 1);
     $editcheck = checkprivilege($menuprivilegearray, 36, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 36, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 36, 4);
 } 
-else if ($functionmenu == 'Servicecostanalysis') {
+else if ($functionmenu == 'MachineServicesCostAnalysis') {
     $addcheck = checkprivilege($menuprivilegearray, 37, 1);
     $editcheck = checkprivilege($menuprivilegearray, 37, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 37, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 37, 4);
 } 
-else if ($functionmenu == 'Usedserviceitems') {
+else if ($functionmenu == 'UsedServiceItems') {
     $addcheck = checkprivilege($menuprivilegearray, 38, 1);
     $editcheck = checkprivilege($menuprivilegearray, 38, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 38, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 38, 4);
 } 
-else if ($functionmenu == 'Repaircreatedlist') {
+else if ($functionmenu == 'MachineRepairsCreated') {
     $addcheck = checkprivilege($menuprivilegearray, 39, 1);
     $editcheck = checkprivilege($menuprivilegearray, 39, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 39, 3);
@@ -530,22 +530,22 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="Goodreceive" | $controllermenu=="Servicecreatedlist" | $controllermenu=="Employeeservices" | $controllermenu=="Servicecostanalysis" | $controllermenu=="Usedserviceitems" | $controllermenu=="Repaircreatedlist" | $controllermenu=="MachineRepairsEmployee" | $controllermenu=="MachineRepairsCostAnalysis" | $controllermenu=="UsedRepairItems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="Goodreceive" | $controllermenu=="MachineServicesCreated" | $controllermenu=="MachineServicesEmployee" | $controllermenu=="MachineServicesCostAnalysis" | $controllermenu=="UsedServiceItems" | $controllermenu=="MachineRepairsCreated" | $controllermenu=="MachineRepairsEmployee" | $controllermenu=="MachineRepairsCostAnalysis" | $controllermenu=="UsedRepairItems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 33)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Stock'; ?>">Stock</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 34)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Goodreceive'; ?>">GRN</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 35)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Servicecreatedlist'; ?>">Service Created List</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineServicesCreated'; ?>">Service Created List</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 36)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Employeeservices'; ?>">Employee Services</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineServicesEmployee'; ?>">Employee Services</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 37)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Servicecostanalysis'; ?>">Service Cost Analysis</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineServicesCostAnalysis'; ?>">Service Cost Analysis</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 38)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Usedserviceitems'; ?>">Used Service Items</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'UsedServiceItems'; ?>">Used Service Items</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 39)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Repaircreatedlist'; ?>">Repair Created List</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineRepairsCreated'; ?>">Repair Created List</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 40)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineRepairsEmployee'; ?>">Employee Repairs</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 41)==1){ ?>

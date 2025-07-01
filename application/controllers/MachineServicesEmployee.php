@@ -1,24 +1,25 @@
 <?php
 
-class MachineRepairsEmployee extends CI_Controller
+class MachineServicesEmployee extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
 
         $this->load->model('Commeninfo');
-        $this->load->model('model_machine_repairs_employee');
+        $this->load->model('model_machine_services_employee');
 
     }
 
     public function index()
     {
-       $result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
-       $this->load->view('machineRepairEmployee', $result);
+        $result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
+        $this->load->view('machineservicesemployee', $result);
     }
 
     public function fetchCategoryData()
     {
+
 
         $employee_id = $this->input->get('employee_id');
         $date_from = $this->input->get('date_from');
@@ -32,7 +33,7 @@ class MachineRepairsEmployee extends CI_Controller
 
         $result = array('data' => array());
 
-        $data = $this->model_machine_repairs_employee->getEmployeeRepairsData(null,$data);
+        $data = $this->model_machine_services_employee->getEmployeeServicesData(null,$data);
 
         foreach ($data as $key => $value) {
             // button
@@ -44,7 +45,7 @@ class MachineRepairsEmployee extends CI_Controller
 
             $result['data'][$key] = array(
                 $value['employee_name'],
-                $value['repair_count'],
+                $value['service_count'],
                 $buttons
             );
         } // /foreach
@@ -54,7 +55,7 @@ class MachineRepairsEmployee extends CI_Controller
 
 
 
-    public function fetchRepairDataById()
+    public function fetchServiceDataById()
     {
 
         $id = $this->input->post('id');
@@ -62,7 +63,7 @@ class MachineRepairsEmployee extends CI_Controller
         $date_to = $this->input->post('date_to');
 
         if($id) {
-            $data = $this->model_machine_repairs_employee->getEmployeeRepairsDataById($id, $date_from, $date_to);
+            $data = $this->model_machine_services_employee->getEmployeeServicesDataById($id, $date_from, $date_to);
             echo json_encode($data);
         }
 
@@ -78,27 +79,25 @@ class MachineRepairsEmployee extends CI_Controller
 
         $this->db->select('employees.emp_name_with_initial, employees.id');
         $this->db->from('employees');
-        $this->db->join('machine_repair_details', 'employees.id = machine_repair_details.repair_done_by', 'left');
-        $this->db->where('machine_repair_details.is_deleted', 0 );
+        $this->db->join('machine_service_details', 'employees.id = machine_service_details.service_done_by', 'left');
+        $this->db->where('machine_service_details.is_deleted', 0 );
         $this->db->like('employees.emp_name_with_initial', $term, 'both');
-        $this->db->group_by('employees.id');
         $query = $this->db->get();
         $this->db->limit($resultCount, $offset);
         $departments = $query->result_array();
 
         $this->db->select('employees.emp_name_with_initial, employees.id');
         $this->db->from('employees');
-        $this->db->join('machine_repair_details', 'employees.id = machine_repair_details.repair_done_by', 'left');
-        $this->db->where('machine_repair_details.is_deleted', 0 );
+        $this->db->join('machine_service_details', 'employees.id = machine_service_details.service_done_by', 'left');
+        $this->db->where('machine_service_details.is_deleted', 0 );
         $this->db->like('employees.emp_name_with_initial', $term, 'both');
-        $this->db->group_by('employees.id');
         $count = $this->db->count_all_results();
 
         $data = array();
         foreach ($departments as $v) {
             $data[] = array(
                 'id' => $v['id'],
-                'text' => $v['emp_name_with_initial'],
+                'text' => $v['name_with_initial'],
             );
         }
 
