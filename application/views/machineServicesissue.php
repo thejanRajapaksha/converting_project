@@ -409,130 +409,125 @@ include_once "include/topnavbar.php";
     });
 
     // edit function
-    function editFunc(id)
-    {
+    function editFunc(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to edit this issued service record?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, edit it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
 
-        let colorTable = $('#edit_colorTable').DataTable({
-            searching: false,
-            paging: false,
-            info: false,
-            destroy:true
-        });
+            let colorTable = $('#edit_colorTable').DataTable({
+                searching: false,
+                paging: false,
+                info: false,
+                destroy: true
+            });
 
-        colorTable.clear().draw();
+            colorTable.clear().draw();
 
-        $.ajax({
-            url: base_url + 'MachineService/fetchIssuedServiceItems/'+id,
-            type: 'post',
-            dataType: 'json',
-            success:function(data) {
+            $.ajax({
+                url: base_url + 'MachineService/fetchIssuedServiceItems/' + id,
+                type: 'post',
+                dataType: 'json',
+                success: function (data) {
 
-                var op = data.sc;
+                    var op = data.sc;
 
-                $.each(op, function(key, value) {
-                    let sp_id = value.id;
-                    let sp_name = value.name;
-                    let part_no = value.part_no;
-                    let issue_id = value.issue_id;
-                    let allocated_qty = value.allocated_qty;
-                    let qty = value.qty;
+                    $.each(op, function (key, value) {
+                        let sp_id = value.id;
+                        let sp_name = value.name;
+                        let part_no = value.part_no;
+                        let issue_id = value.issue_id;
+                        let allocated_qty = value.allocated_qty;
+                        let qty = value.qty;
 
-                    let f = sp_name + ' - ' + part_no ;
+                        let f = sp_name + ' - ' + part_no;
 
+                        let sp_id_input = '<input type="hidden" name="sp_id[]" class="id" value="' + sp_id + '"/> ' + f;
+                        let issue_id_input = '<input type="hidden" name="issue_id[]" class="id" value="' + issue_id + '"/>';
+                        let qty_input = '<input type="text" name="qty[]" class="form-control form-control-sm qty" value="' + qty + '" />';
+                        let allocated_qty_input = '<input type="text" name="allocated_qty[]" readonly class="form-control form-control-sm allocated_qty" value="' + allocated_qty + '" />';
 
-                    let sp_id_input = '<input type="hidden" name="sp_id[]" class="id" value="'+sp_id+'"/> ' + f + '';
-                    let issue_id_input = '<input type="hidden" name="issue_id[]" class="id" value="'+issue_id+'"/> '  + '';
-                    let qty_input = '<input type="text" name="qty[]" class="form-control form-control-sm qty" value="'+qty+'" /> ';
-                    let allocated_qty_input = '<input type="text" name="allocated_qty[]" readonly="true" class="form-control form-control-sm allocated_qty" value="'+allocated_qty+'" /> ';
-
-                    colorTable.row.add([
-                        sp_id_input+issue_id_input,
-                        allocated_qty_input,
-                        qty_input,
-                        '<button type="button" class="btn btn-sm btn-danger btn-delete-edit" data-id="" onclick="removeFunc('+issue_id+')" data-toggle="modal" data-target="#removeModal" ><i class="fa fa-trash text-white"></i></button>'
-                    ]).draw(false);
-
-                });
-
-
-                let machine_type_name = data.main_data.service_no;
-                $('#service_no_span').html(machine_type_name);
-
-                $('#edit_colorTable tbody').on('click', '.btn-delete', function () {
-                    colorTable.row($(this).parents('tr')).remove().draw();
-                });
-
-                // submit the edit from
-                $("#updateForm").unbind('submit').bind('submit', function() {
-                    var form = $(this);
-
-                    // remove the text-danger
-                    $(".text-danger").remove();
-
-                    $.ajax({
-                        url: form.attr('action') + '/' + id,
-                        type: form.attr('method'),
-                        data: form.serialize(), // /converting the form data into array and sending it to server
-                        dataType: 'json',
-                        success:function(response) {
-
-                            manageTable.ajax.reload(null, false);
-
-                            if(response.success === true) {
-                                $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-                                    '</div>');
-
-                                // hide the modal
-                                $("#editModal").modal('hide');
-                                // reset the form
-                                $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
-
-                            } else {
-
-                                if(response.messages instanceof Object) {
-                                    $.each(response.messages, function(index, value) {
-                                        var id = $("#"+index);
-                                        // if (index == 'edit_service_no') {
-                                        //     id = $("#edit_estimated_service_items_error");
-                                        // }
-
-                                        id.closest('.form-group')
-                                            .removeClass('has-error')
-                                            .removeClass('has-success')
-                                            .addClass(value.length > 0 ? 'has-error' : 'has-success');
-
-                                        id.after(value);
-
-                                    });
-                                } else {
-                                    $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                                        '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                                        '</div>');
-                                }
-                            }
-                        }
+                        colorTable.row.add([
+                            sp_id_input + issue_id_input,
+                            allocated_qty_input,
+                            qty_input,
+                            '<button type="button" class="btn btn-sm btn-danger btn-delete-edit" onclick="removeFunc(' + issue_id + ')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash text-white"></i></button>'
+                        ]).draw(false);
                     });
 
-                    return false;
-                });
+                    let machine_type_name = data.main_data.service_no;
+                    $('#service_no_span').html(machine_type_name);
+                    $('#editModal').modal('show');
 
-            }
-        });
+                    $('#edit_colorTable tbody').on('click', '.btn-delete', function () {
+                        colorTable.row($(this).parents('tr')).remove().draw();
+                    });
 
-        $("#removeModal").on("hide.bs.modal", function (e) {
-            //hide viewModal
-            $('#editModal').modal('show');
-        });
+                    $("#updateForm").unbind('submit').bind('submit', function () {
+                        var form = $(this);
+                        $(".text-danger").remove();
 
-        $("#removeModal").on("show.bs.modal", function (e) {
-            //hide viewModal
-            $('#editModal').modal('hide');
-        });
+                        $.ajax({
+                            url: form.attr('action') + '/' + id,
+                            type: form.attr('method'),
+                            data: form.serialize(),
+                            dataType: 'json',
+                            success: function (response) {
 
-    }
+                                manageTable.ajax.reload(null, false);
+
+                                if (response.success === true) {
+                                    Swal.fire(
+                                        'Updated!',
+                                        response.messages,
+                                        'success'
+                                    );
+
+                                    $("#editModal").modal('hide');
+                                    $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
+
+                                } else {
+                                    if (response.messages instanceof Object) {
+                                        $.each(response.messages, function (index, value) {
+                                            var id = $("#" + index);
+                                            id.closest('.form-group')
+                                                .removeClass('has-error has-success')
+                                                .addClass(value.length > 0 ? 'has-error' : 'has-success');
+                                            id.after(value);
+                                        });
+                                    } else {
+                                        Swal.fire(
+                                            'Warning',
+                                            response.messages,
+                                            'warning'
+                                        );
+                                    }
+                                }
+                            }
+                        });
+
+                        return false;
+                    });
+
+                    $("#removeModal").on("hide.bs.modal", function () {
+                        $('#editModal').modal('show');
+                    });
+
+                    $("#removeModal").on("show.bs.modal", function () {
+                        $('#editModal').modal('hide');
+                    });
+                }
+            });
+
+        }
+    });
+}
 
     // remove functions
     function removeFunc(id)

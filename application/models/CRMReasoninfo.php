@@ -3,7 +3,7 @@ class CRMReasoninfo extends CI_Model{
     public function Reasontypeinsertupdate(){
         $this->db->trans_begin();
 
-        $userID=$_SESSION['id'];
+        $userID=$_SESSION['userid'];
 
         $type=$this->input->post('type');
       

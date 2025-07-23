@@ -29,9 +29,9 @@ class MachineService extends CI_Controller
             // button
             $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>';
-            $buttons .= ' <button type="button" class="btn btn-default btn-sm" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="text-danger fa fa-trash"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm mr-1" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-danger btn-sm" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
 
 
             //$status = ($value['active'] == 1) ? '<span class="badge badge-success btn-sm">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
@@ -640,8 +640,8 @@ class MachineService extends CI_Controller
             // button
             $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
 
             //$status = ($value['active'] == 1) ? '<span class="badge badge-success btn-sm">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
 
@@ -833,8 +833,8 @@ class MachineService extends CI_Controller
 
     foreach ($data as $key => $value) {
         // button actions
-        $buttons = '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
-        $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>';
+        $buttons = '<button type="button" class="btn btn-info btn-sm mr-1" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+        $buttons .= '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fa fa-pen"></i></button>';
 
         $id = $value['id'];
 
@@ -1196,8 +1196,8 @@ class MachineService extends CI_Controller
             // button
             $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
 
             $id = $value['id'];
 
@@ -1450,12 +1450,12 @@ class MachineService extends CI_Controller
             // button
             $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
 
             $id = $value['id'];
 
-                $buttons .= '<button type="button" class="btn btn-default btn-sm btn_accept" data-service_id ="'.$id.'" data-toggle="modal" data-target="#acceptModal"><i class="text-success fa fa-check"></i></button>';
+                $buttons .= '<button type="button" class="btn btn-success btn-sm btn_accept" data-service_id ="'.$id.'" data-toggle="modal" data-target="#acceptModal"><i class="fas fa-check"></i></button>';
 
             //check if this service_no has records in returned table
             $sql1 = "
@@ -1735,8 +1735,8 @@ class MachineService extends CI_Controller
             // button
             $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
 
 
             $id = $value['id'];
@@ -2015,9 +2015,9 @@ class MachineService extends CI_Controller
             // button
             $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>';
-            $buttons .= ' <button type="button" class="btn btn-default btn-sm" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="text-danger fa fa-trash"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
+            $buttons .= ' <button type="button" class="btn btn-danger btn-sm" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
 
             $status = ($value['is_approved'] == 1) ? '<span class="badge badge-success btn-sm">Yes</span>' : '<span class="badge badge-danger">No</span>';
 
@@ -2221,7 +2221,7 @@ class MachineService extends CI_Controller
 
             // button
             $buttons = ''; 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-info"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-info btn-sm" onclick="viewFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
 
             $cb = '<label>';
             $cb .= '<input type="checkbox" ';

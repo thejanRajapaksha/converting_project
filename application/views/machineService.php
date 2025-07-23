@@ -300,30 +300,7 @@ include_once "include/topnavbar.php";
                     </div><!-- /.modal -->
 
                     <!-- remove brand modal -->
-                    <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h4 class="modal-title">Remove Machine Service</h4>
-                                    <button type="button" class="close <?php if($deletecheck==0){echo 'disabled';} ?>" data-dismiss="modal" aria-label="Close"><span
-                                                aria-hidden="true">&times;</span></button>
-                                </div>
-
-                                <form role="form" action="<?php echo base_url('MachineServices/remove') ?>" method="post"
-                                    id="removeForm">
-                                    <div class="modal-body">
-                                        <p>Do you really want to remove?</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
-                                    </div>
-                                </form>
-
-
-                            </div><!-- /.modal-content -->
-                        </div><!-- /.modal-dialog -->
-                    </div><!-- /.modal -->
+                    
 
                 <div class="modal fade" tabindex="-1" role="dialog" id="viewModal">
                     <div class="modal-dialog modal-lg" role="document">
@@ -424,15 +401,27 @@ $(document).ready(function() {
         ajax: {
             url: base_url + 'SpareParts/get_parts_select',
             dataType: 'json',
+            delay: 250, // optional: adds a delay for better performance
             data: function (params) {
                 return {
                     term: params.term || '',
                     page: params.page || 1
-                }
+                };
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: data.pagination.more
+                    }
+                };
             },
             cache: true
         }
     });
+
 
     $('#edit_estimated_service_items').select2({
         placeholder: 'Select...',
@@ -637,48 +626,54 @@ $(document).ready(function() {
 });
 
 // edit function
-function editFunc(id)
-{
+function editFunc(id) {
+  Swal.fire({
+    title: 'Edit Machine Service?',
+    text: 'Do you want to edit this machine service?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, edit',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
 
-    $('#edit_estimated_service_items').val('').trigger('change');
+      $('#edit_estimated_service_items').val('').trigger('change');
 
-    let colorTable = $('#edit_colorTable').DataTable({
+      let colorTable = $('#edit_colorTable').DataTable({
         searching: false,
         paging: false,
         info: false,
-        destroy:true
-    });
+        destroy: true
+      });
 
-    colorTable.clear();
+      colorTable.clear();
 
-  $.ajax({
-    url: base_url + 'MachineService/fetchMachineServicesDataById/'+id,
-    type: 'post',
-    dataType: 'json',
-    success:function(data) {
+      $.ajax({
+        url: base_url + 'MachineService/fetchMachineServicesDataById/' + id,
+        type: 'post',
+        dataType: 'json',
+        success: function (data) {
+          var response = data.main_data;
 
-        var response = data.main_data;
+          $("#edit_service_no").val(response.service_no);
 
-      $("#edit_service_no").val(response.service_no);
+          let option = new Option(response.s_no, response.machine_in_id, true, true);
+          $('#edit_machine_in_id').append(option);
+          $('#edit_machine_in_id').trigger('change');
 
-        let option = new Option(response.s_no, response.machine_in_id, true, true);
-        $('#edit_machine_in_id').append(option);
-        $('#edit_machine_in_id').trigger('change');
+          $("#edit_service_date_from").val(response.service_date_from);
+          $("#edit_service_date_to").val(response.service_date_to);
+          $("#edit_estimated_service_hours").val(response.estimated_service_hours);
 
-        $("#edit_service_date_from").val(response.service_date_from);
-        $("#edit_service_date_to").val(response.service_date_to);
-        $("#edit_estimated_service_hours").val(response.estimated_service_hours);
-
-        let is_repair = response.is_repair;
-        if(is_repair == 0){
+          let is_repair = response.is_repair;
+          if (is_repair == 0) {
             $('#service').attr('checked', true);
-        }else {
+          } else {
             $('#repair').attr('checked', true);
-        }
+          }
 
-        var op = data.sc;
-
-        $.each(op, function(key, value) {
+          var op = data.sc;
+          $.each(op, function (key, value) {
             let sp_id = value.id;
             let sp_name = value.name;
             let part_no = value.part_no;
@@ -686,23 +681,21 @@ function editFunc(id)
 
             let f = sp_name + ' - ' + part_no;
 
-
-            let sp_id_input = '<input type="hidden" name="sp_id[]" class="id" value="'+sp_id+'"/> ' + f + '';
-            let qty_input = '<input type="text" name="qty[]" class="form-control form-control-sm qty" value="'+qty+'" /> ';
+            let sp_id_input = '<input type="hidden" name="sp_id[]" class="id" value="' + sp_id + '"/> ' + f;
+            let qty_input = '<input type="text" name="qty[]" class="form-control form-control-sm qty" value="' + qty + '" /> ';
 
             colorTable.row.add([
-                sp_id_input,
-                qty_input,
-                '<button type="button" class="btn btn-sm btn-danger btn-delete"><i class="fa fa-trash text-white"></i></button>'
+              sp_id_input,
+              qty_input,
+              '<button type="button" class="btn btn-sm btn-danger btn-delete"><i class="fa fa-trash text-white"></i></button>'
             ]).draw(false);
+          });
 
-        });
-
-        $('#edit_colorTable tbody').on('click', '.btn-delete', function () {
+          $('#edit_colorTable tbody').on('click', '.btn-delete', function () {
             colorTable.row($(this).parents('tr')).remove().draw();
-        });
+          });
 
-        $("#edit_addBtn").on('click', function (e) {
+          $("#edit_addBtn").on('click', function (e) {
             e.preventDefault();
             let btn = $(this);
             let btn_text = btn.html();
@@ -711,19 +704,18 @@ function editFunc(id)
 
             let sp_id = sp[0].id;
             let sp_text = sp[0].text;
-
             let qty = $('#edit_qty').val();
 
             btn.html('<i class="fa fa-spinner fa-spin"></i> Saving...');
             btn.prop('disabled', true);
 
-            let sp_id_input = '<input type="hidden" name="sp_id[]" class="id" value="'+sp_id+'"/> ' + sp_text + '';
-            let qty_input = '<input type="number" name="qty[]" class="form-control form-control-sm qty" value="'+qty+'" /> ';
+            let sp_id_input = '<input type="hidden" name="sp_id[]" class="id" value="' + sp_id + '"/> ' + sp_text;
+            let qty_input = '<input type="number" name="qty[]" class="form-control form-control-sm qty" value="' + qty + '" /> ';
 
             colorTable.row.add([
-                sp_id_input,
-                qty_input,
-                '<button type="button" class="btn btn-sm btn-danger btn-delete"><i class="fa fa-trash text-white"></i></button>'
+              sp_id_input,
+              qty_input,
+              '<button type="button" class="btn btn-sm btn-danger btn-delete"><i class="fa fa-trash text-white"></i></button>'
             ]).draw(false);
 
             btn.html(btn_text);
@@ -731,116 +723,114 @@ function editFunc(id)
 
             $('#edit_estimated_service_items').val('').trigger('change');
             $('#edit_qty').val('');
+          });
 
-        });
+          // Only show the modal after data is loaded
+          $("#editModal").modal('show');
 
+          // Form submission
+          $("#updateForm").unbind('submit').bind('submit', function () {
+            var form = $(this);
+            $(".text-danger").remove();
 
+            $.ajax({
+              url: form.attr('action') + '/' + id,
+              type: form.attr('method'),
+              data: form.serialize(),
+              dataType: 'json',
+              success: function (response) {
+                manageTable.ajax.reload(null, false);
 
-      // submit the edit from 
-      $("#updateForm").unbind('submit').bind('submit', function() {
-        var form = $(this);
+                if (response.success === true) {
+                  $("#editModal").modal('hide');
+                  $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
 
-        // remove the text-danger
-        $(".text-danger").remove();
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Updated Successfully!',
+                    text: response.messages,
+                    timer: 2000,
+                    showConfirmButton: false
+                  });
 
-        $.ajax({
-          url: form.attr('action') + '/' + id,
-          type: form.attr('method'),
-          data: form.serialize(), // /converting the form data into array and sending it to server
-          dataType: 'json',
-          success:function(response) {
+                } else {
+                  if (response.messages instanceof Object) {
+                    $.each(response.messages, function (index, value) {
+                      var idField = $("#" + index);
+                      if (index == 'edit_estimated_service_items') {
+                        idField = $("#edit_estimated_service_items_error");
+                      }
 
-            manageTable.ajax.reload(null, false); 
+                      idField.closest('.form-group')
+                        .removeClass('has-error')
+                        .removeClass('has-success')
+                        .addClass(value.length > 0 ? 'has-error' : 'has-success');
 
-            if(response.success === true) {
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-              '</div>');
-
-
-              // hide the modal
-              $("#editModal").modal('hide');
-              // reset the form 
-              $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
-
-            } else {
-
-              if(response.messages instanceof Object) {
-                $.each(response.messages, function(index, value) {
-                  var id = $("#"+index);
-                    if (index == 'edit_estimated_service_items') {
-                        id = $("#edit_estimated_service_items_error");
-                    }
-
-                  id.closest('.form-group')
-                  .removeClass('has-error')
-                  .removeClass('has-success')
-                  .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                  
-                  id.after(value);
-
-                });
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
+                      idField.after(value);
+                    });
+                  } else {
+                    Swal.fire({
+                      icon: 'warning',
+                      title: 'Validation Error',
+                      text: response.messages
+                    });
+                  }
+                }
               }
-            }
-          }
-        }); 
+            });
 
-        return false;
+            return false;
+          });
+
+        }
       });
-
     }
   });
 }
 
+
 // remove functions 
-function removeFunc(id)
-{
-  if(id) {
-    $("#removeForm").on('submit', function() {
+function removeFunc(id) {
+  if (id) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This action will permanently delete the service record.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: base_url + 'MachineService/remove',
+          type: 'post',
+          data: { machine_service_id: id },
+          dataType: 'json',
+          success: function (response) {
+            manageTable.ajax.reload(null, false);
 
-      var form = $(this);
-
-      // remove the text-danger
-      $(".text-danger").remove();
-
-      $.ajax({
-        url: form.attr('action'),
-        type: form.attr('method'),
-        data: { machine_service_id:id },
-        dataType: 'json',
-        success:function(response) {
-
-          manageTable.ajax.reload(null, false); 
-          // hide the modal
-            $("#removeModal").modal('hide');
-
-          if(response.success === true) {
-            $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-            '</div>');
-
-
-          } else {
-
-            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-            '</div>'); 
+            if (response.success === true) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: response.messages,
+                timer: 2000,
+                showConfirmButton: false
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Failed',
+                text: response.messages
+              });
+            }
           }
-        }
-      }); 
-
-      return false;
+        });
+      }
     });
   }
 }
+
 
 function viewFunc(id)
 {

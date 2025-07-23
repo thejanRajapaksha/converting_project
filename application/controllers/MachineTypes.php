@@ -24,8 +24,8 @@ class MachineTypes extends CI_Controller
         foreach ($data as $key => $value) {
             // button
             $buttons = '
-                <button type="button" class="btn btn-default btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="text-primary fa fa-edit"></i></button>
-                <button type="button" class="btn btn-default btn-sm" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="text-danger fa fa-trash"></i></button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="editFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>
             ';
 
              $status = ($value['active'] == 1)

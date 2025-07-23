@@ -74,10 +74,6 @@ class MachineServicesCostAnalysis extends CI_Controller
     //fetchMonthlyServiceCost
     public function fetchMonthlyServiceCost()
     {
-        if(!in_array('viewServiceCostAnalysis', $this->permission)) {
-            redirect('dashboard', 'refresh');
-        }
-
         $last_12_months = array();
 
         for($i = 0; $i <= 12; $i++) {

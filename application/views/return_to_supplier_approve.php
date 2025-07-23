@@ -6,13 +6,20 @@ include_once "include/topnavbar.php";
     <div id="layoutSidenav_nav"><?php include_once "include/menubar.php"; ?></div>
         <div id="layoutSidenav_content">
             <main>
-                <div class="container-fluid mt-2">
+            <div class="page-header page-header-light bg-white shadow">
+                <div class="container-fluid">
+                    <div class="page-header-content py-3">
+                        <h1 class="page-header-title font-weight-light">
+                            <div class="page-header-icon"><i class="fas fa-undo-alt"></i></div>
+                            <span>Return To Supplier Approve</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid mt-2p-0 p-2">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-0 p-2">
                         <div class="row">
-                            <div class="col">
-                                <h2 class="">Return To Supplier Approve</h2>
-                            </div>
                             <div class="col">
 
                             </div>
