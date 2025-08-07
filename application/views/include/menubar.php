@@ -128,7 +128,7 @@ else if ($functionmenu == 'Purchaseorder') {
     $deletecheck = checkprivilege($menuprivilegearray, 20, 4);
     $approvecheck=checkprivilege($menuprivilegearray, 20, 5);
 } 
-else if ($functionmenu == 'Goodreceivenote') {
+else if ($functionmenu == 'Goodreceive') {
     $addcheck = checkprivilege($menuprivilegearray, 21, 1);
     $editcheck = checkprivilege($menuprivilegearray, 21, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 21, 3);
@@ -200,13 +200,13 @@ else if ($functionmenu == 'AllocatedMachines') {
     $statuscheck = checkprivilege($menuprivilegearray, 32, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 32, 4);
 } 
-else if ($functionmenu == 'Stock') {
+else if ($functionmenu == 'StockReport') {
     $addcheck = checkprivilege($menuprivilegearray, 33, 1);
     $editcheck = checkprivilege($menuprivilegearray, 33, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 33, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 33, 4);
 } 
-else if ($functionmenu == 'Goodreceive') {
+else if ($functionmenu == 'GrnReport') {
     $addcheck = checkprivilege($menuprivilegearray, 34, 1);
     $editcheck = checkprivilege($menuprivilegearray, 34, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 34, 3);
@@ -530,12 +530,12 @@ function checkprivilege($arraymenu, $menuID, $type){
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="Stock" | $controllermenu=="Goodreceive" | $controllermenu=="MachineServicesCreated" | $controllermenu=="MachineServicesEmployee" | $controllermenu=="MachineServicesCostAnalysis" | $controllermenu=="UsedServiceItems" | $controllermenu=="MachineRepairsCreated" | $controllermenu=="MachineRepairsEmployee" | $controllermenu=="MachineRepairsCostAnalysis" | $controllermenu=="UsedRepairItems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="StockReport" | $controllermenu=="GrnReport" | $controllermenu=="MachineServicesCreated" | $controllermenu=="MachineServicesEmployee" | $controllermenu=="MachineServicesCostAnalysis" | $controllermenu=="UsedServiceItems" | $controllermenu=="MachineRepairsCreated" | $controllermenu=="MachineRepairsEmployee" | $controllermenu=="MachineRepairsCostAnalysis" | $controllermenu=="UsedRepairItems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 33)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Stock'; ?>">Stock</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'StockReport'; ?>">Stock</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 34)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'Goodreceive'; ?>">GRN</a><?php } ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GrnReport'; ?>">GRN</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 35)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineServicesCreated'; ?>">Service Created List</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 36)==1){ ?>

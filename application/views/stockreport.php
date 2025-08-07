@@ -92,7 +92,6 @@ include "include/topnavbar.php";
             </div>
 
             <!-- Remove Modal -->
-            <?php if (in_array('deleteMachineServiceItemAllocate', $user_permission)): ?>
             <div class="modal fade" id="removeModal" tabindex="-1" role="dialog" aria-labelledby="removeModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <form action="<?php echo base_url('MachineServices/remove_allocation') ?>" method="post" id="removeForm">
@@ -112,7 +111,6 @@ include "include/topnavbar.php";
                     </form>
                 </div>
             </div>
-            <?php endif; ?>
         </main>
         <?php include "include/footerbar.php"; ?>
     </div>
@@ -124,6 +122,12 @@ include "include/topnavbar.php";
 
 
     $(document).ready(function () {
+
+        var addcheck = '<?php echo $addcheck; ?>';
+		var editcheck = '<?php echo $editcheck; ?>';
+		var statuscheck = '<?php echo $statuscheck; ?>';
+		var deletecheck = '<?php echo $deletecheck; ?>';
+
 
         $('#part_no_filter').select2({
             placeholder: 'Select...',
@@ -208,7 +212,7 @@ include "include/topnavbar.php";
 
             manageTable = $('#manageTable').DataTable({
                 'ajax': {
-                    'url': base_url + 'Goodreceive/fetchStockReport',
+                    'url': base_url + 'StockReport/fetchStockReport',
                     'type': 'POST',
                     'data': {
                         'spare_part_id': spare_part_id,
@@ -226,7 +230,7 @@ include "include/topnavbar.php";
             let id = $(this).data('spare_part_id');
 
             $.ajax({
-                url: base_url + 'MachineServices/fetchViewStock/'+id,
+                url: base_url + 'MachineService/fetchViewStock/'+id,
                 type: 'post',
                 dataType: 'json',
                 success:function(data) {
@@ -234,15 +238,21 @@ include "include/topnavbar.php";
                     res_table += '<table class="table table-striped table-sm" id="viewTable">';
                     let res_tr = '<thead><tr><th>Service No</th> <th> Estimated Quantity </th> <th>Allocated Quantity</th> <th> </th> </tr></thead> <tbody>';
                     let response = data.ac;
-                    $.each(response, function(index, value) {
-                        let allocate_id = value.allocate_id;
-                        res_tr += '<tr>' +
-                            '<td>' + value.service_no + '</td>' +
-                            '<td>' + value.estimated_qty + '</td>' +
-                            '<td>' + value.allocated_qty + '</td>' +
-                            '<td> <button type="button" class="btn btn-sm btn-danger btn-delete-edit" data-id="" onclick="removeFunc('+allocate_id+')" data-toggle="modal" data-target="#removeModal" ><i class="fa fa-trash text-white"></i></button> </td> ' +
-                            '</tr>';
-                    });
+                        $.each(response, function(index, value) {
+                            let allocate_id = value.allocate_id;
+                            res_tr += '<tr>' +
+                                '<td>' + value.service_no + '</td>' +
+                                '<td>' + value.estimated_qty + '</td>' +
+                                '<td>' + value.allocated_qty + '</td>';
+
+                            if (deletecheck == 1) {
+                                res_tr += '<td><button type="button" class="btn btn-sm btn-danger btn-delete-edit" data-id="' + allocate_id + '" onclick="removeFunc(' + allocate_id + ')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash text-white"></i></button></td>';
+                            } else {
+                                res_tr += '<td></td>';
+                            }
+
+                            res_tr += '</tr>';
+                        });
 
                     res_table += res_tr + '</tbody> ';
 
