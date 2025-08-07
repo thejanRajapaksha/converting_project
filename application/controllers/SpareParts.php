@@ -267,50 +267,45 @@ class SpareParts extends CI_Controller
     }
     
 
-    public function get_parts_select()
-    {
+    public function get_parts_select() {
+        
         $term = $this->input->get('term');
-        $page = $this->input->get('page');
-
+        $page = (int) $this->input->get('page');
         $resultCount = 25;
         $offset = ($page - 1) * $resultCount;
 
-        $this->db->select('*');
+        // First: Get total count
         $this->db->from('spare_parts');
         $this->db->like('name', $term, 'both');
-        $this->db->like('part_no', $term, 'both');
-        $this->db->where('is_deleted',0);
-        $query = $this->db->get();
-        $this->db->limit($resultCount, $offset);
-        $machine_ins = $query->result_array();
-
-        $this->db->select('*');
-        $this->db->from('spare_parts');
-        $this->db->like('name', $term, 'both');
-        $this->db->like('part_no', $term, 'both');
-        $this->db->where('is_deleted',0);
+        $this->db->or_like('part_no', $term, 'both');
+        $this->db->where('is_deleted', 0);
         $count = $this->db->count_all_results();
 
+        // Second: Get paginated results
+        $this->db->select('*');
+        $this->db->from('spare_parts');
+        $this->db->like('name', $term, 'both');
+        $this->db->or_like('part_no', $term, 'both');
+        $this->db->where('is_deleted', 0);
+        $this->db->limit($resultCount, $offset);
+        $query = $this->db->get();
+        $results = $query->result_array();
+
         $data = array();
-        foreach ($machine_ins as $v) {
+        foreach ($results as $row) {
             $data[] = array(
-                'id' => $v['id'],
-                'text' => $v['name'] . ' - ' . $v['part_no']
+                'id' => $row['id'],
+                'text' => $row['name'] . ' - ' . $row['part_no']
             );
         }
 
         $endCount = $offset + $resultCount;
         $morePages = $endCount < $count;
 
-        $results = array(
+        echo json_encode([
             "results" => $data,
-            "pagination" => array(
-                "more" => $morePages
-            )
-        );
-
-        echo json_encode($results);
-
+            "pagination" => ["more" => $morePages]
+        ]);
     }
 
     public function fetchUnitPrice()

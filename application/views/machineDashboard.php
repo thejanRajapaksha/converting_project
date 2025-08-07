@@ -21,7 +21,7 @@ include_once "include/topnavbar.php";
             <div class="container-fluid mt-2p-0 p-2">
                 <div class="row mt-1 equal">
                     <div class="col-md-3 pr-0" >
-                        <div class="card" style="height: 100%; width: 100%;">
+                        <div class="card">
                             <div class="card-body ">
                                 <h5 class="card-title">All Machine List</h5>
                                 <p class="card-text text-center text-success p-5" style="font-size: 5rem">

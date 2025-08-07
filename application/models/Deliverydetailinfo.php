@@ -29,7 +29,7 @@ class Deliverydetailinfo extends CI_Model{
     public function Deliverydetailinsertupdate(){
         $this->db->trans_begin();
 
-        $userID=$_SESSION['id'];
+        $userID=$_SESSION['userid'];
 
 		$delivery_date = $this->input->post('delivery_date');
 		$delivery_qtys = $this->input->post('delivery_qty');
@@ -90,7 +90,7 @@ class Deliverydetailinfo extends CI_Model{
             }
         }
         public function Deliverydetailupdate(){
-            $userID=$_SESSION['id'];
+            $userID=$_SESSION['userid'];
 
             $deliveryId = $this->input->post('deliveryId');
             $quantity = $this->input->post('deliver_quantity');

@@ -126,28 +126,7 @@ include "include/topnavbar.php";
             </div><!-- /.modal -->
 
             <!-- remove brand modal -->
-            <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Remove MachineType</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
-                </div>
-
-                <form role="form" action="<?php echo base_url('MachineModels/remove') ?>" method="post" id="removeForm">
-                    <div class="modal-body">
-                    <p>Do you really want to remove?</p>
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
-                    </div>
-                </form>
-
-
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+            
         </main>
         <?php include "include/footerbar.php"; ?>
     </div>
@@ -232,70 +211,63 @@ $(document).ready(function() {
 });
 
 // edit function
-function editFunc(id)
-{ 
-  $.ajax({
-    url: base_url + 'MachineModels/fetchMachineModelsDataById/'+id,
-    type: 'post',
-    dataType: 'json',
-    success:function(response) {
+function editFunc(id) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you want to edit this machine model?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, edit it',
+    cancelButtonText: 'Cancel'
+  }).then((result) => {
+    if (result.isConfirmed) {
 
-      $("#edit_machine_model_name").val(response.name);
-      $("#edit_active").val(response.active);
+      $.ajax({
+        url: base_url + 'MachineModels/fetchMachineModelsDataById/' + id,
+        type: 'post',
+        dataType: 'json',
+        success: function (response) {
 
-      // submit the edit from 
-      $("#updateForm").unbind('submit').bind('submit', function() {
-        var form = $(this);
+          $("#edit_machine_model_name").val(response.name);
+          $("#edit_active").val(response.active);
+          $("#editModal").modal('show');
 
-        // remove the text-danger
-        $(".text-danger").remove();
+          $("#updateForm").unbind('submit').bind('submit', function () {
+            var form = $(this);
+            $(".text-danger").remove();
 
-        $.ajax({
-          url: form.attr('action') + '/' + id,
-          type: form.attr('method'),
-          data: form.serialize(), // /converting the form data into array and sending it to server
-          dataType: 'json',
-          success:function(response) {
+            $.ajax({
+              url: form.attr('action') + '/' + id,
+              type: form.attr('method'),
+              data: form.serialize(),
+              dataType: 'json',
+              success: function (response) {
+                manageTable.ajax.reload(null, false);
 
-            manageTable.ajax.reload(null, false); 
-
-            if(response.success === true) {
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-              '</div>');
-
-
-              // hide the modal
-              $("#editModal").modal('hide');
-              // reset the form 
-              $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
-
-            } else {
-
-              if(response.messages instanceof Object) {
-                $.each(response.messages, function(index, value) {
-                  var id = $("#"+index);
-
-                  id.closest('.form-group')
-                  .removeClass('has-error')
-                  .removeClass('has-success')
-                  .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                  
-                  id.after(value);
-
-                });
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
+                if (response.success === true) {
+                  Swal.fire('Updated!', response.messages, 'success');
+                  $("#editModal").modal('hide');
+                  $("#updateForm .form-group").removeClass('has-error has-success');
+                } else {
+                  if (response.messages instanceof Object) {
+                    $.each(response.messages, function (index, value) {
+                      var id = $("#" + index);
+                      id.closest('.form-group')
+                        .removeClass('has-error has-success')
+                        .addClass(value.length > 0 ? 'has-error' : 'has-success');
+                      id.after(value);
+                    });
+                  } else {
+                    Swal.fire('Warning', response.messages, 'warning');
+                  }
+                }
               }
-            }
-          }
-        }); 
+            });
 
-        return false;
+            return false;
+          });
+
+        }
       });
 
     }
@@ -303,49 +275,41 @@ function editFunc(id)
 }
 
 // remove functions 
-function removeFunc(id)
-{
-  if(id) {
-    $("#removeForm").on('submit', function() {
-
-      var form = $(this);
-
-      // remove the text-danger
-      $(".text-danger").remove();
+function removeFunc(id) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "This will permanently delete the machine model!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, delete it!',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#e3342f'
+  }).then((result) => {
+    if (result.isConfirmed) {
 
       $.ajax({
-        url: form.attr('action'),
-        type: form.attr('method'),
-        data: { machine_model_id:id },
+        url: base_url + 'MachineModels/remove', // adjust URL if needed
+        type: 'post',
+        data: { machine_model_id: id },
         dataType: 'json',
-        success:function(response) {
+        success: function (response) {
+          manageTable.ajax.reload(null, false);
 
-          manageTable.ajax.reload(null, false); 
-          // hide the modal
-            $("#removeModal").modal('hide');
-
-          if(response.success === true) {
-            $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-            '</div>');
-
-            
-
+          if (response.success === true) {
+            Swal.fire('Deleted!', response.messages, 'success');
           } else {
-
-            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-            '</div>'); 
+            Swal.fire('Error!', response.messages, 'error');
           }
-        }
-      }); 
 
-      return false;
-    });
-  }
+          // hide the modal if using it for fallback
+          $("#removeModal").modal('hide');
+        }
+      });
+
+    }
+  });
 }
+
 
 </script>
 <?php include "include/footer.php"; ?>

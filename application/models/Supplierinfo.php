@@ -72,7 +72,7 @@
 				'payment_method'=> $payementmethod,
 				'credit_days'=> $credit_days,
 				'tbl_supplier_type_idtbl_supplier_type'=> $suppliertype,
-				//'company_id'=> $company_id, 
+				'company_id'=> 1, 
 				'company_branch_id'=> $branch_id, 
 				'status'=> '1',
 				'insertdatetime'=> $insertdatetime,

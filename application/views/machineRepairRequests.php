@@ -167,31 +167,6 @@ include "include/topnavbar.php";
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
 
-                <!-- remove brand modal -->
-                <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Remove Machine Repair Request</h4>
-                                <button type="button" class="close <?php if($deletecheck==0){echo 'disabled';} ?>" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                            </div>
-
-                            <form role="form" action="<?php echo base_url('MachineRepairRequests/remove') ?>" method="post"
-                                id="removeForm">
-                                <div class="modal-body">
-                                    <p>Do you really want to remove?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
-                                </div>
-                            </form>
-
-
-                        </div><!-- /.modal-content -->
-                    </div><!-- /.modal-dialog -->
-                </div><!-- /.modal -->
 
                 <!-- create brand modal -->
                 <div class="modal fade" tabindex="-1" role="dialog" id="repairAddModal">
@@ -823,123 +798,132 @@ $(document).ready(function() {
 });
 
 // edit function
-function editFunc(id)
-{ 
-  $.ajax({
-    url: base_url + 'MachineRepairRequests/fetchMachineRepairRequestsDataById/'+id,
-    type: 'post',
-    dataType: 'json',
-    success:function(response) {
+function editFunc(id) {
+  // Optional: add confirmation before editing (remove if not needed)
+  Swal.fire({
+    title: 'Edit this repair request?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, edit it!',
+    cancelButtonText: 'Cancel',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: base_url + 'MachineRepairRequests/fetchMachineRepairRequestsDataById/' + id,
+        type: 'post',
+        dataType: 'json',
+        success: function (response) {
 
-        let option = new Option(response.s_no, response.machine_in_id, true, true);
-        $('#edit_machine_in_id').append(option);
-        $('#edit_machine_in_id').trigger('change');
+          let option = new Option(response.s_no, response.machine_in_id, true, true);
+          $('#edit_machine_in_id').append(option).trigger('change');
 
-        $("#edit_repair_date").val(response.repair_in_date);
+          $("#edit_repair_date").val(response.repair_in_date);
 
-      // submit the edit from 
-      $("#updateForm").unbind('submit').bind('submit', function() {
-        var form = $(this);
+          // submit the edit form
+          $("#updateForm").unbind('submit').bind('submit', function () {
+            var form = $(this);
 
-        // remove the text-danger
-        $(".text-danger").remove();
+            // remove previous error messages
+            $(".text-danger").remove();
 
-        $.ajax({
-          url: form.attr('action') + '/' + id,
-          type: form.attr('method'),
-          data: form.serialize(), // /converting the form data into array and sending it to server
-          dataType: 'json',
-          success:function(response) {
+            $.ajax({
+              url: form.attr('action') + '/' + id,
+              type: form.attr('method'),
+              data: form.serialize(),
+              dataType: 'json',
+              success: function (response) {
 
-            manageTable.ajax.reload(null, false); 
+                manageTable.ajax.reload(null, false);
 
-            if(response.success === true) {
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-              '</div>');
+                if (response.success === true) {
+                  Swal.fire(
+                    'Updated!',
+                    response.messages,
+                    'success'
+                  );
 
+                  // hide modal and clear error classes
+                  $("#editModal").modal('hide');
+                  $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
 
-              // hide the modal
-              $("#editModal").modal('hide');
-              // reset the form 
-              $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
-
-            } else {
-
-              if(response.messages instanceof Object) {
-                $.each(response.messages, function(index, value) {
-                  var id = $("#edit_"+index);
-                    if (index == 'edit_machine_in_id') {
+                } else {
+                  if (response.messages instanceof Object) {
+                    $.each(response.messages, function (index, value) {
+                      var id = $("#edit_" + index);
+                      if (index == 'edit_machine_in_id') {
                         id = $("#edit_machine_in_id_error");
-                    }
-
-                  id.closest('.form-group')
-                  .removeClass('has-error')
-                  .removeClass('has-success')
-                  .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                  
-                  id.after(value);
-
-                });
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
+                      }
+                      id.closest('.form-group')
+                        .removeClass('has-error has-success')
+                        .addClass(value.length > 0 ? 'has-error' : 'has-success');
+                      id.after(value);
+                    });
+                  } else {
+                    Swal.fire(
+                      'Warning',
+                      response.messages,
+                      'warning'
+                    );
+                  }
+                }
               }
-            }
-          }
-        }); 
+            });
 
-        return false;
+            return false;
+          });
+
+          // Show the edit modal
+          $("#editModal").modal('show');
+        }
       });
-
     }
   });
 }
 
-// remove functions 
-function removeFunc(id)
-{
-  if(id) {
-    $("#removeForm").on('submit', function() {
+// remove function with confirmation
+function removeFunc(id) {
+  if (id) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this deletion!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: base_url + 'MachineRepairRequests/remove',
+          type: 'post',
+          data: { machine_repair_id: id },
+          dataType: 'json',
+          success: function (response) {
 
-      var form = $(this);
+            manageTable.ajax.reload(null, false);
 
-      // remove the text-danger
-      $(".text-danger").remove();
-
-      $.ajax({
-        url: form.attr('action'),
-        type: form.attr('method'),
-        data: { machine_repair_id:id },
-        dataType: 'json',
-        success:function(response) {
-
-          manageTable.ajax.reload(null, false); 
-          // hide the modal
             $("#removeModal").modal('hide');
 
-          if(response.success === true) {
-            $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-            '</div>');
-
-
-          } else {
-
-            $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-              '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-            '</div>'); 
+            if (response.success === true) {
+              Swal.fire(
+                'Deleted!',
+                response.messages,
+                'success'
+              );
+            } else {
+              Swal.fire(
+                'Warning',
+                response.messages,
+                'warning'
+              );
+            }
           }
-        }
-      }); 
-
-      return false;
+        });
+      }
     });
+
+
   }
 }
 

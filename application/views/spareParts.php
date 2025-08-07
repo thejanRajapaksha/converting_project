@@ -211,28 +211,7 @@ include "include/topnavbar.php";
             </div><!-- /.modal -->
 
             <!-- remove brand modal -->
-            <div class="modal fade" tabindex="-1" role="dialog" id="removeModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Remove SparePart</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>        
-                </div>
-
-                <form role="form" action="<?php echo base_url('SpareParts/remove') ?>" method="post" id="removeForm">
-                    <div class="modal-body">
-                    <p>Do you really want to remove?</p>
-                    </div>
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
-                    </div>
-                </form>
-
-
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+            
         </main>
         <?php include "include/footerbar.php"; ?>
     </div>
@@ -308,16 +287,16 @@ $(document).ready(function() {
                 var button = '';
 
                 // Edit button with permission check
-                button += '<button type="button" class="btn btn-default btn-sm btnEdit mr-1 ';
+                button += '<button type="button" class="btn btn-primary btn-sm btnEdit mr-1 ';
                 if (editcheck != 1) { button += 'd-none'; }
                 button += '" onclick="editFunc(' + full['id'] + ')" data-toggle="modal" data-target="#editModal">' +
-                        '<i class="text-primary fa fa-edit"></i></button>';
+                        '<i class="fas fa-pen"></i></button>';
 
                 // Delete button with permission check
-                button += '<button type="button" class="btn btn-default btn-sm ';
+                button += '<button type="button" class="btn btn-danger btn-sm ';
                 if (deletecheck != 1) { button += 'd-none'; }
                 button += '" onclick="removeFunc(' + full['id'] + ')" data-toggle="modal" data-target="#removeModal">' +
-                        '<i class="text-danger fa fa-trash"></i></button>';
+                        '<i class="fas fa-trash"></i></button>';
 
                 return button;
             }
@@ -520,171 +499,169 @@ $(document).ready(function() {
 });
 
 // edit function
-function editFunc(id)
-{
-    $('#edit_supplier_id').val('').trigger('change');
-  $.ajax({
-    url: base_url + 'SpareParts/fetchSparePartsDataById/'+id,
-    type: 'post',
-    dataType: 'json',
-    success:function(data) {
-
-        let response = data.main_data;
-
-      $("#edit_name").val(response.name);
-      $("#edit_active").val(response.active);
-      $("#edit_part_no").val(response.part_no);
-      $("#edit_rack_no").val(response.rack_no);
-      $("#edit_unit_price").val(response.unit_price);
-
-        let optionSection3 = new Option(response.machine_type_name, response.type, true, true);
-        $('#edit_machine_type_id').append(optionSection3).trigger('change');
-
-        let optionSection4 = new Option(response.machine_model, response.model, true, true);
-        $('#edit_machine_model_id').append(optionSection4).trigger('change');
-
-        var op = data.sc;
-
-        $.each(op, function(key, value) {
-            let supplier_id = value.id;
-            let supplier_name = value.sup_name;
-
-            let optionSection5 = new Option(supplier_name, supplier_id, true, true);
-            $('#edit_supplier_id').append(optionSection5).trigger('change');
-        });
-
-      // submit the edit from 
-      // $("#updateForm").unbind('submit').bind('submit', function()
-      $("#updateForm").off('submit').on('submit', function(e) {
-        e.preventDefault();
-
-        var form = $(this);
-
-        // remove the text-danger
-        $(".text-danger").remove();
-
+function editFunc(id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to edit this machine type?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, edit it',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+        $('#edit_supplier_id').val('').trigger('change');
         $.ajax({
-          url: form.attr('action') + '/' + id,
-          type: form.attr('method'),
-          data: form.serialize(), // /converting the form data into array and sending it to server
-          dataType: 'json',
-          success: function(response) {
+            url: base_url + 'SpareParts/fetchSparePartsDataById/' + id,
+            type: 'post',
+            dataType: 'json',
+            success: function(data) {
+                let response = data.main_data;
 
-          //   manageTable.ajax.reload(null, false); 
+                $("#edit_name").val(response.name);
+                $("#edit_active").val(response.active);
+                $("#edit_part_no").val(response.part_no);
+                $("#edit_rack_no").val(response.rack_no);
+                $("#edit_unit_price").val(response.unit_price);
 
-          //   if(response.success === true) {
-              // $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-              //   '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-              //   '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-              // '</div>');
-          if (response.success === true) {
-                        // Reload DataTable
-                        if ($.fn.DataTable.isDataTable("#manageTable")) {
-                            $("#manageTable").DataTable().ajax.reload(null, false);
-                        }
+                let optionSection3 = new Option(response.machine_type_name, response.type, true, true);
+                $('#edit_machine_type_id').append(optionSection3).trigger('change');
 
+                let optionSection4 = new Option(response.machine_model, response.model, true, true);
+                $('#edit_machine_model_id').append(optionSection4).trigger('change');
 
-              // hide the modal
-              $("#editModal").modal('hide');
-              // reset the form 
-              $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
-
-              $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-              '</div>');
-
-            } else {
-
-              if(response.messages instanceof Object) {
-                $.each(response.messages, function(index, value) {
-                  var id = $("#"+index);
-
-                    if (index == 'edit_machine_type_id'){
-                        id = $("#edit_machine_type_id_error");
-                    }
-
-                    if (index == 'edit_machine_model_id'){
-                        id = $("#edit_machine_model_id_error");
-                    }
-
-                    if (index == 'edit_supplier_id'){
-                        id = $("#edit_supplier_id_error");
-                    }
-
-                  id.closest('.form-group')
-                  .removeClass('has-error')
-                  .removeClass('has-success')
-                  .addClass(value.length > 0 ? 'has-error' : 'has-success');
-                  
-                  id.after(value);
-
+                var op = data.sc;
+                $.each(op, function(key, value) {
+                    let optionSection5 = new Option(value.sup_name, value.id, true, true);
+                    $('#edit_supplier_id').append(optionSection5).trigger('change');
                 });
-              } else {
-                $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                  '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                  '<strong> <span class="glyphicon glyphicon-exclamation-sign"></span> </strong>'+response.messages+
-                '</div>');
-              }
+
+                $("#updateForm").off('submit').on('submit', function(e) {
+                    e.preventDefault();
+
+                    var form = $(this);
+                    $(".text-danger").remove();
+
+                    $.ajax({
+                        url: form.attr('action') + '/' + id,
+                        type: form.attr('method'),
+                        data: form.serialize(),
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success === true) {
+                                if ($.fn.DataTable.isDataTable("#manageTable")) {
+                                    $("#manageTable").DataTable().ajax.reload(null, false);
+                                }
+
+                                $("#editModal").modal('hide');
+                                $("#updateForm .form-group").removeClass('has-error').removeClass('has-success');
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Updated!',
+                                    text: response.messages,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+
+                            } else {
+                                if (response.messages instanceof Object) {
+                                    $.each(response.messages, function(index, value) {
+                                        var idEl = $("#" + index);
+
+                                        if (index == 'edit_machine_type_id') {
+                                            idEl = $("#edit_machine_type_id_error");
+                                        }
+
+                                        if (index == 'edit_machine_model_id') {
+                                            idEl = $("#edit_machine_model_id_error");
+                                        }
+
+                                        if (index == 'edit_supplier_id') {
+                                            idEl = $("#edit_supplier_id_error");
+                                        }
+
+                                        idEl.closest('.form-group')
+                                            .removeClass('has-error')
+                                            .removeClass('has-success')
+                                            .addClass(value.length > 0 ? 'has-error' : 'has-success');
+
+                                        idEl.after(value);
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Validation Error',
+                                        text: response.messages
+                                    });
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                });
             }
-          }
-        }); 
-
-        return false;
-      });
-
+        });
     }
   });
 }
 
-// remove functions 
+// remove function with SweetAlert
 function removeFunc(id) {
-    if (id) {
-        $("#removeForm").off('submit').on('submit', function(e) {
-            e.preventDefault();
+    if (!id) return;
 
-            console.log("Deleting ID:", id);
-
-            var form = $(this);
-            $(".text-danger").remove();
+    Swal.fire({
+        title: 'Are you sure?',
+        text: 'This item will be permanently deleted.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
 
             $.ajax({
-                url: form.attr('action'),
-                type: form.attr('method'),
+                url: base_url + 'SpareParts/remove', // Adjust to your correct endpoint
+                type: 'POST',
                 data: { machine_type_id: id },
                 dataType: 'json',
                 success: function(response) {
                     if (response.success === true) {
-                        // Reload DataTable
                         if ($.fn.DataTable.isDataTable("#manageTable")) {
                             $("#manageTable").DataTable().ajax.reload(null, false);
                         }
 
-                        // Hide the modal
-                        $("#removeModal").modal('hide');
-                        $(".modal-backdrop").remove();
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: response.messages,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
 
-                        // Show success message
-                        $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span></button>'+
-                            '<strong><span class="glyphicon glyphicon-ok-sign"></span></strong> ' + response.messages +
-                        '</div>');
                     } else {
-                        $("#messages").html('<div class="alert alert-warning alert-dismissible" role="alert">'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'+
-                            '<span aria-hidden="true">&times;</span></button>'+
-                            '<strong><span class="glyphicon glyphicon-exclamation-sign"></span></strong> ' + response.messages +
-                        '</div>');
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Failed',
+                            text: response.messages
+                        });
                     }
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX Error:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Server Error',
+                        text: 'Something went wrong. Please try again.'
+                    });
                 }
             });
-        });
-    }
+
+        }
+    });
 }
+
 
 </script>
 <?php include "include/footer.php"; ?>

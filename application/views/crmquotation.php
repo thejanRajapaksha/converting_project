@@ -137,7 +137,8 @@ include "include/topnavbar.php";
             "order": [
                 [0, "desc"]
             ],
-            "columns": [{
+            "columns": [
+                d{
                     "data": function(data, type, full) {
                         return "INQ-" + data.idtbl_inquiry;
                     }

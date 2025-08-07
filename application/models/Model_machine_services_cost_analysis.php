@@ -102,7 +102,7 @@ class Model_machine_services_cost_analysis extends CI_Model
                 LEFT JOIN machine_ins m on mt.id = m.machine_type_id
                 LEFT JOIN machine_services ms ON m.id = ms.machine_in_id
                 LEFT JOIN machine_service_details msd ON ms.id = msd.service_id
-                WHERE ms.service_date = '$date' AND msd.is_deleted = 0
+                WHERE ms.service_date_from = '$date' AND msd.is_deleted = 0
                 GROUP BY mt.id";
 
         $query = $this->db->query($sql);
