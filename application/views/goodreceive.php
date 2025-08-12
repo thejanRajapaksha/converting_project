@@ -962,9 +962,9 @@ $(document).ready(function() {
                     html1 += '<option value="">Select</option>';
                     $.each(obj, function(i, item) {
                         html1 += '<option value="' + obj[i]
-                            .idtbl_spareparts +
+                            .id +
                             '">';
-                        html1 += obj[i].spare_part_name;
+                        html1 += obj[i].name;
                         html1 += '</option>';
                     });
                     $('#product').empty().append(html1);
@@ -1246,7 +1246,7 @@ function approvejob(confirmnot){
                     document.body.style.overflow = 'auto';
                     var obj = JSON.parse(result);
                     if(obj.status==1){
-                        actionreload(obj.action);
+                        window.location.reload();
                     }
                     else{
                         action(obj.action);

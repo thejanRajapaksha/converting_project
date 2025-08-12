@@ -428,7 +428,7 @@
 			}
 			else if($roworderinfo->tbl_order_type_idtbl_order_type==1) {
 				$html.='<tr>
-			<td>'.$roworderinfo->spare_part_name.'</td><td>'.$roworderinfo->unitprice.'</td><td class="text-center">'.$roworderinfo->qty.'</td><td class="text-center">'.$roworderinfo->measure_type.'</td><td class="text-center">'.$roworderinfo->unit_discount.'</td><td class="text-right">'.$total.'</td></tr>';
+			<td>'.$roworderinfo->name.'</td><td>'.$roworderinfo->unitprice.'</td><td class="text-center">'.$roworderinfo->qty.'</td><td class="text-center">'.$roworderinfo->measure_type.'</td><td class="text-center">'.$roworderinfo->unit_discount.'</td><td class="text-right">'.$total.'</td></tr>';
 
 	}
 		}
@@ -884,7 +884,7 @@
 	public function Getproductforsparepart() {
 		$recordID=$this->input->post('recordID');
 
-		$sql="SELECT `spare_parts`.`id`, `spare_parts`.`name` FROM `tbl_print_porder_detail` LEFT JOIN `spare_parts` ON `spare_parts`.`id` = `tbl_print_porder_detail`.`tbl_sparepart_id` WHERE `spare_parts`.`status` = ? AND `tbl_print_porder_detail`.`tbl_print_porder_idtbl_print_porder` = ?";
+		$sql="SELECT `spare_parts`.`id`, `spare_parts`.`name` FROM `tbl_print_porder_detail` LEFT JOIN `spare_parts` ON `spare_parts`.`id` = `tbl_print_porder_detail`.`tbl_sparepart_id` WHERE `spare_parts`.`active` = ? AND `tbl_print_porder_detail`.`tbl_print_porder_idtbl_print_porder` = ?";
 		$respond=$this->db->query($sql, array(1, $recordID));
 
 		echo json_encode($respond->result());

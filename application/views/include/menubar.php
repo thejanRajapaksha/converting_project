@@ -133,6 +133,7 @@ else if ($functionmenu == 'Goodreceive') {
     $editcheck = checkprivilege($menuprivilegearray, 21, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 21, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 21, 4);
+    $approvecheck=checkprivilege($menuprivilegearray, 21, 5);
 } 
 else if ($functionmenu == 'Goodreceivenotevoucher') {
     $addcheck = checkprivilege($menuprivilegearray, 22, 1);

@@ -90,7 +90,7 @@
     public function Getproductforsparepart() {
 		$recordID=$this->input->post('recordID');
 
-		$sql="SELECT `spare_parts`.`id`, `spare_parts`.`name` FROM `tbl_print_porder_req_detail` LEFT JOIN `spare_parts` ON `spare_parts`.`id` = `tbl_print_porder_req_detail`.`tbl_sparepart_id` WHERE `spare_parts`.`status` = ? AND `tbl_print_porder_req_detail`.`tbl_print_porder_idtbl_print_porder` = ?";
+		$sql="SELECT `spare_parts`.`id`, `spare_parts`.`name` FROM `tbl_print_porder_req_detail` LEFT JOIN `spare_parts` ON `spare_parts`.`id` = `tbl_print_porder_req_detail`.`tbl_sparepart_id` WHERE `spare_parts`.`active` = ? AND `tbl_print_porder_req_detail`.`tbl_print_porder_idtbl_print_porder` = ?";
 		$respond=$this->db->query($sql, array(1, $recordID));
 
 		echo json_encode($respond->result());
@@ -124,7 +124,7 @@
 	
 		$this->db->select('unit_price');
 		$this->db->from('spare_parts');
-		$this->db->where('status', 1);
+		$this->db->where('active', 1);
 		$this->db->where('id', $recordID);
 		$respond = $this->db->get();
 	
@@ -831,7 +831,11 @@
 
         if ($ordertype == 1) {
             $this->db->select('id, name');
-			$this->db->where('status', 1);
+			$this->db->where('active', 1);
+			if (!empty($searchTerm)) {
+				$this->db->like('name', $searchTerm);
+			}
+			$this->db->limit(5);
             $query = $this->db->get('spare_parts');
         } elseif ($ordertype == 2) {
             $this->db->select('idtbl_service_type as id, service_name as name');

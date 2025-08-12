@@ -102,7 +102,7 @@ class MachineService extends CI_Controller
                 'service_date_to' => $this->input->post('service_date_to'),
                 'estimated_service_hours' => $this->input->post('estimated_service_hours'),
                 'is_repair' => $this->input->post('is_repair'),
-                'created_by' => $this->session->userdata('id'),
+                'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
             );
 
@@ -117,6 +117,8 @@ class MachineService extends CI_Controller
                     'machine_service_id' => $sp_id,
                     'spare_part_id' => $estimated_service_items[$i],
                     'qty' => $qty[$i],
+                    'created_by' => $this->session->userdata('userid'),
+                    'created_at' => date('Y-m-d H:i:s'),
                 );
             }
 
@@ -174,7 +176,7 @@ class MachineService extends CI_Controller
                     'service_date_to' => $this->input->post('edit_service_date_to'),
                     'estimated_service_hours' => $this->input->post('edit_estimated_service_hours'),
                     'is_repair' => $this->input->post('is_repair'),
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -224,7 +226,7 @@ class MachineService extends CI_Controller
             // $delete = $this->model_machine_ins->remove($machine_in_id);
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 
@@ -725,7 +727,7 @@ class MachineService extends CI_Controller
                     'machine_service_id' => $service_no,
                     'qty' => $qty[$i],
                     'estimate_id' => $estimate_id[$i],
-                    'created_by' => $this->session->userdata('id'),
+                    'created_by' => $this->session->userdata('userid'),
                     'created_at' => date('Y-m-d H:i:s')
                 );
             }
@@ -759,7 +761,7 @@ class MachineService extends CI_Controller
             if ($qty[$i] > 0) {
                 $sub_data = array(
                     'qty' => $qty[$i],
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -789,7 +791,7 @@ class MachineService extends CI_Controller
 
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 
@@ -987,7 +989,7 @@ class MachineService extends CI_Controller
                 'machine_service_id' => $service_no,
                 'qty' => $qty[$i],
                 'a_id' => $a_id[$i],
-                'created_by' => $this->session->userdata('id'),
+                'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
             );
 
@@ -1008,7 +1010,7 @@ class MachineService extends CI_Controller
                 'allocated_id' => $a_id[$i],
                 'issue_id' => $issue_id,
                 'spare_part_id' => $estimated_service_items[$i],
-                'created_by' => $this->session->userdata('id'),
+                'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
             );
             $this->db->insert('tbl_stock', $data2);
@@ -1043,7 +1045,7 @@ class MachineService extends CI_Controller
             if ($qty[$i] > 0) {
                 $sub_data = array(
                     'qty' => $qty[$i],
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -1081,7 +1083,7 @@ class MachineService extends CI_Controller
 
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 
@@ -1280,7 +1282,7 @@ class MachineService extends CI_Controller
                     'machine_service_id' => $service_no,
                     'qty' => $qty[$i],
                     'issue_id' => $issue_id[$i],
-                    'created_by' => $this->session->userdata('id'),
+                    'created_by' => $this->session->userdata('userid'),
                     'created_at' => date('Y-m-d H:i:s')
                 );
                 //mark allocated items as finished
@@ -1374,7 +1376,7 @@ class MachineService extends CI_Controller
             if ($qty[$i] > 0) {
                 $sub_data = array(
                     'qty' => $qty[$i],
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -1404,7 +1406,7 @@ class MachineService extends CI_Controller
 
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 
@@ -1520,7 +1522,7 @@ class MachineService extends CI_Controller
                 'header_id' => $header_id,
                 'qty' => $qty[$i],
                 'issue_id' => $issue_id[$i],
-                'created_by' => $this->session->userdata('id'),
+                'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
             );
         }
@@ -1646,7 +1648,7 @@ class MachineService extends CI_Controller
         for ($i = 0; $i < sizeof($header_id); $i++) {
                 $sub_data = array(
                     'remarks' => $remarks[$i],
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -1658,7 +1660,7 @@ class MachineService extends CI_Controller
             if ($qty[$j] > 0) {
                 $sub_dataj = array(
                     'qty' => $qty[$j],
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -1688,7 +1690,7 @@ class MachineService extends CI_Controller
 
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 
@@ -1804,7 +1806,7 @@ class MachineService extends CI_Controller
                 'header_id' => $header_id,
                 'qty' => $qty[$i],
                 'return_id' => $issue_id[$i],
-                'created_by' => $this->session->userdata('id'),
+                'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
             );
         }
@@ -1929,7 +1931,7 @@ class MachineService extends CI_Controller
         for ($i = 0; $i < sizeof($header_id); $i++) {
             $sub_data = array(
                 'remarks' => $remarks[$i],
-                'updated_by' => $this->session->userdata('id'),
+                'updated_by' => $this->session->userdata('userid'),
                 'updated_at' => date('Y-m-d H:i:s')
             );
 
@@ -1941,7 +1943,7 @@ class MachineService extends CI_Controller
             if ($qty[$i] > 0) {
                 $sub_data = array(
                     'qty' => $qty[$i],
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -1971,7 +1973,7 @@ class MachineService extends CI_Controller
 
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 
@@ -2078,7 +2080,7 @@ class MachineService extends CI_Controller
                 'supplier_id' => $this->input->post('supplier_id'),
                 'date' => $this->input->post('date'),
                 'remarks' => $this->input->post('remarks'),
-                'created_by' => $this->session->userdata('id'),
+                'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
             );
             $this->db->insert('return_to_supplier_header', $data);
@@ -2142,7 +2144,7 @@ class MachineService extends CI_Controller
                     'supplier_id' => $this->input->post('edit_supplier_id'),
                     'date' => $this->input->post('edit_date'),
                     'remarks' => $this->input->post('edit_remarks'),
-                    'updated_by' => $this->session->userdata('id'),
+                    'updated_by' => $this->session->userdata('userid'),
                     'updated_at' => date('Y-m-d H:i:s')
                 );
 
@@ -2187,7 +2189,7 @@ class MachineService extends CI_Controller
         if ($machine_service_id) {
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 
@@ -2268,7 +2270,7 @@ class MachineService extends CI_Controller
 
         $data =  array(
             'is_approved' => 1,
-            'approved_by' => $this->session->userdata('id'),
+            'approved_by' => $this->session->userdata('userid'),
             'approved_at' => date('Y-m-d H:i:s')
         );
 

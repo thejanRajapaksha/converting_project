@@ -273,9 +273,9 @@ $(document).ready(function() {
 
 
         $('#f_company_id').val('<?php echo ($_SESSION['company_id']); ?>');
-        $('#f_company_name').val('<?php echo ($_SESSION['companyname']); ?>');
+        $('#f_company_name').val('<?php echo ('LANKASPIN'); ?>');
         $('#f_branch_id').val('<?php echo ($_SESSION['branch_id']); ?>');
-        $('#f_branch_name').val('<?php echo ($_SESSION['branchname']); ?>');
+        $('#f_branch_name').val('<?php echo ('Colombo'); ?>');
 });
 </script>
 <script>
@@ -781,9 +781,9 @@ $(document).ready(function() {
 
     					var response = JSON.parse(result);
     					if (response.status == 1) {
-    						actionreload(response.action);
-    						setTimeout(() => window.location.reload(), 2000);
-    					} else {
+                            window.location.reload();
+                        }
+                        else {
     						action(response.action);
     					}
     				},
@@ -911,7 +911,7 @@ function approvejob(confirmnot){
                     document.body.style.overflow = 'auto';
                     var obj = JSON.parse(result);
                     if(obj.status==1){
-                        actionreload(obj.action);
+                        window.location.reload();
                     }
                     else{
                         action(obj.action);

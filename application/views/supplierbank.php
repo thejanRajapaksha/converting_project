@@ -19,10 +19,10 @@ include "include/topnavbar.php";
                 </div>
             </div>
         	<div class="container-fluid mt-2 p-0 p-2">
-        		<div class="card">
-        			<div class="card-body p-0 p-2">
+                <div class="card">
+                    <div class="card-body p-2">
         				<div class="row">
-        					<div class="col-9">
+        					<div class="col-12">
         						<form action="<?php echo base_url()?>Supplierbank/Supplierbankinsertupdate" method="post" autocomplete="off">
         							<div class="row">
         								<div class="col-3">

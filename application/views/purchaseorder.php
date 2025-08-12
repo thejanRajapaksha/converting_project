@@ -670,10 +670,10 @@ $(document).ready(function() {
 		}
 	});
 
-    $('#supplier').select2({
-        dropdownParent: $('#staticBackdrop'),
-        width: '100%',
-    });
+    // $('#supplier').select2({
+    //     dropdownParent: $('#staticBackdrop'),
+    //     width: '100%',
+    // });
 
 
     var addcheck = '<?php echo $addcheck; ?>';
@@ -1957,7 +1957,7 @@ function approvejob(confirmnot){
                     document.body.style.overflow = 'auto';
                     var obj = JSON.parse(result);
                     if(obj.status==1){
-                        actionreload(obj.action);
+                        window.location.reload();
                     }
                     else{
                         action(obj.action);
