@@ -8,43 +8,42 @@ class ServiceItems extends CI_Controller
 
     public function get_items_select() {
         $term = $this->input->get('term');
-        $page = $this->input->get('page');
-
+        $page = (int) $this->input->get('page');
         $resultCount = 25;
         $offset = ($page - 1) * $resultCount;
 
-        $this->db->select('*');
-        $this->db->from('service_items');
-        $this->db->where('is_deleted', 0 );
+        // First: Get total count
+        $this->db->from('spare_parts');
         $this->db->like('name', $term, 'both');
-        $query = $this->db->get();
-        $this->db->limit($resultCount, $offset);
-        $departments = $query->result_array();
-
-        $this->db->from('service_items');
+        $this->db->or_like('part_no', $term, 'both');
         $this->db->where('is_deleted', 0);
-        $this->db->like('name', $term, 'both');
         $count = $this->db->count_all_results();
 
+        // Second: Get paginated results
+        $this->db->select('*');
+        $this->db->from('spare_parts');
+        $this->db->like('name', $term, 'both');
+        $this->db->or_like('part_no', $term, 'both');
+        $this->db->where('is_deleted', 0);
+        $this->db->limit($resultCount, $offset);
+        $query = $this->db->get();
+        $results = $query->result_array();
+
         $data = array();
-        foreach ($departments as $v) {
+        foreach ($results as $row) {
             $data[] = array(
-                'id' => $v['id'],
-                'text' => $v['name']
+                'id' => $row['id'],
+                'text' => $row['name'] . ' - ' . $row['part_no']
             );
         }
 
         $endCount = $offset + $resultCount;
         $morePages = $endCount < $count;
 
-        $results = array(
+        echo json_encode([
             "results" => $data,
-            "pagination" => array(
-                "more" => $morePages
-            )
-        );
-
-        echo json_encode($results);
+            "pagination" => ["more" => $morePages]
+        ]);
 
     }
 
@@ -53,11 +52,11 @@ class ServiceItems extends CI_Controller
     {
         $id = $this->input->post('service_item_id');
         $this->db->select('*');
-        $this->db->from('service_items');
+        $this->db->from('spare_parts');
         $this->db->where('id', $id);
         $query = $this->db->get();
         $result = $query->row_array();
-        $price = $result['price'];
+        $price = $result['unit_price'];
         echo json_encode($price);
     }
 

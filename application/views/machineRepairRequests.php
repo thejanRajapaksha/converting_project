@@ -554,7 +554,7 @@ $(document).ready(function() {
             $('#service_detail_table tbody tr').each(function(index, element) {
                 let repair_detail = {};
                 repair_detail.repair_id = id;
-                repair_detail.repair_item_name = $(element).find('td:eq(0)').text();
+                repair_detail.repair_item_id = $(element).find('td:eq(4) button').data('id');
                 repair_detail.quantity = $(element).find('td:eq(1)').text();
                 repair_detail.price = $(element).find('td:eq(2)').text();
                 repair_detail.total = $(element).find('td:eq(3)').text();
@@ -696,6 +696,16 @@ $(document).ready(function() {
                     term: params.term || '',
                     page: params.page || 1
                 }
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: data.pagination.more
+                    }
+                };
             },
             cache: true
         }

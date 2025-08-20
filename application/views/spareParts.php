@@ -234,6 +234,7 @@ $(document).ready(function() {
         "destroy": true,
         "processing": true,
         "serverSide": true,
+        "pageLength": 10,
 
         ajax: {
             url: "<?php echo base_url() ?>scripts/sparepartslist.php",

@@ -280,15 +280,15 @@ class MachineServicesCalendar extends CI_Controller
         $resultCount = 25;
         $offset = ($page - 1) * $resultCount;
 
-        $current_user = $this->session->userdata('id');
+        $current_user = $this->session->userdata('userid');
 
         $this->db->select('*');
-        $this->db->from('users');
-        $this->db->where('id', $current_user);
+        $this->db->from('tbl_user');
+        $this->db->where('idtbl_user', $current_user);
         $query = $this->db->get();
         $result = $query->row_array();
 
-        $user_factory = $result['factory_id'];
+        // $user_factory = $result['factory_id'];
 
         $this->db->select('*');
         $this->db->from('employees');

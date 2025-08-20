@@ -1,6 +1,6 @@
 <?php
 
-class MachineRepairs extends Admin_Controller
+class MachineRepairs extends CI_Controller
 {
     public function __construct()
     {
@@ -27,21 +27,16 @@ class MachineRepairs extends Admin_Controller
         );
 
         $create = $this->model_machine_repairs->create($data);
-        //get last inserted id
+
+        // get last inserted repair details ID
         $repair_details_id = $this->db->insert_id();
 
         $repair_details = $this->input->post('repair_details');
         foreach ($repair_details as $value) {
 
-            $service_item_name = $value['repair_item_name'];
+            $service_item_id = $value['repair_item_id'];
 
-            $this->db->select('*');
-            $this->db->from('service_items');
-            $this->db->where('name', $service_item_name);
-            $query = $this->db->get();
-            $result = $query->row_array();
-            $service_item_id = $result['id'];
-
+            // insert repair detail
             $data = array(
                 'machine_repair_details_id' => $repair_details_id,
                 'service_item_id' => $service_item_id,
@@ -53,13 +48,41 @@ class MachineRepairs extends Admin_Controller
             );
 
             $this->model_machine_repairs->createRepairDetailItems($data);
+
+            // reduce stock from tbl_print_stock (FIFO)
+            $issue_qty = (float)$value['quantity'];
+            $sp_id     = $service_item_id;
+
+            $this->db->select('idtbl_print_stock, qty, tbl_sparepart_id, status, insertdatetime');
+            $this->db->where('tbl_sparepart_id', $sp_id);
+            $this->db->where('status', 1);
+            $this->db->order_by('insertdatetime', 'ASC');
+            $batches = $this->db->get('tbl_print_stock')->result_array();
+
+            foreach ($batches as $batch) {
+                if ($issue_qty <= 0) break;
+
+                $available_in_batch = (float)$batch['qty'];
+                if ($available_in_batch <= 0) continue;
+
+                if ($available_in_batch >= $issue_qty) {
+                    $this->db->where('idtbl_print_stock', $batch['idtbl_print_stock']);
+                    $this->db->set('qty', 'qty - ' . $issue_qty, FALSE);
+                    $this->db->update('tbl_print_stock');
+                    $issue_qty = 0;
+                } else {
+                    $this->db->where('idtbl_print_stock', $batch['idtbl_print_stock']);
+                    $this->db->set('qty', 0, FALSE);
+                    $this->db->update('tbl_print_stock');
+                    $issue_qty -= $available_in_batch;
+                }
+            }
         }
 
-        if($create == true) {
+        if ($create == true) {
             $response['success'] = true;
             $response['messages'] = 'Successfully created. The Page will be refreshed';
-        }
-        else {
+        } else {
             $response['success'] = false;
             $response['messages'] = 'Error in the database while creating the information';
         }

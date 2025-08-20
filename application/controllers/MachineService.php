@@ -970,7 +970,6 @@ class MachineService extends CI_Controller
         $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
         $service_no = $this->input->post('service_no');
-
         $estimated_service_items = $this->input->post('sp_id[]');
         $a_id = $this->input->post('a_id[]');
         $qty = $this->input->post('qty[]');
@@ -982,8 +981,9 @@ class MachineService extends CI_Controller
             die();
         }
 
-        //$sub_data = array();
         for ($i = 0; $i < sizeof($estimated_service_items); $i++) {
+            
+            // 1. Insert into issued items table
             $sub_data = array(
                 'spare_part_id' => $estimated_service_items[$i],
                 'machine_service_id' => $service_no,
@@ -992,36 +992,56 @@ class MachineService extends CI_Controller
                 'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
             );
-
             $this->db->insert('machine_service_issued_items', $sub_data);
             $issue_id = $this->db->insert_id();
-            //mark allocated items as finished
-            $data1 = array(
-                'is_finished' => 1
-            );
-            $this->db->where('id', $a_id[$i]);
-            $this->db->update('machine_service_allocated_items', $data1);
 
-            //insert to stock
-            $qty_s = '-' . $qty[$i];
-            $data2 = array(
-                'qty' => $qty_s,
+            // 2. Mark allocated items as finished
+            $this->db->where('id', $a_id[$i]);
+            $this->db->update('machine_service_allocated_items', array('is_finished' => 1));
+
+            // 3. FIFO stock deduction from tbl_print_stock
+            $issue_qty = (float)$qty[$i];
+            $sp_id     = $estimated_service_items[$i];
+
+            $this->db->select('idtbl_print_stock, qty, tbl_sparepart_id, status, insertdatetime');
+            $this->db->where('tbl_sparepart_id', $sp_id);
+            $this->db->where('status', 1);
+            $this->db->order_by('insertdatetime', 'ASC');
+            $batches = $this->db->get('tbl_print_stock')->result_array();
+
+            foreach ($batches as $batch) {
+                if ($issue_qty <= 0) break;
+
+                $available_in_batch = (float)$batch['qty'];
+                if ($available_in_batch <= 0) continue;
+
+                if ($available_in_batch >= $issue_qty) {
+                    $this->db->where('idtbl_print_stock', $batch['idtbl_print_stock']);
+                    $this->db->set('qty', 'qty - ' . $issue_qty, FALSE);
+                    $this->db->update('tbl_print_stock');
+                    $issue_qty = 0;
+                } else {
+                    $this->db->where('idtbl_print_stock', $batch['idtbl_print_stock']);
+                    $this->db->set('qty', 0, FALSE);
+                    $this->db->update('tbl_print_stock');
+                    $issue_qty -= $available_in_batch;
+                }
+            }
+
+            // 4. Still log in tbl_stock for history
+            $this->db->insert('tbl_stock', array(
+                'qty' => '-' . $qty[$i],
                 'service_id' => $service_no,
                 'allocated_id' => $a_id[$i],
                 'issue_id' => $issue_id,
-                'spare_part_id' => $estimated_service_items[$i],
+                'spare_part_id' => $sp_id,
                 'created_by' => $this->session->userdata('userid'),
                 'created_at' => date('Y-m-d H:i:s')
-            );
-            $this->db->insert('tbl_stock', $data2);
-
+            ));
         }
-
 
         $response['success'] = true;
         $response['messages'] = 'Successfully updated';
-
-
         echo json_encode($response);
     }
 
