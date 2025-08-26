@@ -12,6 +12,7 @@ class PdfGRNinfo extends CI_Model {
         $this->db->join('tbl_print_grndetail', 'tbl_print_grn.idtbl_print_grn = tbl_print_grndetail.tbl_print_grn_idtbl_print_grn', 'left');
         $this->db->join('tbl_print_material_info', 'tbl_print_grndetail.tbl_print_material_info_idtbl_print_material_info = tbl_print_material_info.idtbl_print_material_info', 'left');
         $this->db->join('tbl_machine', 'tbl_print_grndetail.tbl_machine_id = tbl_machine.idtbl_machine', 'left');
+        $this->db->join('spare_parts', 'tbl_print_grndetail.tbl_sparepart_id = spare_parts.id', 'left');
         $this->db->join('tbl_supplier', 'tbl_print_grn.tbl_supplier_idtbl_supplier = tbl_supplier.idtbl_supplier', 'left');
         $this->db->join('tbl_location', 'tbl_print_grn.tbl_location_idtbl_location = tbl_location.idtbl_location', 'left');
         $this->db->join('tbl_order_type', 'tbl_print_grn.tbl_order_type_idtbl_order_type = tbl_order_type.idtbl_order_type', 'left');
@@ -46,6 +47,9 @@ class PdfGRNinfo extends CI_Model {
             if ($rowlist->tbl_order_type_idtbl_order_type == 3) {
                 $itemcode = $rowlist->materialinfocode;
                 $itemdesc = $rowlist->materialname;
+            } elseif ($rowlist->tbl_order_type_idtbl_order_type == 1) {
+                $itemcode = $rowlist->part_no;
+                $itemdesc = $rowlist->name;
             } elseif ($rowlist->tbl_order_type_idtbl_order_type == 2) {
                 $itemcode = '';
                 $itemdesc = $rowlist->service_type;
