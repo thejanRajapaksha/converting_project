@@ -535,11 +535,12 @@
 		$sql="SELECT `u`.*, `ua`.`suppliername`, `ua`.`address_line1`, `ub`.`branch`, `ub`.`phone`, `ub`.`address1`, `ub`.`address2`, `ub`.`mobile`, `ub`.`email` AS `locemail`, `uc`.`company` FROM `tbl_print_porder` AS `u` LEFT JOIN `tbl_supplier` AS `ua` ON (`ua`.`idtbl_supplier` = `u`.`tbl_supplier_idtbl_supplier`) LEFT JOIN `tbl_company_branch` AS `ub` ON (`ub`.`idtbl_company_branch` = `u`.`tbl_company_branch_idtbl_company_branch`) LEFT JOIN `tbl_company` AS `uc` ON (`uc`.`idtbl_company` = `u`.`tbl_company_idtbl_company`) WHERE `u`.`status`=? AND `u`.`idtbl_print_porder`=?";
 		$respond=$this->db->query($sql, array(1, $recordID));
 
-		$this->db->select('tbl_print_porder_detail.*,tbl_print_porder.porder_no,tbl_print_porder.orderdate As orderdate,tbl_print_porder.tbl_order_type_idtbl_order_type, tbl_print_material_info.materialinfocode, tbl_print_material_info.materialname,tbl_machine.machine,tbl_machine.machinecode, tbl_service_type.service_name, tbl_measurements.measure_type');
+		$this->db->select('tbl_print_porder_detail.*,tbl_print_porder.porder_no,tbl_print_porder.orderdate As orderdate,tbl_print_porder.tbl_order_type_idtbl_order_type, tbl_print_material_info.materialinfocode, tbl_print_material_info.materialname,tbl_machine.machine,tbl_machine.machinecode, tbl_service_type.service_name, tbl_measurements.measure_type, spare_parts.name AS spare_part_name, spare_parts.part_no AS spare_part_no');
 		$this->db->from('tbl_print_porder_detail');
 		$this->db->join('tbl_print_material_info', 'tbl_print_material_info.idtbl_print_material_info = tbl_print_porder_detail.tbl_material_id', 'left');
 		$this->db->join('tbl_measurements', 'tbl_measurements.idtbl_mesurements = tbl_print_porder_detail.tbl_measurements_idtbl_measurements', 'left'); // get measurements 
 		$this->db->join('tbl_machine', 'tbl_machine.idtbl_machine = tbl_print_porder_detail.tbl_machine_id', 'left');
+		$this->db->join('spare_parts', 'spare_parts.id = tbl_print_porder_detail.tbl_sparepart_id', 'left');
 		$this->db->join('tbl_print_porder', 'tbl_print_porder.idtbl_print_porder = tbl_print_porder_detail.tbl_print_porder_idtbl_print_porder', 'left');
 		$this->db->join('tbl_service_type', 'tbl_service_type.idtbl_service_type = tbl_print_porder_detail.tbl_service_type_id', 'left'); // Add this line to join tbl_service_type
 		$this->db->where('tbl_print_porder_detail.tbl_print_porder_idtbl_print_porder', $recordID);
@@ -560,6 +561,17 @@
 						if($roworderinfo->tbl_order_type_idtbl_order_type==3) {
 							$html .= '<tr>
 							<td>' . $roworderinfo->materialname . '/ ' . $roworderinfo->materialinfocode . '</td>
+							<td class="text-right">' . (!empty($roworderinfo->packetprice) ? $roworderinfo->packetprice : $roworderinfo->unitprice) . '</td>
+							<td class="text-right">' . $roworderinfo->qty . '</td>
+							<td class="text-center">' . $roworderinfo->measure_type . '</td>
+							<td class="text-right">' . number_format(($roworderinfo->netprice), 2) . '</td>
+						</tr>';			
+
+						}
+
+						else if($roworderinfo->tbl_order_type_idtbl_order_type==1) {
+							$html .= '<tr>
+							<td>' . $roworderinfo->spare_part_name . ' / ' . $roworderinfo->spare_part_no . '</td>
 							<td class="text-right">' . (!empty($roworderinfo->packetprice) ? $roworderinfo->packetprice : $roworderinfo->unitprice) . '</td>
 							<td class="text-right">' . $roworderinfo->qty . '</td>
 							<td class="text-center">' . $roworderinfo->measure_type . '</td>

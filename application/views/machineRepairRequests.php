@@ -596,14 +596,14 @@ $(document).ready(function() {
                 return false;
             }
 
-            if(transport_charge == ''){
-                $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
-                    'Transport Charge required'
-                    +
-                    '</div>');
-                return false;
-            }
+            // if(transport_charge == ''){
+            //     $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+            //         '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
+            //         'Transport Charge required'
+            //         +
+            //         '</div>');
+            //     return false;
+            // }
 
             if(repair_type == ''){
                 $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+

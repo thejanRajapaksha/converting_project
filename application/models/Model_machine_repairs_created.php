@@ -12,7 +12,7 @@ class Model_machine_repairs_created extends CI_Model
         if($id) {
             $sql = "SELECT msd.*,
                 m.s_no, m.bar_code, mt.name as machine_type_name,
-                ms.repair_in_date, e.name_with_initial 
+                ms.repair_in_date, e.emp_name_with_initial 
             FROM machine_repair_details msd  
             LEFT JOIN machine_repairs ms ON msd.repair_id = ms.id
             LEFT JOIN machine_ins m on ms.machine_in_id = m.id
@@ -68,7 +68,7 @@ class Model_machine_repairs_created extends CI_Model
     {
         $sql = "SELECT msdi.*, si.name as item_name 
                 FROM machine_repair_details_items msdi 
-                LEFT JOIN service_items si ON msdi.service_item_id = si.id
+                LEFT JOIN spare_parts si ON msdi.service_item_id = si.id
                 WHERE msdi.machine_repair_details_id = ? AND si.is_deleted = 0 AND msdi.is_deleted = 0";
         $query = $this->db->query($sql, array($id));
         return $query->result_array();

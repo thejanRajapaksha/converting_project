@@ -282,7 +282,7 @@ function editFunc(id)
         $('#remarks').val(response.repair_details.remarks);
 
         let employee_id = response.repair_details.repair_done_by;
-        let employee_name = response.repair_details.name_with_initial;
+        let employee_name = response.repair_details.emp_name_with_initial;
 
         let option = new Option(employee_name, employee_id, true, true);
         $('#repair_done_by').append(option);
@@ -532,7 +532,7 @@ function viewFunc(id)
 
             $('#view_repair_no_span').html(repair_no);
             $('#view_machine_type_span').html(machine_type_name);
-            $('#repair_done_by_span').html(response.repair_details.name_with_initial);
+            $('#repair_done_by_span').html(response.repair_details.emp_name_with_initial);
             $('#repair_charge_span').html(response.repair_details.repair_charge);
             $('#transport_charge_span').html(response.repair_details.transport_charge);
             $('#remarks_span').html(response.repair_details.remarks);
