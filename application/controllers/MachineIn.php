@@ -317,31 +317,35 @@ class MachineIn extends CI_Controller
 
     }
 
-    public function get_machine_ins_select_id()
-    {
+    public function get_machine_ins_select_id(){
         $term = $this->input->get('term');
         $page = $this->input->get('page');
 
         $resultCount = 25;
         $offset = ($page - 1) * $resultCount;
 
-        $this->db->select('machine_ins.* ');
+        $this->db->select('machine_ins.id, machine_ins.s_no, machine_models.name AS model_name');
         $this->db->from('machine_ins');
-        $this->db->like('s_no', $term, 'both');
+        $this->db->join('machine_models', 'machine_models.id = machine_ins.machine_model_id', 'left');
+        $this->db->where('machine_ins.is_deleted', 0);
+        $this->db->like('machine_ins.s_no', $term, 'both');
+        $this->db->limit($resultCount, $offset); 
         $query = $this->db->get();
-        $this->db->limit($resultCount, $offset);
         $machine_ins = $query->result_array();
 
-        $this->db->select('machine_ins.* ');
+        $this->db->select('COUNT(*) as cnt');
         $this->db->from('machine_ins');
-        $this->db->like('s_no', $term, 'both');
-        $count = $this->db->count_all_results();
+        $this->db->join('machine_models', 'machine_models.id = machine_ins.machine_model_id', 'left');
+        $this->db->where('machine_ins.is_deleted', 0);
+        $this->db->like('machine_ins.s_no', $term, 'both');
+        $countRow = $this->db->get()->row_array();
+        $count = $countRow['cnt'];
 
         $data = array();
         foreach ($machine_ins as $v) {
             $data[] = array(
-                'id' => $v['id'],
-                'text' => $v['s_no']
+                'id'   => $v['id'],
+                'text' => $v['model_name'] . ' - ' . $v['s_no']
             );
         }
 
@@ -356,8 +360,8 @@ class MachineIn extends CI_Controller
         );
 
         echo json_encode($results);
-
     }
+
 
     //getFactoryCodeByMachineInId
     public function getFactoryCodeByMachineInId()

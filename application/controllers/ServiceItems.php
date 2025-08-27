@@ -12,18 +12,20 @@ class ServiceItems extends CI_Controller
         $resultCount = 25;
         $offset = ($page - 1) * $resultCount;
 
-        // First: Get total count
         $this->db->from('spare_parts');
-        $this->db->like('name', $term, 'both');
-        $this->db->or_like('part_no', $term, 'both');
+        $this->db->group_start()
+            ->like('name', $term, 'both')
+            ->or_like('part_no', $term, 'both')
+            ->group_end();
         $this->db->where('is_deleted', 0);
         $count = $this->db->count_all_results();
 
-        // Second: Get paginated results
         $this->db->select('*');
         $this->db->from('spare_parts');
-        $this->db->like('name', $term, 'both');
-        $this->db->or_like('part_no', $term, 'both');
+        $this->db->group_start()
+            ->like('name', $term, 'both')
+            ->or_like('part_no', $term, 'both')
+            ->group_end();
         $this->db->where('is_deleted', 0);
         $this->db->limit($resultCount, $offset);
         $query = $this->db->get();
