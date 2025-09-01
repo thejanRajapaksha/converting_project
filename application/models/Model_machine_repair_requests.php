@@ -41,11 +41,17 @@ class Model_machine_repair_requests extends CI_Model
 
     public function update($id = null, $data = array())
     {
-        if($id && $data) {
+        if ($id && $data) {
             $this->db->where('id', $id);
-            $update = $this->db->update('machine_repairs', $data);
-            return ($update == true) ? true : false;
+            $updateMain = $this->db->update('machine_repairs', $data);
+
+            $this->db->where('repair_id', $id);
+            $updateDetails = $this->db->update('machine_repair_details', $data);
+
+            return ($updateMain && $updateDetails) ? true : false;
         }
+
+        return false;
     }
 
     public function remove($id = null)

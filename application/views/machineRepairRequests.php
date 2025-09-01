@@ -540,130 +540,118 @@ $(document).ready(function() {
   });
 
     $(document).on('click', '.repair_add_btn', function() {
-
         let id = $(this).data('id');
-        //let service_no = $(this).data('service_no');
         let machine_type_name = $(this).data('machine_type_name');
 
-        //$('#service_no_span').html(service_no);
+        $('#repairAddModal').data('id', id);
         $('#machine_type_span').html(machine_type_name);
+    });
 
-        //save_btn click event
-        $('#save_btn').on('click', function() {
-            let repair_details = [];
-            $('#service_detail_table tbody tr').each(function(index, element) {
-                let repair_detail = {};
-                repair_detail.repair_id = id;
-                repair_detail.repair_item_id = $(element).find('td:eq(4) button').data('id');
-                repair_detail.quantity = $(element).find('td:eq(1)').text();
-                repair_detail.price = $(element).find('td:eq(2)').text();
-                repair_detail.total = $(element).find('td:eq(3)').text();
-                repair_details.push(repair_detail);
-            });
-            let sub_total = $('#sub_total').text();
-            let repair_done_by = $('#repair_done_by').val();
-            let repair_charge = $('#repair_charge').val();
-            let transport_charge = $('#transport_charge').val();
-            let repair_type = $('input[name=repair_type]:checked').val();
-            let remarks = $('#remarks').val();
+    $('#save_btn').on('click', function() {
+        let id = $('#repairAddModal').data('id'); 
+        let repair_details = [];
 
-            $('#modal_msg').html('');
-
-            if(repair_details.length == 0){
-                //modal_msg
-                $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
-                    'Please Add at least one Item'
-                    +
-                    '</div>');
-                return false;
-            }
-            if(repair_done_by == ''){
-                $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
-                    'Repair Done By required'
-                    +
-                    '</div>');
-                return false;
-            }
-
-            if(repair_charge == ''){
-                $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
-                    'Repair Charge required'
-                    +
-                    '</div>');
-                return false;
-            }
-
-            // if(transport_charge == ''){
-            //     $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
-            //         '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
-            //         'Transport Charge required'
-            //         +
-            //         '</div>');
-            //     return false;
-            // }
-
-            if(repair_type == ''){
-                $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
-                    'Repair Type required'
-                    +
-                    '</div>');
-                return false;
-            }
-
-            if(remarks == ''){
-                $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
-                    '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
-                    'Remarks required'
-                    +
-                    '</div>');
-                return false;
-            }
-
-            $.ajax({
-                url: base_url + 'MachineRepairs/createRepair',
-                type: 'POST',
-                data: {
-                    repair_details: repair_details,
-                    sub_total: sub_total,
-                    repair_done_by: repair_done_by,
-                    repair_charge: repair_charge,
-                    transport_charge: transport_charge,
-                    repair_type: repair_type,
-                    remarks: remarks,
-                    repair_request_id: id
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if(response.success) {
-                        $('#repairAddModal').modal('hide');
-                        $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
-                            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
-                            '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
-                            '</div>');
-                        $("#service_detail_table tbody").empty();
-                        $('#sub_total').val('');
-                        $('#repair_done_by').val('');
-                        $('#repair_charge').val('');
-                        $('#transport_charge').val('');
-                        $('#remarks').val('');
-                        $('input[name=repair_type]').attr('checked',false);
-
-                        //reload page after 2 second
-                        setTimeout(function() {
-                            location.reload();
-                        }, 2000);
-
-                    }
-                }
-            });
-
+        $('#service_detail_table tbody tr').each(function(index, element) {
+            let repair_detail = {};
+            repair_detail.repair_id = id;
+            repair_detail.repair_item_id = $(element).find('td:eq(4) button').data('id');
+            repair_detail.quantity = $(element).find('td:eq(1)').text();
+            repair_detail.price = $(element).find('td:eq(2)').text();
+            repair_detail.total = $(element).find('td:eq(3)').text();
+            repair_details.push(repair_detail);
         });
 
+        let sub_total = $('#sub_total').text();
+        let repair_done_by = $('#repair_done_by').val();
+        let repair_charge = $('#repair_charge').val();
+        let transport_charge = $('#transport_charge').val();
+        let repair_type = $('input[name=repair_type]:checked').val();
+        let remarks = $('#remarks').val();
+
+        $('#modal_msg').html('');
+
+        if(repair_details.length == 0){
+            $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
+                'Please Add at least one Item'+
+                '</div>');
+            return false;
+        }
+        if(repair_done_by == ''){
+            $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
+                'Repair Done By required'+
+                '</div>');
+            return false;
+        }
+        if(repair_charge == ''){
+            $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
+                'Repair Charge required'+
+                '</div>');
+            return false;
+        }
+        // if(transport_charge == ''){
+        //     $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+        //         '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
+        //         'Transport Charge required'
+        //         +
+        //         '</div>');
+        //     return false;
+        // }
+        if(repair_type == ''){
+            $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
+                'Repair Type required'+
+                '</div>');
+            return false;
+        }
+        if(remarks == ''){
+            $("#modal_msg").html('<div class="alert alert-danger alert-dismissible" role="alert">'+
+                '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+
+                'Remarks required'+
+                '</div>');
+            return false;
+        }
+
+        $.ajax({
+            url: base_url + 'MachineRepairs/createRepair',
+            type: 'POST',
+            data: {
+                repair_details: repair_details,
+                sub_total: sub_total,
+                repair_done_by: repair_done_by,
+                repair_charge: repair_charge,
+                transport_charge: transport_charge,
+                repair_type: repair_type,
+                remarks: remarks,
+                repair_request_id: id
+            },
+            dataType: 'json',
+            success: function(response) {
+                if(response.success) {
+                    $('#repairAddModal').modal('hide');
+                    $("#messages").html('<div class="alert alert-success alert-dismissible" role="alert">'+
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>'+
+                        '<strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong>'+response.messages+
+                        '</div>');
+                    $("#service_detail_table tbody").empty();
+                    $('#sub_total').val('');
+                    $('#repair_done_by').val('');
+                    $('#repair_charge').val('');
+                    $('#transport_charge').val('');
+                    $('#remarks').val('');
+                    $('input[name=repair_type]').prop('checked', false);
+
+                    //reload page after 2 second
+                    setTimeout(function() {
+                        location.reload();
+                    }, 2000);
+                }
+            }
+        });
     });
+
 
     $('#repair_done_by').select2({
         placeholder: 'Select...',

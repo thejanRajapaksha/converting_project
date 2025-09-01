@@ -24,7 +24,7 @@ include "include/topnavbar.php";
             <div class="card-body p-2">
                 <!-- Filter Form -->
                 <form id="filterForm">
-                    <div class="form-row">
+                    <div class="row">
                         <div class="col-md-3 mb-2">
                             <label class="small font-weight-bold text-dark">Status</label>
                             <select class="form-control form-control-sm select2" id="status_filter" name="status">

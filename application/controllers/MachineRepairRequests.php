@@ -151,7 +151,7 @@ class MachineRepairRequests extends CI_Controller
 
             $data = array(
                 'is_deleted' => 1,
-                'deleted_by' => $this->session->userdata('id'),
+                'deleted_by' => $this->session->userdata('userid'),
                 'deleted_at' => date('Y-m-d H:i:s')
             );
 

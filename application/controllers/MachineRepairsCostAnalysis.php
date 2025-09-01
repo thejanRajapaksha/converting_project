@@ -46,7 +46,7 @@ class MachineRepairsCostAnalysis extends CI_Controller
             // button
             $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-default btn-sm" title="View" onclick="viewFunc('.$value['id'].')" data-toggle="modal" data-target="#viewModal"><i class="text-info fa fa-eye"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="View" onclick="viewFunc('.$value['id'].')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
 
             $total = $value['sub_total'] + $value['repair_charge'] + $value['transport_charge'];
 

@@ -842,13 +842,16 @@
 		$ordertype = $this->input->post('ordertype');
 
         if ($ordertype == 1) {
-            $this->db->select('id, name');
-			$this->db->where('active', 1);
+			$this->db->select("id, CONCAT(name, ' - ', part_no) AS name", false);
+			$this->db->where('is_deleted', 0);
 			if (!empty($searchTerm)) {
+				$this->db->group_start();
 				$this->db->like('name', $searchTerm);
+				$this->db->or_like('part_no', $searchTerm);
+				$this->db->group_end();
 			}
 			$this->db->limit(5);
-            $query = $this->db->get('spare_parts');
+			$query = $this->db->get('spare_parts');
         } elseif ($ordertype == 2) {
             $this->db->select('idtbl_service_type as id, service_name as name');
 			$this->db->where('status', 1);

@@ -129,10 +129,10 @@
 		$printMaterialsQuery = $this->db->get();
 		$printMaterials = $printMaterialsQuery->result_array();
 	
-		$this->db->select('TRIM(name) as materialname');
+		$this->db->select("CONCAT(TRIM(name), ' - ', part_no) as materialname", false);
 		$this->db->from('spare_parts');
 		$this->db->like('name', $query);
-		$this->db->where('active', 1);
+		$this->db->where('is_deleted', 0);
 		$sparePartsQuery = $this->db->get();
 		$spareParts = $sparePartsQuery->result_array();
 
