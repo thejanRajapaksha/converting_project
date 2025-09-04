@@ -19,46 +19,66 @@ include_once "include/topnavbar.php";
                 </div>
             </div>
             <div class="container-fluid mt-2p-0 p-2">
-                <div class="row mt-1 equal">
-                    <div class="col-md-3 pr-0" >
-                        <div class="card">
-                            <div class="card-body ">
-                                <h5 class="card-title">All Machine List</h5>
-                                <p class="card-text text-center text-success p-5" style="font-size: 5rem">
+                <div class="row mt-1">
+                    <!-- First Column - Stacked Cards -->
+                    <div class="col-md-3">
+                        <!-- All Machine List Card -->
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">All Machine List</h6>
+                                <p class="card-text text-success" style="font-size: 2.5rem; margin: 10px 0;">
                                     <?php echo $count_machine_ins; ?>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <a href="<?php echo base_url(); ?>MachineIn" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i> </a>
+                                <a href="<?php echo base_url(); ?>MachineIn" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- Repairs Card -->
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">Repairs To Be Done</h6>
+                                <h3 class="text-warning"><?php echo $repairs_count; ?></h3>
+                            </div>
+                        </div>
+
+                        <!-- Services Card -->
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">Services To Be Done Today</h6>
+                                <h3 class="text-info"><?php echo $services_count; ?></h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-5 equal pr-0">
-                        <div class="card" style="padding-top: 15px;">
-                            <div class="card-body">
-                                    <canvas id="machine_ins_pie_chart"></canvas>
+                    <!-- Second Column - Machine Types Chart -->
+                    <div class="col-md-5">
+                        <div class="card h-100">
+                            <div class="card-body" style="padding-top: 15px;">
+                                <<canvas id="machine_ins_pie_chart" style="width: 100% !important; height: 400px !important;"></canvas>
                             </div>
                             <div class="card-footer">
-                                <a href="<?php echo base_url(); ?>MachineIn" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i> </a>
+                                <a href="<?php echo base_url(); ?>MachineIn" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i></a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 ">
-                        <div class="card" style="height: 100%; width: 100%;">
+                    <!-- Third Column - Machine By Aging -->
+                    <div class="col-md-4">
+                        <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">Machine By Aging</h5>
 
                                 <div class="table-responsive">
-                                    <table class="table table-sm ">
+                                    <table class="table table-sm">
                                         <thead>
                                             <tr>
-                                                <th> # </th>
-                                                <th> Type </th>
+                                                <th>#</th>
+                                                <th>Type</th>
                                                 <?php
                                                 foreach ($counts as $key => $val){
-                                                    echo '<th> '.$key.' </th>';
+                                                    echo '<th>'.$key.'</th>';
                                                 }
                                                 ?>
                                             </tr>
@@ -67,33 +87,28 @@ include_once "include/topnavbar.php";
                                             <?php
                                             $i = 1;
                                             foreach ($count_data as $cd){
-
                                                 echo '<tr>';
-                                                echo '<td> '.$i.' </td>';
-                                                echo '<td> '.$cd['machine_type_name'].' </td>';
-                                                echo '<td> '.$cd['count_0_1'].' </td>';
-                                                echo '<td> '.$cd['count_2_3'].' </td>';
-                                                echo '<td> '.$cd['count_4_5'].' </td>';
-                                                echo '<td> '.$counts['5<'].' </td>';
+                                                echo '<td>'.$i.'</td>';
+                                                echo '<td>'.$cd['machine_type_name'].'</td>';
+                                                echo '<td>'.$cd['count_0_1'].'</td>';
+                                                echo '<td>'.$cd['count_2_3'].'</td>';
+                                                echo '<td>'.$cd['count_4_5'].'</td>';
+                                                echo '<td>'.$counts['5<'].'</td>';
                                                 echo '</tr>';
                                                 $i++;
                                             }
-
                                             ?>
                                         </tbody>
                                     </table>
                                 </div>
-
                             </div>
                             <div class="card-footer">
-
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-
+                <!-- Machine by Type Section -->
                 <div class="card mt-2">
                     <div class="card-body">
                         <h5 class="card-title">Machine by Type</h5>
@@ -119,12 +134,11 @@ include_once "include/topnavbar.php";
                                 <div class="allocated_machines_div"></div>
                             </div>
                         </div>
-
                     </div>
                 </div>
-
             </div>
 
+            <!-- Modals remain the same -->
             <div class="modal fade" tabindex="-1" role="dialog" id="availableMachinesModal">
                 <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-content">
@@ -136,16 +150,13 @@ include_once "include/topnavbar.php";
                         <div class="modal-body">
                             <div id="availableMachinesMsg"></div>
                             <div id="availableMachinesResponse"></div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
                         </div>
-
-
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+                    </div>
+                </div>
+            </div>
 
             <div class="modal fade" tabindex="-1" role="dialog" id="repairingMachinesModal">
                 <div class="modal-dialog modal-xl" role="document">
@@ -158,16 +169,13 @@ include_once "include/topnavbar.php";
                         <div class="modal-body">
                             <div id="repairingMachinesMsg"></div>
                             <div id="repairingMachinesResponse"></div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
                         </div>
-
-
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+                    </div>
+                </div>
+            </div>
         </main>
         <?php include "include/footerbar.php"; ?>
     </div>
