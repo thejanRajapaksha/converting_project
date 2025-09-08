@@ -2,7 +2,7 @@
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-class StockReportinfo extends CI_Model {
+class GrnReportinfo extends CI_Model {
 
     public function Suppliearget() {
         $this->db->select('suppliername, idtbl_supplier');
@@ -12,7 +12,7 @@ class StockReportinfo extends CI_Model {
         return $respond;
     }
 
-    public function generateStockReportPDF($rows, $filters)
+    public function generateGrnReportPDF($rows, $filters)
     {
         $this->load->library('pdf');
 
@@ -29,8 +29,7 @@ class StockReportinfo extends CI_Model {
             <style>
                 body { font-family: DejaVu Sans, sans-serif; font-size: 11px; }
                 table { border-collapse: collapse; width: 100%; }
-                th { border: 1px solid #000; padding: 5px; text-align: center; }
-                td { border: 1px solid #000; padding: 5px; text-align: center; }
+                th, td { border: 1px solid #000; padding: 5px; text-align: left; }
                 th { background-color: #f2f2f2; }
                 .text-right { text-align: right; }
                 .header-row {
@@ -68,14 +67,16 @@ class StockReportinfo extends CI_Model {
                     <img src="' . $logo_base64 . '" alt="Company Logo" />
                 </div>
                 <div class="title-container">
-                    <h2>Stock Report</h2>
+                    <h2>GRN Stock Report</h2>
                 </div>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Sparepart / Material / Machine</th>
+                        <th>ID</th>
+                        <th>Name / Material / Machine</th>
                         <th>Batch No</th>
+                        <th>Location</th>
                         <th>Qty</th>
                         <th class="text-right">Unit Price</th>
                     </tr>
@@ -86,16 +87,18 @@ class StockReportinfo extends CI_Model {
             $colValue = '';
             if ($filters['search_type'] == 1) {
                 $colValue = htmlspecialchars($r['name']);
-            } elseif ($filters['search_type'] == 2 && isset($r['materialname'])) {
+            } elseif ($filters['search_type'] == 2) {
                 $colValue = htmlspecialchars($r['materialname']);
-            } elseif (isset($r['machine'])) {
+            } else {
                 $colValue = htmlspecialchars($r['machine']);
             }
 
             $html .= '
                 <tr>
+                    <td>' . htmlspecialchars($r['idtbl_print_grn']) . '</td>
                     <td>' . $colValue . '</td>
                     <td>' . htmlspecialchars($r['batchno']) . '</td>
+                    <td>' . htmlspecialchars($r['location']) . '</td>
                     <td>' . htmlspecialchars($r['qty']) . '</td>
                     <td class="text-right">' . number_format($r['unitprice'], 2) . '</td>
                 </tr>';
