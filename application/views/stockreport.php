@@ -154,7 +154,7 @@ $(document).ready(function () {
             }
         ],
         ajax: {
-            url: "<?php echo base_url() ?>scripts/stockReportlist.php",
+            url: "<?php echo base_url() ?>scripts/stockreportlist.php",
             type: "POST",
             data: function (d) {
                 d.type = $('#type').val();
