@@ -265,6 +265,8 @@
 		$tableData=$this->input->post('tableData');
 		$orderdate=$this->input->post('orderdate');
 		$discounttotal=$this->input->post('discounttotal');
+		$vat=$this->input->post('vat');
+		$discount=$this->input->post('discount');
 		$vatamounttotal=$this->input->post('vatamounttotal');
 		$grosstotal=$this->input->post('grosstotal');
 		$total=$this->input->post('total');
@@ -282,6 +284,7 @@
 			'orderdate'=> $orderdate,
 			'duedate'=> 'null',
 			'subtotal'=>'0',
+			'vat'=> $vat,
 			'vattotamount'=> '0',
 			'discountamount'=> '0',
 			'nettotal'=>$grosstotal,
@@ -389,8 +392,8 @@
 				$dataone=array('qty'=> $qty,
 					'unitprice'=> $unit,
 					'tbl_measurements_idtbl_measurements'=> $uomID,
-					'discount'=>'0',
-					'vat'=> '0',
+					'discount'=> $discount,
+					'vat'=> $vat,
 					'vatamount'=>'0',
 					'grossprice'=>'0',
 					'netprice'=> $nettotal,

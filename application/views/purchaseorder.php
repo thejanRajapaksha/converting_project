@@ -180,9 +180,8 @@ include "include/topnavbar.php";
 
 							<div class="form-row mb-1">
 								<div class="col">
-									<label class="small font-weight-bold text-dark" hidden>Vat (%)</label>
-									<input type="text" id="vat" name="vat" class="form-control form-control-sm" value="0"
-										hidden>
+									<label class="small font-weight-bold text-dark">Vat (%)</label>
+									<input type="text" id="vat" name="vat" class="form-control form-control-sm" value="0">
 								</div>
 
 								<div class="col">
@@ -324,10 +323,10 @@ include "include/topnavbar.php";
 									<label class="small font-weight-bold text-dark">Supplier*</label>
 									<select class="form-control form-control-sm" name="editsupplier" id="editsupplier">
 										<option value="">Select</option>
-										 <?php foreach($supplierlist->result() as $rowsupplierlist){ ?>
-										<option value="<?php echo $rowsupplierlist->idtbl_supplier ?>">
-											<?php echo $rowsupplierlist->suppliername ?></option>
-										<?php } ?> 
+										<!-- <?php //foreach($supplierlist->result() as $rowsupplierlist){ ?>
+										<option value="<?php //echo $rowsupplierlist->idtbl_supplier ?>">
+											<?php //echo $rowsupplierlist->name ?></option>
+										<?php //} ?> -->
 									</select>
 								</div>
 							</div>
@@ -670,10 +669,28 @@ $(document).ready(function() {
 		}
 	});
 
-    // $('#supplier').select2({
-    //     dropdownParent: $('#staticBackdrop'),
-    //     width: '100%',
-    // });
+    $("#editsupplier").select2({
+		dropdownParent: $('#porderEditmodal'),
+		width: '100%',
+		ajax: {
+			url: "<?php echo base_url() ?>Purchaseorder/Getsupplierlist",
+			type: "post",
+			dataType: 'json',
+			delay: 250,
+			data: function (params) {
+				return {
+					searchTerm: params.term,  // search term
+                    ordertype: $('#editordertype').val()
+				};
+			},
+			processResults: function (response) {
+				return {
+					results: response
+				};
+			},
+			cache: true
+		}
+	});
 
 
     var addcheck = '<?php echo $addcheck; ?>';
@@ -1504,6 +1521,8 @@ $(document).ready(function() {
     		total: $('#hidetotalorder').val(),
     		discounttotal: $('#hidediscountlorder').val(),
     		vatamounttotal: $('#hidevatlorder').val(),
+    		vat: $('#vat').val(),
+            discount: $('#discount').val(),
     		grosstotal: $('#hidegrosstotalorder').val(),
     		remark: $('#remark').val(),
     		supplier: $('#supplier').val(),

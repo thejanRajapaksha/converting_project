@@ -56,7 +56,7 @@ include_once "include/topnavbar.php";
                     <div class="col-md-5">
                         <div class="card h-100">
                             <div class="card-body" style="padding-top: 15px;">
-                                <<canvas id="machine_ins_pie_chart" style="width: 100% !important; height: 400px !important;"></canvas>
+                                <canvas id="machine_ins_pie_chart" style="width: 100% !important; height: 400px !important;"></canvas>
                             </div>
                             <div class="card-footer">
                                 <a href="<?php echo base_url(); ?>MachineIn" class="text-primary float-right">View More <i class="fa fa-arrow-right"></i></a>

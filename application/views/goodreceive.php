@@ -570,7 +570,7 @@ $(document).ready(function() {
             var porderdetailsid = parseFloat($('#porderdetailsid').val());
 
             var newtotal;
-            var newprice;
+            var newprice;console.log(pieces);
             if (pieces !== 0) {
                 newtotal = (unitprice * pieces) - discount;
                 newprice = (unitprice * pieces / newqty)  - discount;
@@ -649,6 +649,7 @@ $(document).ready(function() {
     	var r = confirm("Are you sure you want to remove this product?");
     	if (r == true) {
     		$(this).closest('tr').remove();
+            $('#piecesper_qty').val('0');
 
     		var sum = 0;
     		$(".total").each(function () {
