@@ -85,6 +85,8 @@ class PdfGRNinfo extends CI_Model {
         $options->set('isPhpEnabled', true);
         $dompdf = new Dompdf($options);
 
+        $logo_base64 = $this->getBase64Logo();
+
         $this->db->select('tbl_company.company AS companyname,tbl_company.address1 As companyaddress,tbl_company.mobile AS companymobile, tbl_company.phone companyphone,tbl_company.email AS companyemail, tbl_company_branch.branch AS branchname');
 		$this->db->from('tbl_print_grn');
 		$this->db->join('tbl_company', 'tbl_company.idtbl_company = tbl_print_grn.tbl_company_idtbl_company', 'left');
@@ -129,27 +131,53 @@ class PdfGRNinfo extends CI_Model {
                     right: 0px;
                     height: 128px;
                 }
+
+                .logo-container img {
+                    max-height: 40px;
+                    max-width: 50px;
+                }
             </style>
         </head>
         <body>
         <header>
             <table style="width:100%;border-collapse: collapse;">
                 <tr>
-                    <td style="text-align: center;vertical-align: top;padding: 0px;">
-                        <p style="font-size: 15px;font-weight: bold; margin-top: 0px; margin-bottom: 0px;text-transform: uppercase;">'.$companydetails->row()->companyname.'</p>
-                        <p style="margin:0px;font-size:13px;text-transform: uppercase;">' . $companydetails->row()->companyaddress . '</p>
+                    <!-- Logo left -->
+                    <td style="text-align: left; vertical-align: top; padding: 0px; width: 15%;">
+                        <div class="logo-container">
+                            <img src="' . $logo_base64 . '" alt="Company Logo">
+                        </div>
                     </td>
+
+                    <!-- Company details + GRN title center -->
+                    <td style="text-align: center; vertical-align: top; padding: 0px;">
+                        <p style="font-size: 15px;font-weight: bold; margin: 0; text-transform: uppercase;">
+                            '.$companydetails->row()->companyname.'
+                        </p>
+                        <p style="margin:0;font-size:13px;text-transform: uppercase;">
+                            '.$companydetails->row()->companyaddress.'
+                        </p>
+                        
+                    </td>
+
+                    <!-- Keep empty space right side for balance -->
+                    <td style="width:15%;"></td>
                 </tr>
+
+                <!-- Second row with supplier + GRN details -->
                 <tr>
-                    <td>
+                    <td colspan="3">
                         <table style="width:100%;border-collapse: collapse;">
-                            <td width="40%" style="vertical-align: top;">
+                            <td width="30%" style="vertical-align: top;">
                                 <p style="margin:0px;font-size: 13px;font-weight: bold;">'. $query->row()->suppliername .'</p>
                                 <p style="margin:0px;font-size: 13px;">'. $query->row()->delivery_address_line1 .', '. $query->row()->delivery_address_line2 .',</p>
                                 <p style="margin:0px;font-size: 13px;">'. $query->row()->delivery_city .',</p>
                                 <p style="margin:0px;font-size: 13px;">'. $query->row()->delivery_state .'</p>
                             </td>
-                            <td width="30%" style="vertical-align: top;text-align: left;font-size: 18px;font-weight: bold;"><u>Good Receive Note</u></td>
+                            <td width="30%" style="text-align: center; vertical-align: top;">
+                                <p style="margin:0px 0 0 0;font-size:18px;font-weight:bold;text-decoration:underline;">
+                                Good Receive Note</p>
+                            </td>
                             <td width="30%" style="vertical-align: top;">
                                 <table style="width:100%;border-collapse: collapse;">
                                     <tr>
@@ -163,9 +191,11 @@ class PdfGRNinfo extends CI_Model {
                                         <td style="font-size: 13px;">'. $query->row()->grndate .'</td>
                                     </tr>
                                     <tr>
-                                        <td style="font-size: 13px;font-weight: bold;" width="50%">Invoice Number</td>
-                                        <td style="font-size: 13px;font-weight: bold;" width="5%">:</td>
-                                        <td style="font-size: 13px;">'. $query->row()->invoicenum .'</td>
+                                        <td style="font-size: 13px; font-weight: bold; width:35%;">Invoice Number</td>
+                                        <td style="font-size: 13px; font-weight: bold; width:5%;">:</td>
+                                        <td style="font-size: 13px; width:60%; word-wrap: break-word; white-space: normal;">
+                                            '. $query->row()->invoicenum .'
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td style="font-size: 13px;font-weight: bold;" width="50%">Batch Number</td>
@@ -613,4 +643,15 @@ class PdfGRNinfo extends CI_Model {
         $this->pdf->render();
         $this->pdf->stream( "MULTI OFFSET PRINTERS-PURCHASE ORDER- ".$recordID.".pdf", array("Attachment"=>0));
     }
+
+    private function getBase64Logo() {
+        // Option 1: Load from file and convert to base64
+        $image_path = FCPATH . 'images/logo1.png'; // Adjust path as needed
+        if (file_exists($image_path)) {
+            $image_data = file_get_contents($image_path);
+            $image_type = pathinfo($image_path, PATHINFO_EXTENSION);
+            return 'data:image/' . $image_type . ';base64,' . base64_encode($image_data);
+        }
+        
+   }
 }
