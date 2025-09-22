@@ -9,6 +9,7 @@ class StockReport extends CI_Controller {
         $this->load->model('Commeninfo');
         $result['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
         $result['getsuppier'] = $this->StockReportinfo->Suppliearget();
+        $result['getmachinemodel'] = $this->StockReportinfo->Machinemodelget();
         $this->load->view('stockreport', $result);
     }
 

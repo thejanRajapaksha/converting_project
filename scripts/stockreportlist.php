@@ -22,6 +22,7 @@ require('ssp.customized.class.php');
 
 $type     = isset($_POST['type']) ? intval($_POST['type']) : 0;
 $supplier = isset($_POST['supplier']) ? intval($_POST['supplier']) : 0;
+$machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 
 // default extraWhere
 $extraWhere = " `u`.`status` = 1 ";
@@ -49,6 +50,9 @@ if ($type == 1) {
 // supplier filter
 if ($supplier > 0) {
     $extraWhere .= " AND `u`.`supplier_id` = {$supplier}";
+}
+if ($machinemodel > 0 && $type == 1) {
+    $extraWhere .= " AND `ua`.`model` = {$machinemodel}";
 }
 
 echo json_encode(

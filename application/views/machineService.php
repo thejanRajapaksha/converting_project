@@ -143,7 +143,7 @@ include_once "include/topnavbar.php";
                                                             <input type="number" id="qty" class="form-control form-control-sm" />
                                                         </div>
                                                     </div>
-                                                    <button class="btn btn-primary btn-sm mt-2 mb-2 float-right" id="addBtn"> Add </button>
+                                                    <button type="button" class="btn btn-primary btn-sm mt-2 mb-2 float-right" id="addBtn"> Add </button>
                                                 </div>
 
                                                 <div class="form-group table-responsive">
@@ -268,7 +268,7 @@ include_once "include/topnavbar.php";
                                                             <input type="number" id="edit_qty" class="form-control form-control-sm" />
                                                         </div>
                                                     </div>
-                                                    <button class="btn btn-primary btn-sm mt-2 mb-2 float-right" id="edit_addBtn"> Add </button>
+                                                    <button type="button" class="btn btn-primary btn-sm mt-2 mb-2 float-right" id="edit_addBtn"> Add </button>
                                                 </div>
 
                                                 <div class="form-group table-responsive">
@@ -624,6 +624,14 @@ $(document).ready(function() {
   });
 
 });
+
+// Prevent Select2 inside Bootstrap modal from closing the modal
+$(document).on('select2:open', () => {
+    document.querySelectorAll('.select2-container--open').forEach(el => {
+        el.closest('.modal').removeAttribute('tabindex');
+    });
+});
+
 
 // edit function
 function editFunc(id) {

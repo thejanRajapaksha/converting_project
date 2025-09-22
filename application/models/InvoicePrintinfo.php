@@ -29,6 +29,8 @@ class InvoicePrintinfo extends CI_Model{
 		$companydetails = $this->db->get();
 
         $net = sprintf('%0.2f', $respond->row(0)->nettotal);
+        $tax = sprintf('%0.2f', $respond->row(0)->vattotamount);
+        $exnet = sprintf('%0.2f', $respond->row(0)->nettotal - $respond->row(0)->vattotamount);
     
         $sql2="SELECT 
         `tbl_print_porder_detail`.*,
@@ -258,7 +260,7 @@ class InvoicePrintinfo extends CI_Model{
                                 </tr>
                                 <tr>
                                     <td colspan="5" style="border-left: 1px solid #000; border-right: 1px solid #000; font-size:11px; padding: 5px;">IP REF</td>
-                                    <td style="border-right: 1px solid #000; text-align:right; padding: 5px; padding-left:35px;">Tax</td>
+                                    <td style="border-right: 1px solid #000; text-align:right; padding: 5px; padding-left:35px;">Vat</td>
                                     <td style="border-right: 1px solid #000; text-align:right; padding: 5px;padding-right:10px;"><label id="lbldiscount"></label></td>
                                 </tr>
                                 <tr>
@@ -272,12 +274,12 @@ class InvoicePrintinfo extends CI_Model{
                                 <tr>
                                     <td colspan="5" style="border-top: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; font-size:12px; padding: 5px;">PRF INV DETAILS.</td>
                                     <td style="border-top: 1px solid #000; border-right: 1px solid #000; text-align:right; padding: 5px; padding-left:35px;">Total (Excl)</td>
-                                    <td style="border-top: 1px solid #000; border-right: 1px solid #000; text-align:right; padding: 5px;padding-right:10px;"><label id="lbltotal">'.number_format($net,2).'</label></td>
+                                    <td style="border-top: 1px solid #000; border-right: 1px solid #000; text-align:right; padding: 5px;padding-right:10px;"><label id="lbltotal">'.number_format($exnet,2).'</label></td>
                                 </tr>
                                 <tr>
                                     <td colspan="5" style="border-left: 1px solid #000; border-right: 1px solid #000; font-size:11px; padding: 5px;">IP REF</td>
-                                    <td style="border-right: 1px solid #000; text-align:right; padding: 5px; padding-left:35px;">Tax</td>
-                                    <td style="border-right: 1px solid #000; text-align:right; padding: 5px;padding-right:10px;"><label id="lbldiscount"></label></td>
+                                    <td style="border-right: 1px solid #000; text-align:right; padding: 5px; padding-left:35px;">Vat</td>
+                                    <td style="border-right: 1px solid #000; text-align:right; padding: 5px;padding-right:10px;"><label id="lbldiscount">'.number_format($tax,2).'</label></td>
                                 </tr>
                                 <tr>
                                     <td colspan="5" style="border-bottom: 1px solid #000; border-left: 1px solid #000; border-right: 1px solid #000; padding: 5px;"></td>

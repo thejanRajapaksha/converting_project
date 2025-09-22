@@ -35,7 +35,7 @@ class PdfGRNinfo extends CI_Model {
         $count = 0;
         $section = 1;
 
-        $totalSum = 0;
+        // $totalSum = 0;
         $grn_total = $query->row()->grn_total;
         $grn_vat = $query->row()->vatamount;
 
@@ -58,7 +58,7 @@ class PdfGRNinfo extends CI_Model {
                 $itemdesc = $rowlist->machine;
             }
         
-            $totalSum += $rowlist->total;
+            // $totalSum += $rowlist->total;
         
             $dataArray[$section][] = [
                 'itemcode' => $itemcode,
@@ -264,7 +264,11 @@ class PdfGRNinfo extends CI_Model {
                         </tr>
                     </thead>
                     <tbody>';
+
+                        $totalSum = 0;
 						foreach ($section as $row) {
+                            $rowTotal = ((float)$row['received'] * (float)$row['price']); // calculate row total
+                            $totalSum += $rowTotal;
 							$html .= '<tr>
 								<td style="font-size: 12px;border: 1px thin solid;padding-left: 10px;">' . htmlspecialchars($row['itemcode']) . '</td>
 								<td style="width: 35%;text-align:left;font-size: 12px;border: 1px thin solid;padding-left: 10px;">' . htmlspecialchars($row['itemdesc']) . '</td>
@@ -273,7 +277,7 @@ class PdfGRNinfo extends CI_Model {
 								<td style="text-align:center;font-size: 12px;border: 1px thin solid;">' . htmlspecialchars($row['received']) . '</td>
 								<td style="text-align:center;font-size: 12px;border: 1px thin solid;">' . htmlspecialchars($row['unit']) . '</td>
 								<td style="text-align:right;font-size: 12px;border: 1px thin solid;padding-right: 5px;">' . number_format(htmlspecialchars($row['price']), 2) . '</td>
-								<td style="text-align:right;font-size: 12px;border: 1px thin solid;padding-right: 5px;">' . number_format(htmlspecialchars($row['total']), 2) . '</td>
+								<td style="text-align:right;font-size: 12px;border: 1px thin solid;padding-right: 5px;">' . number_format($rowTotal, 2) . '</td>
 							</tr>';
 						}
 					$html.='</tbody>';

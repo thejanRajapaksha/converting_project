@@ -44,6 +44,16 @@ include "include/topnavbar.php";
                                             <?php } ?>
                                         </select>
                                     </div>
+                                    <div class="col-2">
+                                        <label class="small font-weight-bold">Machine Model*</label>
+                                        <select class="form-control form-control-sm selecter2 px-0" name="machinemodel" id="machinemodel">
+                                            <option value="">Select</option>
+                                            <option value="0">All</option>
+                                            <?php foreach ($getmachinemodel->result() as $row) { ?>
+                                                <option value="<?php echo $row->id ?>"><?php echo $row->name ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
                                     <div class="col-2 align-self-end">
                                         <button class="btn btn-sm btn-primary" id="btnSearch">Search</button>
                                     </div>
@@ -159,6 +169,7 @@ $(document).ready(function () {
             data: function (d) {
                 d.type = $('#type').val();
                 d.supplier = $('#supplier').val();
+                d.machinemodel = $('#machinemodel').val();
             }
         },
         "order": [[0, "desc"]],

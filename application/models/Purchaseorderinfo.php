@@ -266,6 +266,8 @@
 		$orderdate=$this->input->post('orderdate');
 		$discounttotal=$this->input->post('discounttotal');
 		$vat=$this->input->post('vat');
+		$vat_type=$this->input->post('vat_type');
+		$vatamount=$this->input->post('vatamount');
 		$discount=$this->input->post('discount');
 		$vatamounttotal=$this->input->post('vatamounttotal');
 		$grosstotal=$this->input->post('grosstotal');
@@ -277,6 +279,7 @@
 		$company_id=$this->input->post('company_id');
 		$branch_id=$this->input->post('branch_id');
 		$porderrequest=$this->input->post('porderrequest');
+		$modeltotalpayment=$this->input->post('modeltotalpayment');
 
 		$updatedatetime=date('Y-m-d H:i:s');
 
@@ -285,9 +288,10 @@
 			'duedate'=> 'null',
 			'subtotal'=>'0',
 			'vat'=> $vat,
-			'vattotamount'=> '0',
+			'vat_type' => $vat_type,
+			'vattotamount'=> $vatamount,
 			'discountamount'=> '0',
-			'nettotal'=>$grosstotal,
+			'nettotal'=>$modeltotalpayment,
 			'confirmstatus'=> '0',
 			'grnconfirm'=>'0',
 			'remark'=> $remark,
@@ -999,6 +1003,9 @@
 			$item->sparepart = $row->name;
 			$item->netprice = $row->netprice;
 			$item->qty = $row->qty;
+			$item->vat = $row->vat;
+			$item->vat_type = $row->vat_type;
+			$item->vatamount = $row->vattotamount;
 			$items[] = $item;
 		}
 		$obj->items = $items;
@@ -1017,7 +1024,9 @@
         if(is_array($tableData) && !empty($tableData)){
 			$orderdate=$this->input->post('orderdate');
 			$discounttotal=$this->input->post('discounttotal');
-			$vatamounttotal=$this->input->post('vatamounttotal');
+			$vat=$this->input->post('vat');
+			$vatamount=$this->input->post('vatamount');
+			$vat_type=$this->input->post('vat_type');
 			$grosstotal=$this->input->post('grosstotal');
 			$total=$this->input->post('total');
 			$remark=$this->input->post('remark');
@@ -1029,14 +1038,17 @@
 			$porderID=$this->input->post('porderID');
 			$porderreqID=$this->input->post('porderreqID');
             $updatedatetime=date('Y-m-d H:i:s');
+			$modeltotalpayment=$this->input->post('modeltotalpayment');
     
 			$data=array(
 			'orderdate'=> $orderdate,
 			'duedate'=> 'null',
 			'subtotal'=>'0',
-			'vattotamount'=> '0',
+			'vat'=> $vat,
+			'vat_type'=> $vat_type,
+			'vattotamount'=> $vatamount,
 			'discountamount'=> '0',
-			'nettotal'=>$grosstotal,
+			'nettotal'=>$modeltotalpayment,
 			'confirmstatus'=> '0',
 			'grnconfirm'=>'0',
 			'remark'=> $remark,

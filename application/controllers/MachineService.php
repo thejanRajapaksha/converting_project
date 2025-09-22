@@ -591,23 +591,25 @@ class MachineService extends CI_Controller
         $resultCount = 25;
         $offset = ($page - 1) * $resultCount;
 
-        $this->db->select('employees.* ');
-        $this->db->from('employees');
-        $this->db->like('emp_name_with_initial', $term, 'both');
+        $this->db->select('service_employee.* ');
+        $this->db->from('service_employee');
+        $this->db->like('employee_name', $term, 'both');
+        $this->db->where('status', 1);
         $query = $this->db->get();
         $this->db->limit($resultCount, $offset);
         $machine_ins = $query->result_array();
 
-        $this->db->select('employees.* ');
-        $this->db->from('employees');
-        $this->db->like('emp_name_with_initial', $term, 'both');
+        $this->db->select('service_employee.* ');
+        $this->db->from('service_employee');
+        $this->db->like('employee_name', $term, 'both');
+        $this->db->where('status', 1);
         $count = $this->db->count_all_results();
 
         $data = array();
         foreach ($machine_ins as $v) {
             $data[] = array(
-                'id' => $v['id'],
-                'text' => $v['emp_name_with_initial']
+                'id' => $v['employee_id'],
+                'text' => $v['employee_name']
             );
         }
 

@@ -12,6 +12,14 @@ class StockReportinfo extends CI_Model {
         return $respond;
     }
 
+    public function Machinemodelget() {
+        $this->db->select('name, id');
+        $this->db->from('machine_models');
+        $this->db->where('active', 1);
+        $respond = $this->db->get();
+        return $respond;
+    }
+
     public function generateStockReportPDF($rows, $filters)
     {
         $this->load->library('pdf');
