@@ -857,9 +857,9 @@ function viewFunc(id)
                 res_tr += '<tr>' +
                     '<td>' + value.name + ' - ' + value.part_no +  '</td>' +
                     '<td>' + value.qty + '</td>' +
-                    '<td style="text-align: right">' + value.unit_price + '</td>' +
+                    '<td style="text-align: right">' + value.unitprice + '</td>' +
                     '</tr>';
-                total = (parseFloat(value.qty)) * (total + parseFloat(value.unit_price));
+                total = (parseFloat(value.qty)) * (total + parseFloat(value.unitprice));
             });
             res_table += res_tr + '</tbody> ';
 

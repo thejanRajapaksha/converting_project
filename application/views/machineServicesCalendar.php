@@ -734,7 +734,7 @@ include "include/topnavbar.php";
     function viewFunc(id)
     {
         $.ajax({
-            url: base_url + 'MachineServices/fetchIssuedServiceItems/'+id,
+            url: base_url + 'MachineService/fetchIssuedServiceItems/'+id,
             type: 'post',
             dataType: 'json',
             success:function(data) {
@@ -748,9 +748,9 @@ include "include/topnavbar.php";
                         '<td>' + value.sp_name + '</td>' +
                         '<td>' + value.allocated_qty + '</td>' +
                         '<td>' + value.issued_qty + '</td>' +
-                        '<td style="text-align: right">' + value.unit_price + '</td>' +
+                        '<td style="text-align: right">' + value.unitprice + '</td>' +
                         '</tr>';
-                    total += (parseFloat(value.issued_qty)) * ( parseFloat(value.unit_price));
+                    total += (parseFloat(value.issued_qty)) * ( parseFloat(value.unitprice));
                 });
                 res_table += res_tr + '</tbody>';
 

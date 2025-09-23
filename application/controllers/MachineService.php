@@ -250,58 +250,79 @@ class MachineService extends CI_Controller
 
 
     public function fetchAllocatedServiceItems($service_id)
-    {
-        $sql = "SELECT sp.*, msei.qty, msei.id as estimate_id, sp.unit_price
-                    FROM machine_service_estimated_items msei 
-                    LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
-                    WHERE msei.machine_service_id = '$service_id' 
-                    AND msei.is_deleted = 0
-                    ";
-        $query = $this->db->query($sql);
-        $data['sc'] = $query->result_array();
+{
+    $sql = "SELECT sp.*, msei.qty, msei.id as estimate_id, tps.unitprice
+            FROM machine_service_estimated_items msei 
+            LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
+            LEFT JOIN (
+                SELECT t1.tbl_sparepart_id, t1.unitprice
+                FROM tbl_print_stock t1
+                WHERE t1.qty > 0
+                  AND t1.idtbl_print_stock = (
+                    SELECT MIN(t2.idtbl_print_stock)
+                    FROM tbl_print_stock t2
+                    WHERE t2.tbl_sparepart_id = t1.tbl_sparepart_id
+                      AND t2.qty > 0
+                  )
+            ) tps ON tps.tbl_sparepart_id = msei.spare_part_id 
+            WHERE msei.machine_service_id = '$service_id' 
+              AND msei.is_deleted = 0";
+    $query = $this->db->query($sql);
+    $data['sc'] = $query->result_array();
 
-        $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei.created_at, msei2.qty as estimated_qty, sp.unit_price
-                    FROM machine_service_allocated_items msei 
-                    LEFT JOIN machine_service_estimated_items msei2 ON msei2.id = msei.estimate_id
-                    LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
-                    WHERE msei.machine_service_id = '$service_id' 
-                    AND msei.is_deleted = 0
-                    ";
-        $query1 = $this->db->query($sql1);
-        $data['ac'] = $query1->result_array();
+    $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei.created_at, 
+                    msei2.qty as estimated_qty, tps.unitprice
+            FROM machine_service_allocated_items msei 
+            LEFT JOIN machine_service_estimated_items msei2 
+                   ON msei2.id = msei.estimate_id
+            LEFT JOIN (
+                SELECT t1.tbl_sparepart_id, t1.unitprice
+                FROM tbl_print_stock t1
+                WHERE t1.qty > 0
+                  AND t1.idtbl_print_stock = (
+                    SELECT MIN(t2.idtbl_print_stock)
+                    FROM tbl_print_stock t2
+                    WHERE t2.tbl_sparepart_id = t1.tbl_sparepart_id
+                      AND t2.qty > 0
+                  )
+            ) tps ON tps.tbl_sparepart_id = msei.spare_part_id 
+            LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
+            WHERE msei.machine_service_id = '$service_id' 
+              AND msei.is_deleted = 0";
+    $query1 = $this->db->query($sql1);
+    $data['ac'] = $query1->result_array();
 
-        $data_main = array();
+    $data_main = array();
 
-        foreach ($data['sc'] as $d) {
-            //get allocated count
-            $estimate_id = $d['estimate_id'];
-            $sql2 = "SELECT SUM(msai.qty) as allo_qty
-                FROM machine_service_allocated_items msai 
-                WHERE msai.estimate_id = '$estimate_id'
-                AND msai.is_deleted = 0
-                GROUP BY msai.estimate_id
-                ";
-            $query2 = $this->db->query($sql2);
-            $data2 = $query2->row_array();
-            $allo_qty = $data2['allo_qty'] ?? 0;
+    foreach ($data['sc'] as $d) {
+        //get allocated count
+        $estimate_id = $d['estimate_id'];
+        $sql2 = "SELECT SUM(msai.qty) as allo_qty
+                 FROM machine_service_allocated_items msai 
+                 WHERE msai.estimate_id = '$estimate_id'
+                   AND msai.is_deleted = 0
+                 GROUP BY msai.estimate_id";
+        $query2 = $this->db->query($sql2);
+        $data2 = $query2->row_array();
+        $allo_qty = $data2['allo_qty'] ?? 0;
 
-            $sub_arr = array(
-                'sp_name' => $d['name'] . ' - ' . $d['part_no'],
-                'sp_id' => $d['id'],
-                'estimate_id' => $d['estimate_id'],
-                'estimate_qty' => $d['qty'],
-                'unit_price' => $d['unit_price'],
-                'allocated_qty' => $allo_qty,
-            );
-            array_push($data_main, $sub_arr);
-
-        }
-        $data['sc_det'] = $data_main;
-
-        $data['main_data'] = $this->Model_machine_services->getMachineServicesData($service_id);
-
-        echo json_encode($data);
+        $sub_arr = array(
+            'sp_name'       => $d['name'] . ' - ' . $d['part_no'],
+            'sp_id'         => $d['id'],
+            'estimate_id'   => $d['estimate_id'],
+            'estimate_qty'  => $d['qty'],
+            'unitprice'     => $d['unitprice'],
+            'allocated_qty' => $allo_qty,
+        );
+        array_push($data_main, $sub_arr);
     }
+    $data['sc_det'] = $data_main;
+
+    $data['main_data'] = $this->Model_machine_services->getMachineServicesData($service_id);
+
+    echo json_encode($data);
+}
+
 
     public function fetchMachineServicesDataById($id = null)
     {
@@ -912,7 +933,7 @@ class MachineService extends CI_Controller
     public function fetchIssuedServiceItems($service_id)
     {
 
-        $sql = "SELECT sp.*, msei.qty, msei.id as issue_id, msai.qty as allocated_qty, sp.unit_price, msei.created_at as issued_at
+        $sql = "SELECT sp.*, msei.qty, msei.id as issue_id, msai.qty as allocated_qty, msei.unitprice, msei.created_at as issued_at
                     FROM machine_service_issued_items msei 
                     LEFT JOIN machine_service_allocated_items msai ON msai.id = msei.a_id
                     LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
@@ -922,10 +943,21 @@ class MachineService extends CI_Controller
         $query = $this->db->query($sql);
         $data['sc'] = $query->result_array();
 
-        $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei2.qty as estimated_qty, sp.unit_price
+        $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei2.qty as estimated_qty, tps.unitprice
                     FROM machine_service_allocated_items msei 
                     LEFT JOIN machine_service_estimated_items msei2 ON msei2.id = msei.estimate_id
                     LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
+                    LEFT JOIN (
+                        SELECT t1.tbl_sparepart_id, t1.unitprice
+                        FROM tbl_print_stock t1
+                        WHERE t1.qty > 0
+                        AND t1.idtbl_print_stock = (
+                            SELECT MIN(t2.idtbl_print_stock)
+                            FROM tbl_print_stock t2
+                            WHERE t2.tbl_sparepart_id = t1.tbl_sparepart_id
+                            AND t2.qty > 0
+                        )
+                    ) tps ON tps.tbl_sparepart_id = msei.spare_part_id
                     WHERE msei.machine_service_id = '$service_id' 
                     AND msei.is_deleted = 0
                     ";
@@ -952,7 +984,7 @@ class MachineService extends CI_Controller
                 'sp_id' => $d['id'],
                 'a_id' => $d['allocate_id'],
                 'allocated_qty' => $d['qty'],
-                'unit_price' => $d['unit_price'],
+                'unitprice' => $d['unitprice'],
                 'issued_qty' => $issue_qty,
             );
             array_push($data_main, $sub_arr);
@@ -984,27 +1016,36 @@ class MachineService extends CI_Controller
         }
 
         for ($i = 0; $i < sizeof($estimated_service_items); $i++) {
-            
-            // 1. Insert into issued items table
+            $sp_id     = $estimated_service_items[$i];
+            $issue_qty = (float)$qty[$i];
+
+            $this->db->select('unitprice');
+            $this->db->where('tbl_sparepart_id', $sp_id);
+            $this->db->where('status', 1);
+            $this->db->where('qty >', 0);
+            $this->db->order_by('idtbl_print_stock', 'ASC');
+            $this->db->limit(1);
+            $unitprice_row = $this->db->get('tbl_print_stock')->row_array();
+            $unitprice = $unitprice_row['unitprice'] ?? 0;
+
+            // 2. Insert into issued items table
             $sub_data = array(
-                'spare_part_id' => $estimated_service_items[$i],
+                'spare_part_id'    => $sp_id,
                 'machine_service_id' => $service_no,
-                'qty' => $qty[$i],
-                'a_id' => $a_id[$i],
-                'created_by' => $this->session->userdata('userid'),
-                'created_at' => date('Y-m-d H:i:s')
+                'qty'              => $qty[$i],
+                'a_id'             => $a_id[$i],
+                'unitprice'        => $unitprice, 
+                'created_by'       => $this->session->userdata('userid'),
+                'created_at'       => date('Y-m-d H:i:s')
             );
             $this->db->insert('machine_service_issued_items', $sub_data);
             $issue_id = $this->db->insert_id();
 
-            // 2. Mark allocated items as finished
+            // 3. Mark allocated items as finished
             $this->db->where('id', $a_id[$i]);
             $this->db->update('machine_service_allocated_items', array('is_finished' => 1));
 
-            // 3. FIFO stock deduction from tbl_print_stock
-            $issue_qty = (float)$qty[$i];
-            $sp_id     = $estimated_service_items[$i];
-
+            // 4. FIFO stock deduction from tbl_print_stock
             $this->db->select('idtbl_print_stock, qty, tbl_sparepart_id, status, insertdatetime');
             $this->db->where('tbl_sparepart_id', $sp_id);
             $this->db->where('status', 1);
@@ -1030,15 +1071,16 @@ class MachineService extends CI_Controller
                 }
             }
 
-            // 4. Still log in tbl_stock for history
+            // 5. Still log in tbl_stock for history
             $this->db->insert('tbl_stock', array(
-                'qty' => '-' . $qty[$i],
-                'service_id' => $service_no,
-                'allocated_id' => $a_id[$i],
-                'issue_id' => $issue_id,
+                'qty'           => '-' . $qty[$i],
+                'service_id'    => $service_no,
+                'allocated_id'  => $a_id[$i],
+                'issue_id'      => $issue_id,
                 'spare_part_id' => $sp_id,
-                'created_by' => $this->session->userdata('userid'),
-                'created_at' => date('Y-m-d H:i:s')
+                'unitprice'    => $unitprice,
+                'created_by'    => $this->session->userdata('userid'),
+                'created_at'    => date('Y-m-d H:i:s')
             ));
         }
 
@@ -1326,7 +1368,7 @@ class MachineService extends CI_Controller
     public function fetchReceivedServiceItems($service_id)
     {
 
-        $sql = "SELECT sp.*, msei.qty, msei.id as receive_id, msai.qty as issued_qty, msei.created_at as received_at
+        $sql = "SELECT sp.*, msei.qty, msai.unitprice, msei.id as receive_id, msai.qty as issued_qty, msei.created_at as received_at
                     FROM machine_service_received_items msei 
                     LEFT JOIN machine_service_issued_items msai ON msai.id = msei.issue_id
                     LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
@@ -1336,7 +1378,7 @@ class MachineService extends CI_Controller
         $query = $this->db->query($sql);
         $data['sc'] = $query->result_array();
 
-        $sql1 = "SELECT sp.*, msei.qty, msei.id as issue_id, msei.created_at 
+        $sql1 = "SELECT sp.*, msei.qty, msei.unitprice, msei.id as issue_id, msei.created_at 
                     FROM machine_service_issued_items msei  
                     LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
                     WHERE msei.machine_service_id = '$service_id' 
@@ -1365,7 +1407,7 @@ class MachineService extends CI_Controller
                 'sp_id' => $d['id'],
                 'issue_id' => $d['issue_id'],
                 'issued_qty' => $d['qty'],
-                'unit_price' => $d['unit_price'],
+                'unitprice' => $d['unitprice'],
                 'received_qty' => $received_qty,
             );
             array_push($data_main, $sub_arr);

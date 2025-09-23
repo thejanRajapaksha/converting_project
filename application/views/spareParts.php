@@ -607,6 +607,14 @@ function editFunc(id) {
   });
 }
 
+// Prevent Select2 inside Bootstrap modal from closing the modal
+$(document).on('select2:open', () => {
+    document.querySelectorAll('.select2-container--open').forEach(el => {
+        el.closest('.modal').removeAttribute('tabindex');
+    });
+});
+
+
 // remove function with SweetAlert
 function removeFunc(id) {
     if (!id) return;

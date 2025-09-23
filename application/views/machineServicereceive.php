@@ -592,9 +592,9 @@ include_once "include/topnavbar.php";
                         '<td>' + value.sp_name + '</td>' +
                         '<td>' + value.issued_qty + '</td>' +
                         '<td>' + value.received_qty + '</td>' +
-                        '<td style="text-align: right">' + value.unit_price + '</td>' +
+                        '<td style="text-align: right">' + value.unitprice + '</td>' +
                         '</tr>';
-                    total += (parseFloat(value.received_qty)) * ( parseFloat(value.unit_price));
+                    total += (parseFloat(value.received_qty)) * ( parseFloat(value.unitprice));
                 });
                 res_table += res_tr + '</tbody> ';
 
@@ -621,7 +621,7 @@ include_once "include/topnavbar.php";
                     res_tr1 += '<tr>' +
                         '<td>' + value.name + ' - ' + value.part_no + '</td>' +
                         '<td>' + value.qty + '</td>' +
-                        '<td>' + value.unit_price + '</td>' +
+                        '<td>' + value.unitprice + '</td>' +
                         '<td>' + value.received_at + '</td>' +
                         '</tr>';
                 });
