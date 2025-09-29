@@ -865,11 +865,11 @@ class MachineService extends CI_Controller
 
         // Fetch Allocated Items
         $sql = "
-        SELECT sp.name, msei.qty, e.emp_name_with_initial
+        SELECT sp.name, msei.qty, e.employee_name
         FROM machine_service_allocated_items msei 
         LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
         LEFT JOIN machine_services ms ON ms.id = msei.machine_service_id
-        LEFT JOIN employees e ON e.id = ms.employee_id
+        LEFT JOIN service_employee e ON e.employee_id = ms.employee_id
         WHERE msei.machine_service_id = '$id' 
         ";
         $query = $this->db->query($sql);
@@ -882,11 +882,11 @@ class MachineService extends CI_Controller
 
         // Fetch Issued Items
         $sql = "
-        SELECT sp.name, msii.qty, e.emp_name_with_initial
+        SELECT sp.name, msii.qty, e.employee_name
         FROM machine_service_issued_items msii 
         LEFT JOIN spare_parts sp ON sp.id = msii.spare_part_id 
         LEFT JOIN machine_services ms ON ms.id = msii.machine_service_id
-        LEFT JOIN employees e ON e.id = ms.employee_id
+        LEFT JOIN service_employee e ON e.employee_id = ms.employee_id
         WHERE msii.machine_service_id = '$id' 
         ";
         $query = $this->db->query($sql);
@@ -899,22 +899,22 @@ class MachineService extends CI_Controller
 
         // Check if this service_no has records in issued table
         $sql1 = "
-        SELECT msii.*, e.emp_name_with_initial 
+        SELECT msii.*, e.employee_name 
         FROM machine_service_issued_items msii
         LEFT JOIN machine_services ms ON ms.id = msii.machine_service_id
-        LEFT JOIN employees e ON e.id = ms.employee_id
+        LEFT JOIN service_employee e ON e.employee_id = ms.employee_id
         WHERE msii.machine_service_id = '$id' AND msii.is_deleted = 0
         ";
         $query1 = $this->db->query($sql1);
         $sc = $query1->result_array();
 
         // Safely access employee name
-        $emp_name_with_initial = isset($sc[0]['emp_name_with_initial']) ? $sc[0]['emp_name_with_initial'] : 'N/A';
+        $employee_name = isset($sc[0]['employee_name']) ? $sc[0]['employee_name'] : 'N/A';
 
         if (!empty($sc)) {
             $result['data'][] = array(
                 $value['service_no'],
-                $emp_name_with_initial,
+                $employee_name,
                 $value['machine_type_name'],
                 $value['s_no'],
                 $value['service_date_from'],

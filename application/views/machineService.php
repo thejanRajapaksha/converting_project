@@ -186,7 +186,7 @@ include_once "include/topnavbar.php";
                                                 aria-hidden="true">&times;</span></button>
                                 </div>
 
-                                <form role="form" action="<?php echo base_url('MachineServices/update') ?>" method="post"
+                                <form role="form" action="<?php echo base_url('MachineService/update') ?>" method="post"
                                     id="updateForm">
 
                                     <div class="modal-body">
@@ -667,7 +667,10 @@ function editFunc(id) {
 
           let option = new Option(response.s_no, response.machine_in_id, true, true);
           $('#edit_machine_in_id').append(option);
-          $('#edit_machine_in_id').trigger('change');
+          $('#edit_machine_in_id').trigger('change');  
+          
+          let empOption = new Option(response.emp_name, response.employee_id, true, true);
+          $('#edit_employee_id').append(empOption).trigger('change');
 
           $("#edit_service_date_from").val(response.service_date_from);
           $("#edit_service_date_to").val(response.service_date_to);

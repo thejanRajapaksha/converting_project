@@ -11,10 +11,10 @@ class Model_machine_services extends CI_Model
     {
         if($id) {
             $sql = "SELECT machine_services.*,
-                m.s_no, mt.name as machine_type_name, e.emp_name_with_initial as emp_name 
+                m.s_no, mt.name as machine_type_name, e.employee_name as emp_name 
             FROM machine_services
             LEFT JOIN machine_ins m on machine_services.machine_in_id = m.id
-            LEFT JOIN employees e on machine_services.employee_id = e.id
+            LEFT JOIN service_employee e on machine_services.employee_id = e.employee_id
             LEFT JOIN machine_types mt on m.machine_type_id = mt.id
             WHERE machine_services.id = ? AND machine_services.is_deleted = 0 ";
             $query = $this->db->query($sql, array($id));
@@ -22,10 +22,10 @@ class Model_machine_services extends CI_Model
         }
 
         $sql = "SELECT machine_services.*,
-                m.s_no, mt.name as machine_type_name, e.emp_name_with_initial as emp_name 
+                m.s_no, mt.name as machine_type_name, e.employee_name as emp_name 
             FROM machine_services
             LEFT JOIN machine_ins m on machine_services.machine_in_id = m.id
-            LEFT JOIN employees e on machine_services.employee_id = e.id
+            LEFT JOIN service_employee e on machine_services.employee_id = e.employee_id
             LEFT JOIN machine_types mt on m.machine_type_id = mt.id
             WHERE machine_services.is_deleted = 0
             ORDER BY id DESC";
