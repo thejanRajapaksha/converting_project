@@ -31,6 +31,7 @@ class MachineDashboard extends CI_Controller
 
         $count_data = [];
         $current_date = date('Y-m-d');
+        $current_date_time = date('Y-m-d H:i:s');
 
         foreach ($machine_types as $d) {
             $date_1 = date('Y-m-d', strtotime($current_date.' -1 year'));
@@ -92,8 +93,12 @@ class MachineDashboard extends CI_Controller
         $repairs_count = $this->db->count_all_results('machine_repairs');
         $data['repairs_count'] = $repairs_count;
 
-        $this->db->where('service_date_from <=', $current_date);
-        $this->db->where('service_date_to >=', $current_date);
+        $this->db->select(' COUNT(machine_services.id) AS total_count');
+        $this->db->join('machine_ins', 'machine_ins.id = machine_services.machine_in_id');
+        $this->db->where('machine_services.is_deleted', 0);
+        $this->db->where('machine_ins.is_deleted', 0);
+        $this->db->where('service_date_from <=', $current_date_time);
+        $this->db->where('service_date_to >=', $current_date_time);
         $services_count = $this->db->count_all_results('machine_services');
         $data['services_count'] = $services_count;
 
