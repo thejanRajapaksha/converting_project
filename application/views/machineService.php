@@ -67,11 +67,11 @@ include_once "include/topnavbar.php";
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-group">
+                                                <!-- <div class="form-group">
                                                     <label for="service_no">Service No</label>
                                                     <input type="text" class="form-control form-control-sm" id="service_no" name="service_no"
                                                         placeholder="Enter Service No" autocomplete="off" readonly>
-                                                </div>
+                                                </div> -->
 
                                                 <div class="form-group">
                                                     <label for="service_no">Job Type</label>
@@ -344,18 +344,18 @@ $(document).ready(function() {
     var statuscheck='<?php echo $statuscheck; ?>';
     var deletecheck='<?php echo $deletecheck; ?>';
     
-    get_service_no();
+    // get_service_no();
 
-    function get_service_no(){
-        $.ajax({
-            url: base_url + 'MachineService/getServiceNo',
-            type: 'POST',
-            dataType: 'json',
-            success: function(response) {
-                $('#service_no').val(response);
-            }
-        });
-    }
+    // function get_service_no(){
+    //     $.ajax({
+    //         url: base_url + 'MachineService/getServiceNo',
+    //         type: 'POST',
+    //         dataType: 'json',
+    //         success: function(response) {
+    //             $('#service_no').val(response);
+    //         }
+    //     });
+    // }
 
     $('#machine_in_id').select2({
         placeholder: 'Select...',
@@ -585,7 +585,7 @@ $(document).ready(function() {
           // reset the form
           $("#createForm")[0].reset();
           $('#machine_in_id').val('').trigger('change');
-          get_service_no();
+        //   get_service_no();
           $("#createForm .form-group").removeClass('has-error').removeClass('has-success');
 
         } else {
@@ -856,13 +856,15 @@ function viewFunc(id)
             let response = data.sc;
             let total = 0;
             $.each(response, function(index, value) {
+                let qty = parseFloat(value.qty) || 0;
+                let unitprice = parseFloat(value.unitprice) || 0;
 
                 res_tr += '<tr>' +
-                    '<td>' + value.name + ' - ' + value.part_no +  '</td>' +
-                    '<td>' + value.qty + '</td>' +
-                    '<td style="text-align: right">' + value.unitprice + '</td>' +
+                    '<td>' + value.name + ' - ' + value.part_no + '</td>' +
+                    '<td>' + qty + '</td>' +
+                    '<td style="text-align: right">' + unitprice.toFixed(2) + '</td>' +
                     '</tr>';
-                total = (parseFloat(value.qty)) * (total + parseFloat(value.unitprice));
+                total += qty * unitprice;
             });
             res_table += res_tr + '</tbody> ';
 

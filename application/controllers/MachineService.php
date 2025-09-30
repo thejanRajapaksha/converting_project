@@ -72,7 +72,6 @@ class MachineService extends CI_Controller
     {
         $response = array();
 
-        $this->form_validation->set_rules('service_no', 'Service No', 'trim|required');
         $this->form_validation->set_rules('machine_in_id', 'Machine', 'trim|required');
         $this->form_validation->set_rules('employee_id', 'Employee', 'trim|required');
         $this->form_validation->set_rules('service_date_from', 'Service Date', 'trim|required');
@@ -94,8 +93,25 @@ class MachineService extends CI_Controller
 
             $this->db->trans_start();
 
+            // 🔹 Generate service number here instead of using posted value
+            $this->db->select('*');
+            $this->db->from('machine_services');
+            $this->db->order_by('id', 'desc');
+            $this->db->limit(1);
+            $query = $this->db->get();
+            $machine_service = $query->row_array();
+
+            if (empty($machine_service)) {
+                $service_id = 1;
+            } else {
+                $service_id = $machine_service['id'] + 1;
+            }
+
+            $service_id = str_pad($service_id, 4, '0', STR_PAD_LEFT); // min 4 digits, expandable
+            $service_no = 'SRV' . $service_id;
+
             $data = array(
-                'service_no' => $this->input->post('service_no'),
+                'service_no' => $service_no,
                 'machine_in_id' => $this->input->post('machine_in_id'),
                 'employee_id' => $this->input->post('employee_id'),
                 'service_date_from' => $this->input->post('service_date_from'),
@@ -106,13 +122,11 @@ class MachineService extends CI_Controller
                 'created_at' => date('Y-m-d H:i:s')
             );
 
-            $create = $this->Model_machine_services->create($data);
-
+            $this->db->insert('machine_services', $data);
             $sp_id = $this->db->insert_id();
 
             $data = array();
             for ($i = 0; $i < count($estimated_service_items); $i++) {
-
                 $data[] = array(
                     'machine_service_id' => $sp_id,
                     'spare_part_id' => $estimated_service_items[$i],
@@ -122,13 +136,14 @@ class MachineService extends CI_Controller
                 );
             }
 
-            $sps_create = $this->db->insert_batch('machine_service_estimated_items', $data);
+            $this->db->insert_batch('machine_service_estimated_items', $data);
 
             $this->db->trans_complete();
 
             if ($this->db->trans_status() == true) {
                 $response['success'] = true;
                 $response['messages'] = 'Successfully created';
+                $response['service_no'] = $service_no; // return it in response if needed
             } else {
                 $response['success'] = false;
                 $response['messages'] = 'Error in the database while creating the operation';
@@ -593,11 +608,7 @@ class MachineService extends CI_Controller
             $service_id = $machine_service['id'] + 1;
         }
 
-        //check if job no string is less than 4 digits
-        if (strlen($service_id) < 4) {
-            //add leading zeroes and trim to last 4 digits
-            $service_id = str_pad($service_id, 4, '0', STR_PAD_LEFT);
-        }
+        $service_id = str_pad($service_id, 4, '0', STR_PAD_LEFT);
 
         $service_no = 'SRV' . $service_id;
 
