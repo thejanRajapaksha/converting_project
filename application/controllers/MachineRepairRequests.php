@@ -33,13 +33,26 @@ class MachineRepairRequests extends CI_Controller
             $query = $this->db->get();
             $result1 = $query->row_array();
 
+            if($value['is_completed'] == 0){
+                // Edit Button
+                $buttons .= '<button type="button" class="btn btn-info btn-sm" title="Edit" onclick="editRepair('.$value['id'].')" data-toggle="modal" data-target="#repairEditModal">
+                                <i class="fas fa-pen"></i>
+                            </button> ';
+                // Complete Button
+                $buttons .= '<button type="button" class="btn btn-success btn-sm" title="Complete" data-id="'.$value['id'].'" data-toggle="modal" data-target="#completeModal">
+                                <i class="fas fa-check-circle"></i>
+                            </button> ';
+
+            }
+
             if(empty($result1)){
-                    $buttons .= '<button type="button" class="btn btn-info btn-sm repair_add_btn" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Create Repair" data-toggle="modal" data-target="#repairAddModal"><i class="fas fa-wrench"></i></button>';
-                    $buttons .= '<button type="button" style="margin:1px;" class="btn btn-warning btn-sm btn_postpone" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Postpone"> <i class="fas fa-stop-circle"></i> </button>';
+                    $buttons .= '<button type="button" class="btn btn-info btn-sm repair_add_btn" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Create Repair" data-toggle="modal" data-target="#repairAddModal"><i class="fas fa-wrench"></i></button> ';
+                    $buttons .= '<button type="button" style="margin:1px;" class="btn btn-warning btn-sm btn_postpone" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Postpone"> <i class="fas fa-stop-circle"></i> </button> ';
             }
                 $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
+            if($value['is_repair'] == 0){
                 $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
-
+            }
             //$status = ($value['active'] == 1) ? '<span class="badge badge-success btn-sm">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
 
             $result['data'][$key] = array(
@@ -68,7 +81,8 @@ class MachineRepairRequests extends CI_Controller
         if ($this->form_validation->run() == TRUE) {
             $data = array(
                 'machine_in_id' => $this->input->post('machine_in_id'),
-                'repair_in_date' => $this->input->post('repair_date')
+                'repair_in_date' => $this->input->post('repair_date'),
+                'is_repair' => 0,
             );
 
             $create = $this->model_machine_repair_requests->create($data);

@@ -366,6 +366,141 @@ include "include/topnavbar.php";
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
+
+                <div class="modal fade" id="repairEditModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Repair Details</h5>
+                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="row mb-4">
+                                    <div class="col-sm-3">
+                                        <label>Machine Type :</label>
+                                        <span id="edit_machine_type_span"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <form method="post" id="edit_service_item_form">
+                                            <div class="form-group">
+                                                <label>Service Item</label>
+                                                <select class="form-control form-control-sm" id="edit_service_item_id" name="edit_service_item_id" required>
+                                                    <option value="">Select...</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Quantity</label>
+                                                <input type="number" step="0.01" class="form-control form-control-sm" id="edit_quantity" name="edit_quantity" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Price</label>
+                                                <input type="number" step="0.01" class="form-control form-control-sm" id="edit_price" name="edit_price" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-sm btn-success float-right" id="edit_add_item_btn">Add</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    <div class="col-sm-9">
+                                        <h5>Repair Detail</h5>
+                                        <hr>
+                                        <div id="edit_modal_msg"></div>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm" id="edit_service_detail_table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Service Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                        <th>Total</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="3" align="right"><label> Sub Total</label></td>
+                                                        <td id="edit_sub_total"></td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Repair Done By</label>
+                                                    <select class="form-control form-control-sm" id="edit_repair_done_by" required></select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Repair Charge</label>
+                                                    <input type="number" step="0.01" class="form-control form-control-sm" id="edit_repair_charge">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Transport Charge</label>
+                                                    <input type="number" step="0.01" class="form-control form-control-sm" id="edit_transport_charge">
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Repair Type</label><br>
+                                                    <input type="radio" name="edit_repair_type" id="edit_repair_type_inside" value="inside" checked> Inside
+                                                    <input type="radio" name="edit_repair_type" id="edit_repair_type_outside" value="outside"> Outside
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Remarks</label>
+                                                    <textarea class="form-control form-control-sm" id="edit_remarks"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary btn-sm" id="edit_save_btn">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="completeModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Complete Repair</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to complete this repair? Stock will be reduced.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-success btn-sm" id="confirm_complete_btn">Yes, Complete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         <?php include "include/footerbar.php"; ?>
     </div>
@@ -699,6 +834,34 @@ $(document).ready(function() {
         }
     });
 
+    $('#edit_service_item_id').select2({
+        placeholder: 'Select...',
+        width: '100%',
+        allowClear: true,
+        dropdownParent: $('#repairEditModal'),
+        ajax: {
+            url: base_url + 'ServiceItems/get_items_select',
+            dataType: 'json',
+            data: function (params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1
+                }
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: data.pagination.more
+                    }
+                };
+            },
+            cache: true
+        }
+    });
+
     //service_item_id change event
     $('#service_item_id').on('change', function() {
         let service_item_id = $(this).val();
@@ -711,6 +874,21 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 $('#price').val(response);
+            }
+        });
+    });
+
+    $('#edit_service_item_id').on('change', function() {
+        let edit_service_item_id = $(this).val();
+        $.ajax({
+            url: base_url + 'ServiceItems/get_service_item_price',
+            type: 'POST',
+            data: {
+                edit_service_item_id: edit_service_item_id
+            },
+            dataType: 'json',
+            success: function(response) {
+                $('#edit_price').val(response);
             }
         });
     });
@@ -737,7 +915,34 @@ $(document).ready(function() {
         calculate_sub_total();
     });
 
+    $('#edit_service_item_form').on('submit', function(event) {
+        event.preventDefault();
+        let edit_service_item_id = $('#edit_service_item_id').val();
+        let edit_service_item_name = $('#edit_service_item_id option:selected').text();
+        let edit_price = $('#edit_price').val();
+        let edit_qty = $('#edit_quantity').val();
+        let edit_total = edit_price * edit_qty;
+        edit_total = edit_total.toFixed(2);
+        let edit_service_item_row = '<tr data-id="'+edit_service_item_id+'">' +
+            '<td>' + edit_service_item_name + '</td>' +
+            '<td>' + edit_qty + '</td>' +
+            '<td>' + edit_price + '</td>' +
+            '<td>' + edit_total + '</td>' +
+            '<td><button class="btn btn-danger btn-sm remove_item_btn"><i class="fa fa-trash"></i></button></td>' +
+            '</tr>';
+        $('#edit_service_detail_table tbody').append(edit_service_item_row);
+        $('#edit_service_item_id').val('').trigger('change');
+        $('#edit_price').val('');
+        $('#edit_quantity').val('');
+        edit_calculate_sub_total();
+    });
+
     $(document).on('click', '.btn_remove_service_item', function() {
+        $(this).closest('tr').remove();
+        calculate_sub_total();
+    });
+
+    $(document).on('click', '.remove_item_btn', function() {
         $(this).closest('tr').remove();
         calculate_sub_total();
     });
@@ -749,6 +954,15 @@ $(document).ready(function() {
         });
         sub_total = sub_total.toFixed(2);
         $('#sub_total').html(sub_total);
+    }
+
+    function edit_calculate_sub_total(){
+        let edit_sub_total = 0;
+        $('#edit_service_detail_table tbody tr').each(function(index, element) {
+            edit_sub_total += parseFloat($(element).find('td:eq(3)').text());
+        });
+        edit_sub_total = edit_sub_total.toFixed(2);
+        $('#edit_sub_total').html(edit_sub_total);
     }
 
     $(document).on('click', '.btn_postpone', function() {
@@ -794,6 +1008,131 @@ $(document).ready(function() {
     });
 
 });
+
+function editRepair(id) {
+    $.ajax({
+        url: base_url + 'MachineRepairs/fetchRepairDetails/' + id,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            $('#repairEditModal').data('id', id);
+            $('#edit_machine_type_span').html(data.machine_type_name);
+            $('#edit_repair_done_by').html(data.repair_done_by_options);
+            $('#edit_repair_charge').val(data.repair_charge);
+            $('#edit_transport_charge').val(data.transport_charge);
+            $('input[name=edit_repair_type][value='+data.repair_type+']').prop('checked', true);
+            $('#edit_remarks').val(data.remarks);
+
+            let tbody = '';
+            let total = 0;
+            data.items.forEach(function(item){
+                let row_total = parseFloat(item.qty) * parseFloat(item.price);
+                total += row_total;
+
+                tbody += '<tr data-id="'+item.service_item_id+'">'+
+                    '<td>'+item.name+'</td>'+
+                    '<td>'+item.qty+'</td>'+
+                    '<td>'+item.price+'</td>'+
+                    '<td>'+row_total.toFixed(2)+'</td>'+
+                    '<td><button class="btn btn-danger btn-sm remove_item_btn"><i class="fa fa-trash"></i></button></td>'+
+                    '</tr>';
+            });
+            $('#edit_service_detail_table tbody').html(tbody);
+            $('#edit_sub_total').text(total.toFixed(2));
+        }
+    });
+}
+
+// Remove item
+$(document).on('click', '#edit_service_detail_table .remove_item_btn', function(){
+    $(this).closest('tr').remove();
+    updateEditSubTotal();
+});
+
+// Update sub total
+function updateEditSubTotal(){
+    let total = 0;
+    $('#edit_service_detail_table tbody tr').each(function(){
+        let row_total = parseFloat($(this).find('td:eq(3)').text());
+        total += row_total;
+    });
+    $('#edit_sub_total').text(total.toFixed(2));
+}
+
+// Save edit
+$('#edit_save_btn').on('click', function(){
+    let id = $('#repairEditModal').data('id');
+    let edit_repair_details = [];
+
+    $('#edit_service_detail_table tbody tr').each(function(){
+        let repair_item_id = $(this).data('id'); // correctly read from <tr>
+        let quantity = $(this).find('td:eq(2)').text();
+        let price = $(this).find('td:eq(1)').text();
+        let total = $(this).find('td:eq(3)').text();
+
+        if (!repair_item_id) {
+            console.error('Repair item ID is missing!');
+            return; // skip this row if id not set
+        }
+
+        edit_repair_details.push({
+        repair_item_id: $(this).data('id'),
+        quantity: $(this).find('td:eq(1)').text(),
+        price: $(this).find('td:eq(2)').text(),
+        total: $(this).find('td:eq(3)').text()
+    });
+    });
+    let sub_total = $('#edit_sub_total').text();
+
+    $.ajax({
+        url: base_url + 'MachineRepairs/updateRepair/' + id,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            edit_repair_details: edit_repair_details,
+            sub_total: sub_total,
+            repair_done_by: $('#edit_repair_done_by').val(),
+            repair_charge: $('#edit_repair_charge').val(),
+            transport_charge: $('#edit_transport_charge').val(),
+            repair_type: $('input[name=edit_repair_type]:checked').val(),
+            remarks: $('#edit_remarks').val()
+        },
+        success: function(response){
+            alert(response.messages);
+            if(response.success) location.reload();
+        }
+    });
+});
+
+$('#completeModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); 
+    var repairId = button.data('id'); 
+    $(this).data('id', repairId); // store inside modal
+});
+
+$('#confirm_complete_btn').on('click', function () {
+    var repairId = $('#completeModal').data('id'); // get stored id
+
+    $.ajax({
+        url: base_url + 'MachineRepairs/completeRepair/' + repairId,
+        type: 'POST',
+        dataType: 'json',
+        success: function(response) {
+            alert(response.messages);
+            if(response.success) {
+                // hide modal
+                $('#completeModal').modal('hide');
+
+                // disable all action buttons for this row
+                $('button[data-id="'+repairId+'"]').closest('td').find('button').hide();
+
+                // or reload the page / datatable if you prefer
+                // location.reload();
+            }
+        }
+    });
+});
+
 
 // edit function
 function editFunc(id) {
