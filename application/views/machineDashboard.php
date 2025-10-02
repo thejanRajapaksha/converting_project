@@ -93,7 +93,7 @@ include_once "include/topnavbar.php";
                                                 echo '<td>'.$cd['count_0_1'].'</td>';
                                                 echo '<td>'.$cd['count_2_3'].'</td>';
                                                 echo '<td>'.$cd['count_4_5'].'</td>';
-                                                echo '<td>'.$counts['5<'].'</td>';
+                                                echo '<td>'.$cd['five_max'].'</td>';
                                                 echo '</tr>';
                                                 $i++;
                                             }

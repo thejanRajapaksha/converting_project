@@ -88,6 +88,7 @@ class MachineDashboard extends CI_Controller
         $this->db->select(' COUNT(machine_ins.id) AS total_count');
         $this->db->join('machine_ins', 'machine_ins.id = machine_repairs.machine_in_id');
         $this->db->where('machine_repairs.is_deleted', 0);
+        $this->db->where('machine_repairs.is_completed', 0);
         $this->db->where('machine_ins.is_deleted', 0);
         $this->db->where('machine_repairs.repair_out_date', null);
         $repairs_count = $this->db->count_all_results('machine_repairs');
