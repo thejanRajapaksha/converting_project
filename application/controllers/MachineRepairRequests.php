@@ -43,16 +43,18 @@ class MachineRepairRequests extends CI_Controller
                                 <i class="fas fa-check-circle"></i>
                             </button> ';
 
-            }
-
-            if(empty($result1)){
+                if(empty($result1)){
                     $buttons .= '<button type="button" class="btn btn-info btn-sm repair_add_btn" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Create Repair" data-toggle="modal" data-target="#repairAddModal"><i class="fas fa-wrench"></i></button> ';
                     $buttons .= '<button type="button" style="margin:1px;" class="btn btn-warning btn-sm btn_postpone" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Postpone"> <i class="fas fa-stop-circle"></i> </button> ';
+                }
+                    $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
+                if($value['is_repair'] == 0){
+                    $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
+                }
+
             }
-                $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
-            if($value['is_repair'] == 0){
-                $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
-            }
+
+            
             //$status = ($value['active'] == 1) ? '<span class="badge badge-success btn-sm">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
 
             $result['data'][$key] = array(
