@@ -130,6 +130,8 @@ class MachineRepairRequests extends CI_Controller
                 $data = array(
                     'machine_in_id' => $this->input->post('edit_machine_in_id'),
                     'repair_in_date' => $this->input->post('edit_repair_date'),
+                    'updated_by' => $this->session->userdata('userid'),
+                    'updated_at' => date('Y-m-d H:i:s')
                 );
 
                 $update = $this->model_machine_repair_requests->update($id, $data);
