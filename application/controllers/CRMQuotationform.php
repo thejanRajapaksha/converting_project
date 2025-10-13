@@ -17,6 +17,11 @@ class CRMQuotationform extends CI_Controller
 		$result['customerlist'] = $this->CRMQuotationforminfo->Getcustomer($z,$y);	
 		$result['getid'] = $this->CRMQuotationforminfo->Getquotationid($z,$y);
 
+		 $result['addcheck']     = 1; // or false, depending on your logic
+    $result['editcheck']    = 1;
+    $result['statuscheck']  = 1;
+    $result['deletecheck']  = 1;
+
     $this->load->view('quotationform', $result);
 }
 

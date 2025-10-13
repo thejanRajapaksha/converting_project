@@ -92,7 +92,12 @@ include_once "include/topnavbar.php";
                             <div class="form-row mb-1">
                                 <div class="col">
                                     <label class="small font-weight-bold text-dark">Item*</label>
-                                    <select class="form-control form-control-sm" name="item" id="item" >
+                                    <select class="form-control form-control-sm" name="item" id="item" required>
+                                        <option value="">Select</option>
+                                        <?php foreach ($product as $rowproduct) { ?>
+                                            <option value="<?php echo $rowproduct->idtbl_product ?>"><?php echo $rowproduct->product ?></option>
+                                        <?php } ?>
+                                    </select>
                                     </select>
                                 </div>
                             </div>
@@ -277,6 +282,10 @@ include_once "include/topnavbar.php";
 
 <script>
 	$(document).ready(function() {
+		var addcheck = '<?php echo $addcheck; ?>';
+		var editcheck = '<?php echo $editcheck; ?>';
+		var statuscheck = '<?php echo $statuscheck; ?>';
+		var deletecheck = '<?php echo $deletecheck; ?>';
 
 		var getid = $('#getid').val();
 
@@ -295,7 +304,7 @@ include_once "include/topnavbar.php";
 					getid: getid,
 
 				},
-				url: '<?php echo base_url() ?>Quotationform/Quotationformgetcustomer',
+				url: '<?php echo base_url() ?>CRMQuotationform/Quotationformgetcustomer',
 				success: function(result) { //alert(result);
 					//console.log(result);
 					// $('#quotationmodal').modal('show');
@@ -399,7 +408,7 @@ include_once "include/topnavbar.php";
 						if (full['approvestatus'] == 0) {
 							button += '<button disabled target="_blank" class="btn btn-danger btn-sm btnPdf mr-1" id="' + full['idtbl_quotation'] + '" data-toggle="tooltip" data-placement="bottom" title="Quotation PDF"><i class="fas fa-file-pdf"></i></button>';
 						} else {
-							button += '<a href="<?php echo base_url() ?>Quotationform/Quotationformpdf/' + full['idtbl_quotation'] + '" target="_blank" class="btn btn-danger btn-sm btnPdf mr-1" data-toggle="tooltip" data-placement="bottom" title="Quotation PDF"><i class="fas fa-file-pdf"></i></a>';
+							button += '<a href="<?php echo base_url() ?>CRMQuotationform/Quotationformpdf/' + full['idtbl_quotation'] + '" target="_blank" class="btn btn-danger btn-sm btnPdf mr-1" data-toggle="tooltip" data-placement="bottom" title="Quotation PDF"><i class="fas fa-file-pdf"></i></a>';
 
 						}
 
@@ -439,7 +448,7 @@ include_once "include/topnavbar.php";
 				data: {
 					cusId: cusId,
 				},
-				url: '<?php echo base_url() ?>Quotationform/Quotationformgetinfodata',
+				url: '<?php echo base_url() ?>CRMQuotationform/Quotationformgetinfodata',
 				success: function(result) {
 					$('#getquotationdataform').html(result);
 					$('#quotationmodal').data('idtbl_quotation', cusId).modal('show');
@@ -450,7 +459,7 @@ include_once "include/topnavbar.php";
 		$("#disapprovalReason").select2({
 			dropdownParent: $('#disapprovalModal'),
 			ajax: {
-				url: "<?php echo base_url() ?>Quotationform/Getreasontype",
+				url: "<?php echo base_url() ?>CRMQuotationform/Getreasontype",
 				type: "post",
 				dataType: 'json',
 				delay: 250,
@@ -484,7 +493,7 @@ include_once "include/topnavbar.php";
 							recordID: recordID,
 							type: type,
 						},
-						url: '<?php echo base_url() ?>Quotationform/Quotationformapprovestatus',
+						url: '<?php echo base_url() ?>CRMQuotationform/Quotationformapprovestatus',
 						success: function(result) {
 							var obj = JSON.parse(result);
 							if (obj.status == 1) {
@@ -523,7 +532,7 @@ include_once "include/topnavbar.php";
 							reasonID: reasonID,
 							reasonAdd: reasonAdd,
 						},
-						url: '<?php echo base_url() ?>Quotationform/Quotationformapprovestatus',
+						url: '<?php echo base_url() ?>CRMQuotationform/Quotationformapprovestatus',
 						success: function(result) {
 							var obj = JSON.parse(result);
 							if (obj.status == 1) {
@@ -559,7 +568,7 @@ include_once "include/topnavbar.php";
 						type: type,
 
 					},
-					url: '<?php echo base_url() ?>Quotationform/Quotationformstatus',
+					url: '<?php echo base_url() ?>CRMQuotationform/Quotationformstatus',
 					success: function(result) { //alert(result);
 						var obj = JSON.parse(result);
 						if (obj.status == 1) {
@@ -595,7 +604,7 @@ include_once "include/topnavbar.php";
 						type: type,
 
 					},
-					url: '<?php echo base_url() ?>Quotationform/Quotationformstatus',
+					url: '<?php echo base_url() ?>CRMQuotationform/Quotationformstatus',
 					success: function(result) { //alert(result);
 						var obj = JSON.parse(result);
 						if (obj.status == 1) {
@@ -643,7 +652,7 @@ include_once "include/topnavbar.php";
 				getid: getid,
 				customer: customer
 			},
-			url: '<?php echo base_url() ?>Quotationform/Quotationformunitprice',
+			url: '<?php echo base_url() ?>CRMQuotationform/Quotationformunitprice',
 			success: function(result) {
 				var obj = JSON.parse(result);
 				if (obj.error) {
@@ -669,7 +678,7 @@ include_once "include/topnavbar.php";
 				productid: productid,
 				getid: getid
 			},
-			url: '<?php echo base_url() ?>Quotationform/Quotationformmeterial',
+			url: '<?php echo base_url() ?>CRMQuotationform/Quotationformmeterial',
 			success: function(result) {
 				var objfirst = JSON.parse(result);
 				console.log(objfirst);
@@ -703,7 +712,7 @@ include_once "include/topnavbar.php";
 					cancelMsg: cancelMsg
 
 				},
-				url: '<?php echo base_url() ?>Quotationform/Quotationformstatus',
+				url: '<?php echo base_url() ?>CRMQuotationform/Quotationformstatus',
 				success: function(result) { //alert(result);
 					var obj = JSON.parse(result);
 					if (obj.status == 0) {
@@ -808,12 +817,13 @@ include_once "include/topnavbar.php";
 			// this will just cause the browser to display the native HTML5 error messages.
 			$("#submitBtn").click();
 		} else {
-			var productID = $('#product').val();
+			var productID = $('#item').val();
 			var meterialID = $('#meterial').val();
 			var meterial = $("#meterial option:selected").text();
-			var product = $("#product option:selected").text();
+			var product = $("#item option:selected").text();
 			var unitprice = parseFloat($('#unitprice').val());
 			var qty = parseFloat($('#qty').val());
+			var duration = parseFloat($('#duration').val());
 			//var quotdate = $('#quot_date').val();
 			var description = $('#comment').val();
 			//var duedate = $('#duedate').val();
@@ -824,14 +834,15 @@ include_once "include/topnavbar.php";
 			$('.selecter2').select2();
 
 
-			var total = unitprice * qty;
-
+			var total = parseFloat(unitprice * qty).toFixed(2);
 			var showtotal = addCommas(parseFloat(total).toFixed(2));
 
 			$('#tableorder > tbody:last').append('<tr class="pointer"><td class="d-none">' + productID +
 				'</td><td>' + product + '</td><td class="d-none">' + meterialID +
-				'</td><td>' + meterial + '</td><td>' + description + '</td><td>' + qty +
-				'</td><td class="d-none">' + unitprice + '</td><td>' + addCommas(unitprice.toFixed(2)) + '</td><td>' + showtotal + '</td><td class="d-none total">' + total + '</td></tr>');
+				'</td><td>' + description + '</td><td>' + qty +
+				'</td><td>' + duration +
+				'</td><td class="d-none">' + unitprice + '</td><td>' + addCommas(unitprice.toFixed(2)) + 
+				'</td><td>' + showtotal + '</td><td class="d-none total">' + total + '</td></tr>');
 
 			$('#product').val('');
 			$('#unitprice').val('');
@@ -884,11 +895,11 @@ include_once "include/topnavbar.php";
 		var tbody = $("#tableorder tbody");
 		var formData = new FormData();
 
-		var productImages = $('#productimage')[0].files;
+		// var productImages = $('#productimage')[0].files;
 
-		for (var i = 0; i < productImages.length; i++) {
-			formData.append('productimage[]', productImages[i]);
-		}
+		// for (var i = 0; i < productImages.length; i++) {
+		// 	formData.append('productimage[]', productImages[i]);
+		// }
 		if (tbody.children().length > 0) {
 			jsonObj = [];
 			$("#tableorder tbody tr").each(function() {
@@ -925,7 +936,7 @@ include_once "include/topnavbar.php";
 				data: formData,
 				processData: false,
 				contentType: false,
-				url: '<?php echo base_url() ?>Quotationform/Quotationforminsertupdate',
+				url: '<?php echo base_url() ?>CRMQuotationform/Quotationforminsertupdate',
 				success: function(result) {
 					var obj = JSON.parse(result);
 					$('#staticBackdrop').modal('hide');
@@ -983,7 +994,7 @@ include_once "include/topnavbar.php";
                 data: {
                     productID: productID,
                 },
-                url: '<?php echo base_url() ?>Quotationform/Getproductlistimages',
+                url: '<?php echo base_url() ?>CRMQuotationform/Getproductlistimages',
                 success: function(result) { //alert(result);
                     $('#imagelist').removeClass('text-center');
                     $('#imagelist').html(result);
@@ -992,26 +1003,26 @@ include_once "include/topnavbar.php";
             });
         }
 
-        function optionimages(productID) {
-            $('#productimagetable tbody').on('click', '.btnremoveimage', function() {
-                var imageID = $(this).attr('id');
-                var r = confirm("Are you sure, You want to Delete this ? ");
-                if (r == true) {
-                    $.ajax({
-                        type: "POST",
-                        data: {
-                            imageID: imageID,
+        // function optionimages(productID) {
+        //     $('#productimagetable tbody').on('click', '.btnremoveimage', function() {
+        //         var imageID = $(this).attr('id');
+        //         var r = confirm("Are you sure, You want to Delete this ? ");
+        //         if (r == true) {
+        //             $.ajax({
+        //                 type: "POST",
+        //                 data: {
+        //                     imageID: imageID,
 
-                        },
-                        url: '<?php echo base_url() ?>Quotationform/Getproductlistimagesdelete',
-                        success: function(result) { //alert(result);
-                            $('#imagelist').html(result);
-                            loadlistimages(productID);
-                        }
-                    });
-                }
-            });
-        }
+        //                 },
+        //                 url: '<?php echo base_url() ?>CRMQuotationform/Getproductlistimagesdelete',
+        //                 success: function(result) { //alert(result);
+        //                     $('#imagelist').html(result);
+        //                     loadlistimages(productID);
+        //                 }
+        //             });
+        //         }
+        //     });
+        // }
 
 	function addCommas(nStr) {
 		nStr += '';

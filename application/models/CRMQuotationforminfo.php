@@ -218,14 +218,14 @@ class CRMQuotationforminfo extends CI_Model
             $html .= '<tr>
             <td scope="row" class="d-none">' . $count . '</td>
             <td scope="row" class="d-none">' . $row->tbl_inquiry_idtbl_inquiry . '</td>
-        <td scope="row">' . $row->duedate . '</td>
-        <td scope="row">' . $row->comment . '</td>
-        <td scope="row">' . $row->product . '</td>
-        <td scope="row">' . $row->qty . '</td>
-        <td scope="row">' . $row->duration . '</td>
-        <td scope="row">' . $row->unitprice . '</td>
-        <td scope="row" class="text-right">' . number_format($row->total, 2) . '</td>
-        </tr>';
+            <td scope="row">' . $row->duedate . '</td>
+            <td scope="row">' . $row->comment . '</td>
+            <td scope="row">' . $row->product . '</td>
+            <td scope="row">' . $row->qty . '</td>
+            <td scope="row">' . $row->duration . '</td>
+            <td scope="row">' . $row->unitprice . '</td>
+            <td scope="row" class="text-right">' . number_format($row->total, 2) . '</td>
+            </tr>';
             $total_amount += $row->total;
         }
 
@@ -244,7 +244,7 @@ class CRMQuotationforminfo extends CI_Model
     public function Quotationforminsertupdate()
 {
     $this->db->trans_begin();
-    $userID = $_SESSION['id'];
+    $userID = $_SESSION['userid'];
     $jsonObj = json_decode($this->input->post('tableData'), true);
     $remarks = $this->input->post('remarks');
     $getid = $this->input->post('getid');
@@ -284,20 +284,24 @@ class CRMQuotationforminfo extends CI_Model
         $tbl_quotation_idtbl_quotation = $this->db->insert_id();
 
         foreach ($jsonObj as $rowdata) {
-            $item = $rowdata['col_2']; 
-            $Comment = $rowdata['col_3'];
-            $Qty = $rowdata['col_4']; 
-            $duration = $rowdata['col_5'];
-            $Unitprice = $rowdata['col_6'];
-            $Total = $rowdata['col_9'];
+            $productID   = $rowdata['col_1']; 
+            $product     = $rowdata['col_2']; 
+            $meterialID  = $rowdata['col_3']; 
+            $description = $rowdata['col_4']; 
+            $qty         = $rowdata['col_5']; 
+            $duration    = $rowdata['col_6']; 
+            $unitprice   = $rowdata['col_7']; 
+            $showtotal   = $rowdata['col_8']; 
+            $total = (float) str_replace(',', '', $rowdata['col_9']);
 
             $data2 = array(
-                'idtbl_product' => $item, 
-                'qty' => $Qty,
-                'unitprice' => $Unitprice,
+                'idtbl_product' => $productID,
+                'tbl_material_idtbl_material' => $meterialID, 
+                'qty' => $qty,
+                'unitprice' => $unitprice,
                 'duration' => $duration,
-                'total' => $Total,
-                'comment' => $Comment,
+                'total' => $total,
+                'comment' => $description,
                 'status' => '1',
                 'tbl_quotation_idtbl_quotation' => $tbl_quotation_idtbl_quotation
             );
@@ -363,7 +367,7 @@ class CRMQuotationforminfo extends CI_Model
     { //Status
         $this->db->trans_begin();
 
-        $userID = $_SESSION['id'];
+        $userID = $_SESSION['userid'];
         $recordID = $this->input->post('recordID');
         $type = $this->input->post('type');
         $cancelMsg = $this->input->post('cancelMsg');
@@ -524,7 +528,7 @@ class CRMQuotationforminfo extends CI_Model
     { //Status
         $this->db->trans_begin();
 
-        $userID = $_SESSION['id'];
+        $userID = $_SESSION['userid'];
         $recordID = $this->input->post('recordID');
         $type = $this->input->post('type');
         $reasonID = $this->input->post('reasonID');
@@ -746,7 +750,7 @@ class CRMQuotationforminfo extends CI_Model
     {   //Status
         $this->db->trans_begin();
 
-        $userID = $_SESSION['id'];
+        $userID = $_SESSION['userid'];
         $recordID = $x;
         $type = $y;
         $updatedatetime = date('Y-m-d H:i:s');
@@ -887,7 +891,7 @@ class CRMQuotationforminfo extends CI_Model
     {
         $quotaitonid = $x;
         $cusId = $this->input->post('cusId');
-        $userID = $_SESSION['id'];
+        $userID = $_SESSION['userid'];
         $this->db->select('*');
         $this->db->from('tbl_quotation AS u');
         $this->db->join('tbl_quotation_detail AS ua', 'ua.tbl_quotation_idtbl_quotation = u.idtbl_quotation', 'left');

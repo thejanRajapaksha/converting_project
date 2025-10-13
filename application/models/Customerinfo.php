@@ -3,7 +3,7 @@
 public function Customerinsertupdate() {
 	$this->db->trans_begin();
 
-	$userID = $_SESSION['id'];
+	$userID = $_SESSION['userid'];
 
 	$supplier_name = $this->input->post('customer_name');
 	$business_regno = $this->input->post('business_regno');

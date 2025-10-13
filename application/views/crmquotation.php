@@ -138,7 +138,7 @@ include "include/topnavbar.php";
                 [0, "desc"]
             ],
             "columns": [
-                d{
+                {
                     "data": function(data, type, full) {
                         return "INQ-" + data.idtbl_inquiry;
                     }
