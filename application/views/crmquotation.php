@@ -161,7 +161,7 @@ include "include/topnavbar.php";
                         var button = '';
                         button += '<button class="btn btn-primary btn-sm btnview mr-1" id="' + full['idtbl_inquiry'] + '" data-toggle="tooltip" data-placement="bottom" title="Inquiry Details"><i class="fas fa-eye"></i></button>';
                         if(addcheck == 1){
-                        button += '<a href="<?php echo base_url() ?>CRMQuotationform/Getquotation/' + full['idtbl_inquiry'] + '/' + full['idtbl_customer'] + '" class="btn btn-success btn-sm btnquotation mr-1" data-toggle="tooltip" data-placement="bottom" title="Create Quotation"><i class="fas fa-list"></i></a>';
+                        button += '<button class="btn btn-success btn-sm btnquotation mr-1" data-idinquiry="' + full['idtbl_inquiry'] + '" data-idcustomer="' + full['idtbl_customer'] + '" data-toggle="tooltip" data-placement="bottom" title="Create Quotation"><i class="fas fa-list"></i></button>';
                         }
                         return button;
                     }
@@ -173,9 +173,38 @@ include "include/topnavbar.php";
         });
 
 
+        // $('#dataTable tbody').on('click', '.btnquotation', function() {
+        //     var idtbl_inquiry = $(this).attr('id');
+        // });
         $('#dataTable tbody').on('click', '.btnquotation', function() {
-            var idtbl_inquiry = $(this).attr('id');
-        });
+        var idtbl_inquiry = $(this).data('idinquiry');
+        var idtbl_customer = $(this).data('idcustomer');
+
+        // create permission array
+        var menueaccess = {
+            addcheck: '<?php echo $addcheck; ?>',
+            editcheck: '<?php echo $editcheck; ?>',
+            statuscheck: '<?php echo $statuscheck; ?>',
+            deletecheck: '<?php echo $deletecheck; ?>'
+        };
+
+        // create hidden form for POST
+        var form = $('<form>', {
+            'action': "<?php echo base_url('CRMQuotationform/Getquotation'); ?>",
+            'method': 'POST'
+        }).append(
+            $('<input>', { 'name': 'idtbl_inquiry', 'value': idtbl_inquiry, 'type': 'hidden' }),
+            $('<input>', { 'name': 'idtbl_customer', 'value': idtbl_customer, 'type': 'hidden' }),
+            $('<input>', { 'name': 'menueaccess[addcheck]', 'value': menueaccess.addcheck, 'type': 'hidden' }),
+            $('<input>', { 'name': 'menueaccess[editcheck]', 'value': menueaccess.editcheck, 'type': 'hidden' }),
+            $('<input>', { 'name': 'menueaccess[statuscheck]', 'value': menueaccess.statuscheck, 'type': 'hidden' }),
+            $('<input>', { 'name': 'menueaccess[deletecheck]', 'value': menueaccess.deletecheck, 'type': 'hidden' })
+        );
+
+        $('body').append(form);
+        form.submit();
+    });
+
 
         $('#dataTable tbody').on('click', '.btnview', function() {
             var id = $(this).attr('id')

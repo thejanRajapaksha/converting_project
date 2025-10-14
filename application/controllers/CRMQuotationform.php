@@ -6,21 +6,23 @@ date_default_timezone_set('Asia/Colombo');
 class CRMQuotationform extends CI_Controller
 {	
 	
-	public function Getquotation($z, $y)
+	public function Getquotation()
 {
     $this->load->model('Commeninfo');
     $this->load->model('CRMQuotationforminfo');
     $this->load->model('Productinfo');
+	$z = $this->input->post('idtbl_inquiry');
+    $y = $this->input->post('idtbl_customer');
+	$menueaccess = $this->input->post('menueaccess');
 
 		$result['menuaccess']=$this->Commeninfo->Getmenuprivilege();
  		$result['product'] = $this->Productinfo->getProduct();
 		$result['customerlist'] = $this->CRMQuotationforminfo->Getcustomer($z,$y);	
 		$result['getid'] = $this->CRMQuotationforminfo->Getquotationid($z,$y);
-
-		 $result['addcheck']     = 1; // or false, depending on your logic
-    $result['editcheck']    = 1;
-    $result['statuscheck']  = 1;
-    $result['deletecheck']  = 1;
+		$result['addcheck'] = $menueaccess['addcheck'];
+		$result['editcheck'] = $menueaccess['editcheck'];
+		$result['statuscheck'] = $menueaccess['statuscheck'];
+		$result['deletecheck'] = $menueaccess['deletecheck'];
 
     $this->load->view('quotationform', $result);
 }

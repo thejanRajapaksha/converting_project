@@ -21,7 +21,7 @@ include_once "include/topnavbar.php";
             <div class="card-body p-2">
                 <div class="row">
                     <div class="col-12 text-right">
-                            <button type="button" class="btn btn-primary btn-sm px-5" data-toggle="modal" data-target="#staticBackdrop">
+                            <button type="button" class="btn btn-primary btn-sm px-5" data-toggle="modal" data-target="#staticBackdrop" <?php if($addcheck==0){echo 'disabled';} ?>>
                                 <i class="fas fa-plus mr-2"></i>&nbsp;Create Quotation
                             </button>
                         <hr>
@@ -287,9 +287,7 @@ include_once "include/topnavbar.php";
 		var statuscheck = '<?php echo $statuscheck; ?>';
 		var deletecheck = '<?php echo $deletecheck; ?>';
 
-		var getid = $('#getid').val();
-
-		//alert(getid);
+		var getid = $('#getid').val();	
 
 		$('#staticBackdrop').on('shown.bs.modal', function() {
 			$('.selecter2').select2({
