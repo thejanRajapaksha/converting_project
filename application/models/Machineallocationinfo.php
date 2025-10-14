@@ -43,7 +43,7 @@ class Machineallocationinfo extends CI_Model{
 
         $this->db->trans_begin();
 
-        $userID=$_SESSION['id'];
+        $userID=$_SESSION['userid'];
 
         $tableData = $this->input->post('tableData');
         $costitemid=$this->input->post('costitemid');

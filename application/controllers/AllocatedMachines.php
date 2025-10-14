@@ -36,10 +36,10 @@ public function getAllocationDataById(){
 
 public function InsertCompletedAmmount()
 {
-    $user = $_SESSION['id'];
+    $user = $_SESSION['userid'];
     $this->load->model('AllocatedMachinesinfo'); 
 
-        $user = $_SESSION['id'];
+        $user = $_SESSION['userid'];
         $allocationId = $this->input->post('allocation_id');
         $wasteQty = 0;
         $completeQty = $this->input->post('amount');
@@ -74,7 +74,7 @@ public function InsertCompletedAmmount()
 
 public function InsertRejectedAmmount()
 {
-    $user = $_SESSION['id'];
+    $user = $_SESSION['userid'];
     $this->load->model('AllocatedMachinesinfo'); 
 
     $allocationId = $this->input->post('allocationId');
