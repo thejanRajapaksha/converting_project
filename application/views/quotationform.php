@@ -386,7 +386,7 @@ include_once "include/topnavbar.php";
 					"data": null,
 					"render": function(data, type, full) {
 						var button = '';
-						button += '<button class="btn btn-primary btn-sm btnlistview mr-1" id="' + full['idtbl_quotation'] + '" data-id="' + full['idtbl_quotation'] + '" data-toggle="tooltip" data-placement="bottom" title="View list image"><i class="fa fa-eye" aria-hidden="true"></i></button>';
+						// button += '<button class="btn btn-primary btn-sm btnlistview mr-1" id="' + full['idtbl_quotation'] + '" data-id="' + full['idtbl_quotation'] + '" data-toggle="tooltip" data-placement="bottom" title="View list image"><i class="fa fa-eye" aria-hidden="true"></i></button>';
 						// if (full['approvestatus'] == 1) {
 						// 	button += '<button  id="' + full['idtbl_quotation'] + '" target="_self" class="btn btn-secondary btn-sm mr-1 approvebtn" value ="2"  data-toggle="tooltip" data-placement="bottom" title="Disapprove Quotation"';
 						// 	if (statuscheck != 1) {
@@ -401,7 +401,7 @@ include_once "include/topnavbar.php";
 						// 	button += '"><i class="fas fa-times"></i></a>';
 
 						// }
-						button += '<button class="btn btn-primary btn-sm btninfo mr-1" id="' + full['idtbl_quotation'] + '" data-toggle="tooltip" data-placement="bottom" title="Quotation Details"><i class="fa fa-info-circle" aria-hidden="true"></i></button>';
+						button += '<button class="btn btn-primary btn-sm btninfo mr-1" id="' + full['idtbl_quotation'] + '" data-toggle="tooltip" data-placement="bottom" title="Quotation Details"><i class="fa fa-eye" aria-hidden="true"></i></button>';
 
 						if (full['approvestatus'] == 0) {
 							button += '<button disabled target="_blank" class="btn btn-danger btn-sm btnPdf mr-1" id="' + full['idtbl_quotation'] + '" data-toggle="tooltip" data-placement="bottom" title="Quotation PDF"><i class="fas fa-file-pdf"></i></button>';
