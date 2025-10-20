@@ -143,11 +143,56 @@ include "include/topnavbar.php";
             </form>
         </div>
         </div>
+
+        <!-- Machine Order Modal -->
+        <div class="modal fade" id="MachineOrderModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Machine Types to Order</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="order_id">
+                    <input type="hidden" id="inquiry_id">
+
+                    <div class="col-md-6 form-group">
+                        <label for="machine_type_order">Machine Type <span class="text-danger">*</span></label>
+                        <select name="machine_type_order" id="machine_type_order" class="select2 form-control-sm">
+                            <option value="">Select</option>
+                        </select>
+                        <div id="machine_type_order_error"></div>
+                    </div>
+                    <button class="btn btn-success btn-sm mt-2" id="addMachineType">Add</button>
+
+                    <hr>
+                    <table class="table table-bordered table-sm">
+                    <thead>
+                        <tr>
+                        <th>#</th>
+                        <th>Machine Type</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="typeTable"></tbody>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="saveOrder">Save Order</button>
+                </div>
+
+                </div>
+            </div>                      
+        </div>
+
         <?php include "include/footerbar.php"; ?>
     </div>
 </div>
 <?php include "include/footerscripts.php"; ?>
-
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script>
     $(document).ready(function() {
         document.getElementById('addDeliveryRow').addEventListener('click', function () {
@@ -221,6 +266,7 @@ include "include/topnavbar.php";
                         // button += '<button class="btn btn-dark btn-sm btnquotation mr-1" data-toggle="modal" data-target="#Deliverymodal" data-qid="' + full['idtbl_quotation'] + '" data-id="' + full['tbl_inquiry_idtbl_inquiry'] + '" data-customer="' + full['idtbl_customer'] + '" title="Enter Packaging Details"><i class="fas fa-box"></i></button>';
                         // button += '<button class="btn btn-dark btn-sm btnpayment mr-1" data-toggle="modal" data-target="#paymentDetailModal" data-qid="' + full['idtbl_quotation'] + '" data-id="' + full['tbl_inquiry_idtbl_inquiry'] + '" data-customer="' + full['idtbl_customer'] + '" data-total="' + full['total'] + '" title="payment details"><i class="fas fa-credit-card"></i></button>';
                         button += '<button class="btn btn-dark btn-sm btndelivery mr-1" data-toggle="modal" data-target="#deliveryPlanModal" data-oid="' + full['idtbl_order'] + '" data-qid="' + full['idtbl_quotation'] + '" data-id="' + full['idtbl_inquiry'] + '" data-customer="' + full['idtbl_customer'] + '" title="Delivery details"><i class="fas fa-truck"></i></button>';
+                        button += '<button class="btn btn-dark btn-sm btnmachineorder mr-1" data-toggle="modal" data-target="#MachineOrderModal" data-oid="' + full['idtbl_order'] + '" data-qid="' + full['idtbl_quotation'] + '" data-id="' + full['idtbl_inquiry'] + '" data-customer="' + full['idtbl_customer'] + '" title="Machine Order"><i class="fas fa-list-ol"></i></button>';
                         // if(full['status']==1){
                         //     button+='<a href="<?php echo base_url() ?>CRMDeliverydetail/Deliverydetailstatus/'+full['idtbl_quotation']+'/4" onclick="return deactive_confirm()" target="_self" class="btn btn-dark btn-sm mr-1 ';if(statuscheck!=1){button+='d-none';}button+='"><i class="fas fa-check"></i></a>';
                         // }else{
@@ -719,6 +765,125 @@ $('#deliverydetailtable').on('click', '.edit-delivery', function () {
     });
 });
 });
+
+    $(document).on('click', '.btnmachineorder', function () {
+        $('#order_id').val($(this).data('oid'));
+        $('#inquiry_id').val($(this).data('id'));
+        $('#typeTable').empty();
+
+        // Initialize Select2 once
+        if (!$('#machine_type_order').hasClass("select2-hidden-accessible")) {
+            $('#machine_type_order').select2({
+                width: '100%',
+                dropdownParent: $('#MachineOrderModal'),
+                placeholder: "Select Machine Type",
+                allowClear: true,
+                ajax: {
+                    url: "<?php echo base_url() ?>CRMDeliverydetail/getMachineTypes",
+                    type: "POST",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return { searchTerm: params.term };
+                    },
+                    processResults: function (response) {
+                        return { results: response };
+                    }
+                }
+            });
+        }
+
+        // ✅ Load existing saved machine order
+        $.ajax({
+            url: "<?php echo base_url('CRMDeliverydetail/getExistingMachineOrder'); ?>",
+            type: "POST",
+            data: {
+                order_id: $('#order_id').val(),
+                inquiry_id: $('#inquiry_id').val()
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data && data.length > 0) {
+                    data.forEach(function (row) {
+                        $('#typeTable').append(`
+                            <tr data-id="${row.type_id}">
+                                <td><i class="fas fa-arrows-alt"></i></td>
+                                <td>${row.type_name}</td>
+                                <td><button class="btn btn-danger btn-sm removeType">X</button></td>
+                            </tr>
+                        `);
+                    });
+                }
+            }
+        });
+
+        // Enable drag-drop sorting
+        $("#typeTable").sortable({ axis: "y" });
+    });
+
+    $('#addMachineType').click(function () {
+        let id = $('#machine_type_order').val();
+        let text = $('#machine_type_order option:selected').text();
+
+        if (!id) {
+            alert("Please select a machine type!");
+            return;
+        }
+
+        if ($('#typeTable tr[data-id="' + id + '"]').length) {
+            alert("This machine type is already added!");
+            return;
+        }
+
+        $('#typeTable').append(`
+            <tr data-id="${id}">
+                <td><i class="fas fa-arrows-alt"></i></td>
+                <td>${text}</td>
+                <td><button class="btn btn-danger btn-sm removeType">X</button></td>
+            </tr>
+        `);
+    });
+
+    $(document).on('click', '.removeType', function () {
+        $(this).closest('tr').remove();
+    });
+
+    $('#saveOrder').click(function () {
+        let types = [];
+        $('#typeTable tr').each(function (i) {
+            types.push({
+                type_id: $(this).data('id'),
+                sequence: i + 1
+            });
+        });
+
+        if (types.length === 0) {
+            alert("Please add at least one machine type!");
+            return;
+        }
+
+        $.ajax({
+            url: "<?php echo base_url('CRMDeliverydetail/saveMachineOrder'); ?>",
+            type: "POST",
+            data: {
+                order_id: $('#order_id').val(),
+                inquiry_id: $('#inquiry_id').val(),
+                types: types
+            },
+            success: function (res) {
+                if (res == "success") {
+                    alert("Machine Allocation Saved!");
+                    $('#MachineOrderModal').modal('hide');
+                } else {
+                    alert("Failed to save. Try again.");
+                }
+            },
+            error: function () {
+                alert("Error while saving.");
+            }
+        });
+    });
+
 
 
     function deactive_confirm() {

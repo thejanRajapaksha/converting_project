@@ -257,7 +257,50 @@ class Deliverydetailinfo extends CI_Model{
         return $query->result(); 
     }
 
+    public function getMachineTypes() {
+        $this->db->select('m.id, m.name');
+        $this->db->from('machine_types AS m');
+        $this->db->where('m.active', 1);
+
+        $respond = $this->db->get();
+        $data = array();
+
+        foreach ($respond->result() as $row) {
+            $data[] = array("id" => $row->id, "text" => $row->name);
+        }
+        return json_encode($data); 
+    }
+
+    public function saveMachineOrder($orderId, $inquiryId, $types) {
+        $userID = $_SESSION['userid'];
+        $insertdatetime = date('Y-m-d H:i:s');
+        $this->db->where('tbl_order_idtbl_order', $orderId);
+        $this->db->where('tbl_inquiry_idtbl_inquiry', $inquiryId);
+        $this->db->delete('machine_allocation_order');
+
+        foreach ($types as $row) {
+            $this->db->insert('machine_allocation_order', [
+                'tbl_order_idtbl_order'     => $orderId,
+                'tbl_inquiry_idtbl_inquiry' => $inquiryId,
+                'machine_types_id'          => $row['type_id'],
+                'order_number'              => $row['sequence'],
+                'insertdatetime'            => $insertdatetime,
+                'tbl_user_idtbl_user'       => $userID,
+            ]);
+        }
+
+        return true;
+    }
     
-    
+    public function getExistingMachineOrder($orderId, $inquiryId) {
+        $this->db->select('mao.machine_types_id AS type_id, mt.name AS type_name, mao.order_number');
+        $this->db->from('machine_allocation_order mao');
+        $this->db->join('machine_types mt', 'mt.id = mao.machine_types_id');
+        $this->db->where('mao.tbl_order_idtbl_order', $orderId);
+        $this->db->where('mao.tbl_inquiry_idtbl_inquiry', $inquiryId);
+        $this->db->order_by('mao.order_number', 'ASC'); // Maintain saved order
+
+        return $this->db->get()->result();
+    }
     
 }

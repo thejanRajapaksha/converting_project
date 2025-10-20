@@ -67,6 +67,32 @@ class CRMDeliverydetail extends CI_Controller {
 	
 		echo json_encode($result);
 	}
+
+	public function getMachineTypes() {
+		$this->load->model('Deliverydetailinfo');
+        $data = $this->Deliverydetailinfo->getMachineTypes(); 
+        echo $data; 
+    }
+
+    public function saveMachineOrder() {
+		$this->load->model('Deliverydetailinfo');
+        $orderId   = $this->input->post('order_id');
+        $inquiryId = $this->input->post('inquiry_id');
+        $types     = $this->input->post('types'); 
+
+        if ($this->Deliverydetailinfo->saveMachineOrder($orderId, $inquiryId, $types)) {
+            echo "success";
+        } else {
+            echo "error";
+        }
+    }
+
+	public function getExistingMachineOrder() {
+		$this->load->model('Deliverydetailinfo');
+		$orderId = $this->input->post('order_id');
+		$inquiryId = $this->input->post('inquiry_id');
+		echo json_encode($this->Deliverydetailinfo->getExistingMachineOrder($orderId, $inquiryId));
+	}
 	
 	
 }
