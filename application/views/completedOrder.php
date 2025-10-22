@@ -324,7 +324,7 @@ include "include/topnavbar.php";
                                         '<td>' + item.payment_type + '</td>' +
                                         '<td>' + item.bank_name + '</td>' +
                                         '<td>' + item.advance + '</td>' +
-                                        '<td><img src="' + item.product_image + '" alt="Product Image" style="width:250px;height:200px;"></td>' +
+                                        // '<td><img src="' + item.product_image + '" alt="Product Image" style="width:250px;height:200px;"></td>' +
                                     '</tr>';
                             summaryRows += row;
                         });

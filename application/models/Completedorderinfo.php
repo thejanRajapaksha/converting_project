@@ -131,11 +131,11 @@ class Completedorderinfo extends CI_Model{
             $quotation_row = $quotation_query->row();
             $quotation_id = $quotation_row->idtbl_quotation;
     
-            $this->db->select('p.p_type AS payment_type, o.advance, b.bname AS bank_name, c.name AS customer_name, pi.imagepath AS product_image');
+            $this->db->select('p.p_type AS payment_type, o.advance, b.bank AS bank_name, c.name AS customer_name');
             $this->db->from('tbl_order o');
             $this->db->join('tbl_payment p', 'o.tbl_payment_idtbl_payment = p.idtbl_payment', 'left');
             $this->db->join('tbl_bank b', 'o.tbl_bank_idtbl_bank = b.idtbl_bank', 'left');
-            $this->db->join('tbl_product_image pi', 'pi.tbl_quotation_idtbl_quotation = '.$quotation_id, 'left');
+            // $this->db->join('tbl_product_image pi', 'pi.tbl_quotation_idtbl_quotation = '.$quotation_id, 'left');
             $this->db->join('tbl_customer c', 'c.idtbl_customer = '.$customerid, 'left'); 
             $this->db->where('o.tbl_inquiry_idtbl_inquiry', $inquiryid);
             $result = $this->db->get();
