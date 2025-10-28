@@ -19,29 +19,23 @@
  */
 
 // DB table to use
-$table = 'tbl_quotation';
+$table = 'tbl_order';
 
 // Table's primary key
-$primaryKey = 'idtbl_quotation';
+$primaryKey = 'idtbl_order';
 
 // Array of database columns which should be read and sent back to DataTables.
 // The `db` parameter represents the column name in the database, while the `dt`
 // parameter represents the DataTables column identifier. In this case simple
 // indexes
 $columns = array(
-	array( 'db' => '`u`.`idtbl_quotation`', 'dt' => 'idtbl_quotation', 'field' => 'idtbl_quotation' ),
-	array( 'db' => '`u`.`tbl_inquiry_idtbl_inquiry`', 'dt' => 'tbl_inquiry_idtbl_inquiry', 'field' => 'tbl_inquiry_idtbl_inquiry' ),
-	array( 'db' => '`u`.`quot_date`', 'dt' => 'quot_date', 'field' => 'quot_date' ),
-	array( 'db' => '`u`.`duedate`', 'dt' => 'duedate', 'field' => 'duedate' ),
-	array( 'db' => '`u`.`total`', 'dt' => 'total', 'field' => 'total' ),
-	array( 'db' => '`u`.`discount`', 'dt' => 'discount', 'field' => 'discount' ),
-	array( 'db' => '`u`.`nettotal`', 'dt' => 'nettotal', 'field' => 'nettotal' ),
-	array( 'db' => '`u`.`delivery_charge`', 'dt' => 'delivery_charge', 'field' => 'delivery_charge' ),
-	array( 'db' => '`u`.`remarks`', 'dt' => 'remarks', 'field' => 'remarks' ),
-	array( 'db' => '`ua`.`idtbl_inquiry`', 'dt' => 'idtbl_inquiry', 'field' => 'idtbl_inquiry' ),
-	array( 'db' => '`ub`.`idtbl_customer`', 'dt' => 'idtbl_customer', 'field' => 'idtbl_customer' ),
+	array( 'db' => '`u`.`idtbl_order`', 'dt' => 'idtbl_order', 'field' => 'idtbl_order' ),
+	array( 'db' => '`ud`.`quot_date`', 'dt' => 'quot_date', 'field' => 'quot_date' ),
+	array( 'db' => '`uc`.`quantity`', 'dt' => 'quantity', 'field' => 'quantity' ),
+	array( 'db' => '`up`.`product`', 'dt' => 'product', 'field' => 'product' ),
+	array( 'db' => '`ul`.`completed_date`', 'dt' => 'completed_date', 'field' => 'completed_date' ),
+	array( 'db' => '`u`.`is_complete`', 'dt' => 'is_complete', 'field' => 'is_complete' ),
 	array( 'db' => '`ub`.`name`', 'dt' => 'name', 'field' => 'name' ),
-	array( 'db' => '`u`.`approvestatus`', 'dt' => 'approvestatus', 'field' => 'approvestatus' ),
 	array( 'db' => '`u`.`status`', 'dt' => 'status', 'field' => 'status' )
 );
 
@@ -64,11 +58,16 @@ require('ssp.customized.class.php' );
 
 // $getid = $_POST['getid'];
 
-$joinQuery = "FROM `tbl_quotation` AS `u` 
-              LEFT JOIN `tbl_inquiry` AS `ua` ON (`ua`.`idtbl_inquiry` = `u`.`tbl_inquiry_idtbl_inquiry`) 
-              LEFT JOIN `tbl_customer` AS `ub` ON (`ub`.`idtbl_customer` = `u`.`tbl_customer_idtbl_customer`)";
+$joinQuery = "FROM `tbl_order` AS `u` 
+			  LEFT JOIN `tbl_order_detail` AS `uc` ON (`uc`.`tbl_order_idtbl_order` = `u`.`idtbl_order`)
+			  LEFT JOIN `completed_orders` AS `ul` ON (`ul`.`tbl_order_idtbl_order` = `u`.`idtbl_order`)
+			  LEFT JOIN `tbl_products` AS `up` ON (`up`.`idtbl_product` = `uc`.`tbl_products_idtbl_products`)
+              LEFT JOIN `tbl_inquiry` AS `ua` ON (`ua`.`idtbl_inquiry` = `uc`.`tbl_inquiry_idtbl_inquiry`) 
+			  LEFT JOIN `tbl_quotation` AS `ud` ON (`ud`.`tbl_inquiry_idtbl_inquiry` = `ua`.`idtbl_inquiry`)
+			  LEFT JOIN `tbl_quotation_detail` AS `uf` ON (`uf`.`tbl_quotation_idtbl_quotation` = `ud`.`idtbl_quotation`)
+              LEFT JOIN `tbl_customer` AS `ub` ON (`ub`.`idtbl_customer` = `ud`.`tbl_customer_idtbl_customer`)";
 
-$extraWhere = "`u`.`approvestatus` IN (1) AND `u`.`status` IN (4)";
+$extraWhere = "`u`.`status` IN (1,2) AND `u`.`is_complete` IN (1)";
 // AND `u`.`tbl_inquiry_idtbl_inquiry` = '$getid'
 
 echo json_encode(

@@ -40,57 +40,76 @@ public function InsertCompletedAmmount()
     $this->load->model('AllocatedMachinesinfo'); 
 
     $allocationId = $this->input->post('allocation_id');
-    $completeQty = $this->input->post('amount');
-    $wasteQty = 0;
+    $completeQty = (float)$this->input->post('amount');
 
-    if (!$allocationId) {
+    if (!$allocationId || !$completeQty) {
         echo json_encode(['success' => false, 'message' => 'Required fields are missing']);
         return;
     }
 
-    // ✅ ✅ ADD THIS BLOCK → (Order validation using machine_type, not machine_id)
     $allocation = $this->AllocatedMachinesinfo->getAllocationDataById($allocationId);
+    if (!$allocation) {
+        echo json_encode(['success' => false, 'message' => 'Invalid allocation ID']);
+        return;
+    }
+
     $orderId = $allocation->tbl_order_idtbl_order;
+    $machineId = $allocation->tbl_machine_idtbl_machine;
+    $machineData = $this->AllocatedMachinesinfo->getMachineById($machineId);
+    $machineTypeId = $machineData->machine_type_id;
 
-    $machineData = $this->AllocatedMachinesinfo->getMachineById($allocation->tbl_machine_idtbl_machine);
-    $currentMachineType = $machineData->machine_type_id;
-
-    $currentOrder = $this->AllocatedMachinesinfo->getMachineOrder($orderId, $currentMachineType);
+    $currentOrder = $this->AllocatedMachinesinfo->getMachineOrder($orderId, $machineTypeId);
     $currentOrderNumber = $currentOrder ? $currentOrder->order_number : null;
 
     if ($currentOrderNumber > 1) {
         $prevOrder = $this->AllocatedMachinesinfo->getMachineByOrder($orderId, $currentOrderNumber - 1);
-        $prevMachineType = $prevOrder->machine_types_id;
-        $previousCompleted = $this->AllocatedMachinesinfo->isMachineTypeCompleted($prevMachineType, $orderId);
-
-        if (!$previousCompleted) {
-            echo json_encode(['success' => false, 'message' => 'Previous machine process not completed yet']);
-            return;
+        if ($prevOrder) {
+            $prevMachineType = $prevOrder->machine_types_id;
+            $previousCompleted = $this->AllocatedMachinesinfo->isMachineTypeCompleted($prevMachineType, $orderId);
+            if (!$previousCompleted) {
+                echo json_encode(['success' => false, 'message' => 'Previous machine process not completed yet']);
+                return;
+            }
         }
     }
 
-    // ✅ Continue your existing code (no changes here)...
-    $data = [
-        'tbl_machine_allocation_idtbl_machine_allocation' => $allocationId,
-        'wastageqty' => $wasteQty,
-        'completedqty' => $completeQty,
-        'insertuser' => $user,
-        'status' => '1',
-    ];
+    $existingCompleted = (float)$allocation->completedqty;
+    $newCompleted = $existingCompleted + $completeQty;
 
-    $exists = $this->AllocatedMachinesinfo->checkAllocationExists($allocationId);
-
-    if ($exists) {
-        $this->AllocatedMachinesinfo->updateAllocationDetailsData($allocationId, ['completedqty' => $completeQty]);
+    if ($this->AllocatedMachinesinfo->checkAllocationExists($allocationId)) {
+        $this->AllocatedMachinesinfo->updateAllocationDetailsData($allocationId, ['completedqty' => $newCompleted]);
     } else {
-        $this->AllocatedMachinesinfo->insertQty($data);
+        $this->AllocatedMachinesinfo->insertQty([
+            'tbl_machine_allocation_idtbl_machine_allocation' => $allocationId,
+            'completedqty' => $newCompleted,
+            'insertuser' => $user,
+            'status' => 1
+        ]);
     }
 
-    // ✅ ✅ Mark machine allocation as fully completed if qty matched
+    $this->AllocatedMachinesinfo->insertCompletedLog([
+        'tbl_machine_allocation_idtbl_machine_allocation' => $allocationId,
+        'completed_today' => $completeQty,
+        'insertuser' => $user,
+        'isnsertdatetime' => date('Y-m-d H:i:s'),
+    ]);
+
     $this->AllocatedMachinesinfo->updateCompletedStatusIfEqual($allocationId);
 
-    echo json_encode(['success' => true]);
+    $orderFullyCompleted = $this->AllocatedMachinesinfo->isEntireOrderCompletedWithMachineTypes($orderId);
+
+    if ($orderFullyCompleted) {
+        $this->AllocatedMachinesinfo->insertCompletedOrderIfNotExists($orderId, $user);
+
+        $this->AllocatedMachinesinfo->updateOrderStatus($orderId, [
+            'is_complete' => 1,    
+        ]);
+    }
+
+    echo json_encode(['success' => true, 'message' => 'Completed quantity updated successfully']);
 }
+
+
 
 
 public function InsertRejectedAmmount()

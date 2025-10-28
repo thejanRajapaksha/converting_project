@@ -162,6 +162,57 @@ public function getMachineById($machineId)
                     ->get('machine_ins')   
                     ->row();
 }
+public function insertCompletedLog($data)
+{
+    return $this->db->insert('completed_allocation_log', $data);
+}
+
+public function isEntireOrderCompletedWithMachineTypes($orderId)
+{
+    // Total allocated
+    $this->db->select_sum('allocatedqty', 'total_allocated');
+    $this->db->where('tbl_order_idtbl_order', $orderId);
+    $allocData = $this->db->get('tbl_machine_allocation')->row();
+    $totalAllocated = (float)($allocData->total_allocated ?? 0);
+
+    // Total completed
+    $this->db->select_sum('tbl_machine_allocation_details.completedqty', 'total_completed');
+    $this->db->join('tbl_machine_allocation', 'tbl_machine_allocation.idtbl_machine_allocation = tbl_machine_allocation_details.tbl_machine_allocation_idtbl_machine_allocation');
+    $this->db->where('tbl_machine_allocation.tbl_order_idtbl_order', $orderId);
+    $completedData = $this->db->get('tbl_machine_allocation_details')->row();
+    $totalCompleted = (float)($completedData->total_completed ?? 0);
+
+    // Allocation statuses
+    $this->db->select('COUNT(*) as total, SUM(CASE WHEN completed_status = 1 THEN 1 ELSE 0 END) as completed');
+    $this->db->where('tbl_order_idtbl_order', $orderId);
+    $statusData = $this->db->get('tbl_machine_allocation')->row();
+
+    $allAllocationsCompleted = ((int)$statusData->total > 0 && (int)$statusData->total === (int)$statusData->completed);
+
+    return ($allAllocationsCompleted && ($totalAllocated > 0 && $totalCompleted >= $totalAllocated));
+}
+
+public function insertCompletedOrderIfNotExists($orderId, $user)
+{
+    $exists = $this->db->where('tbl_order_idtbl_order', $orderId)
+                       ->get('completed_orders')
+                       ->num_rows() > 0;
+
+    if (!$exists) {
+        $data = [
+            'tbl_order_idtbl_order' => $orderId,
+            'completed_date' => date('Y-m-d H:i:s'),
+            'insertuser' => $user,
+        ];
+        $this->db->insert('completed_orders', $data);
+    }
+}
+public function updateOrderStatus($orderId, $data)
+{
+    $this->db->where('idtbl_order', $orderId);
+    return $this->db->update('tbl_order', $data);
+}
+
 
 
 

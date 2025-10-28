@@ -27,8 +27,9 @@ include "include/topnavbar.php";
                             <th>#</th>
                             <th>Customer</th>
                             <th>Quotation Date</th>
-                            <th>Due Date</th>
-                            <th>Total</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Completed date</th>
                             <th class="text-right">Actions</th>
                         </tr>
                     </thead>
@@ -37,6 +38,43 @@ include "include/topnavbar.php";
         </div>
     </div>
 </main>
+
+<div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-dark">
+        <h5 class="modal-title" id="transferModalLabel">Transfer to Finished Goods</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span>&times;</span>
+        </button>
+      </div>
+      <form id="transferForm">
+        <div class="modal-body">
+          <input type="hidden" id="orderId" name="orderId">
+          <input type="hidden" id="orderQty" name="orderQty">
+
+          <div class="form-group">
+            <label for="location">Select Location <span class="text-danger">*</span></label>
+            <select class="form-control" id="location" name="location" required>
+                    <option value="">Select</option>
+                                        <?php foreach ($locationdetails->result() as $location) { ?>
+                                            <option value="<?php echo $location->idtbl_location ?>">
+                                                <?php echo $location->name ?>
+                                            </option>
+                                        <?php } ?>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-warning"><i class="fas fa-exchange-alt mr-1"></i> Transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 
 <!-- Integrated Detail Modal with Tabs -->
 <div class="modal fade" id="integratedDetailModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="integratedDetailModalLabel" aria-hidden="true">
@@ -262,7 +300,7 @@ include "include/topnavbar.php";
             "order": [[ 0, "desc" ]],
             "columns": [
                 {
-                    "data": "tbl_inquiry_idtbl_inquiry"
+                    "data": "idtbl_order"
                 },
                 {
                     "data": "name"
@@ -271,10 +309,13 @@ include "include/topnavbar.php";
                     "data": "quot_date"
                 },
                 {
-                    "data": "duedate"
+                    "data": "product"
                 },
                 {
-                    "data": "total"
+                    "data": "quantity"
+                },
+                {
+                    "data": "completed_date"
                 },
                 {
                     "targets": -1,
@@ -285,6 +326,7 @@ include "include/topnavbar.php";
                         button += '<button class="btn btn-primary btn-sm btnview mr-1" data-toggle="modal" data-target="#integratedDetailModal" data-qid="' + full['idtbl_quotation'] + '" data-id="' + full['tbl_inquiry_idtbl_inquiry'] + '" data-customer="' + full['idtbl_customer'] + '" title="Payment details view"><i class="fas fa-eye"></i></button>';
                         // button += '<button class="btn btn-success btn-sm btnquotation mr-1" data-toggle="modal" data-target="#Materialmodal" data-qid="' + full['idtbl_quotation'] + '" data-id="' + full['tbl_inquiry_idtbl_inquiry'] + '" data-customer="' + full['idtbl_customer'] + '" title="Create Order"><i class="fas fa-list"></i></button>';
                         // button += '<button class="btn btn-dark btn-sm btnpayment mr-1" data-toggle="modal" data-target="#Materialmodal" data-qid="' + full['idtbl_quotation'] + '" data-id="' + full['tbl_inquiry_idtbl_inquiry'] + '" data-customer="' + full['idtbl_customer'] + '" title="Payment details"><i class="fas fa-credit-card"></i></button>';
+                        button += '<button class="btn btn-warning btn-sm btntransfer" data-toggle="modal" data-target="#transferModal" data-orderid="' + full['idtbl_order'] + '" data-quantity="' + full['quantity'] + '" title="Transfer to Finished Goods"><i class="fas fa-exchange-alt"></i></button>';
                         return button;
                     }
                 }
@@ -298,6 +340,56 @@ include "include/topnavbar.php";
             var qid = $(this).data('qid');
             var id = $(this).data('id');
             $('#inquiryid').val(id);
+        });
+
+        $('#dataTableAccepted').on('click', '.btntransfer', function() {
+            let orderId = $(this).data('orderid');
+            let quantity = $(this).data('quantity');
+
+            $('#orderId').val(orderId);
+            $('#orderQty').val(quantity);
+        });
+
+        $('#transferForm').on('submit', function(e) {
+            e.preventDefault();
+
+            let orderId = $('#orderId').val();
+            let location = $('#location').val();
+            let transferQty = $('#orderQty').val();
+
+            if (!location) {
+                alert('Please select a valid location.');
+                return;
+            }
+
+            $.ajax({
+                url: "<?php echo base_url() ?>CRMCompletedorder/transferToFinishedGoods",
+                type: "POST",
+                data: {
+                    orderId: orderId,
+                    location: location,
+                    transferQty: transferQty 
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        $('#transferModal').modal('hide');
+                        $('#dataTableAccepted').DataTable().ajax.reload();
+                        action(JSON.stringify({
+                            type: "success",
+                            title: "Transfer Successful",
+                            message: "Order transferred to finished goods successfully",
+                            icon: "fas fa-check"
+                        }));
+                    } else {
+                        alert(response.message || "Transfer failed. Try again.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                    alert("An error occurred during transfer.");
+                }
+            });
         });
 
         $('#dataTableAccepted').on('click', '.btnview', function() {
@@ -343,214 +435,214 @@ include "include/topnavbar.php";
             });
 
             // Fetch Order Details
-            $.ajax({
-                url: "<?php echo base_url() ?>Orderdetail/Getorderdetails",
-                type: 'POST',
-                data: { inquiryid: id },
-                dataType: 'json',
-                success: function(data) {
-                    var tableBody = $('#orderdetailtable tbody');
-                    tableBody.empty();
-                    $('#commonFields').remove();
+            // $.ajax({
+            //     url: "<?php echo base_url() ?>Orderdetail/Getorderdetails",
+            //     type: 'POST',
+            //     data: { inquiryid: id },
+            //     dataType: 'json',
+            //     success: function(data) {
+            //         var tableBody = $('#orderdetailtable tbody');
+            //         tableBody.empty();
+            //         $('#commonFields').remove();
 
-                    if (data.length > 0) {
-                        var commonFields = '<div id="commonFields">' +
-                                        '<div><strong>Payment Type:</strong> ' + data[0].p_type + '</div>' +
-                                        '<div><strong>Advance &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:</strong> ' + data[0].advance + '</div>';
-                        if (data[0].bname) {
-                            commonFields += '<div><strong>Bank Name &nbsp&nbsp&nbsp&nbsp:</strong>&nbsp;  ' + data[0].bname + '</div>';
-                        }
+            //         if (data.length > 0) {
+            //             var commonFields = '<div id="commonFields">' +
+            //                             '<div><strong>Payment Type:</strong> ' + data[0].p_type + '</div>' +
+            //                             '<div><strong>Advance &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp:</strong> ' + data[0].advance + '</div>';
+            //             if (data[0].bname) {
+            //                 commonFields += '<div><strong>Bank Name &nbsp&nbsp&nbsp&nbsp:</strong>&nbsp;  ' + data[0].bname + '</div>';
+            //             }
 
-                        commonFields += '</div>';
-                        $('#orderdet .modal-body').prepend(commonFields);
-                        data.forEach(function(orderDetail) {
-                            var balance = orderDetail.cutting_qty - orderDetail.quantity;
-                            var row = '<tr>' +
-                                    '<td>' + orderDetail.cloth_type + '</td>' +
-                                    '<td>' + orderDetail.material_type + '</td>' +
-                                    '<td>' + orderDetail.size + '</td>' +
-                                    '<td>' + orderDetail.quantity + '</td>' +
-                                    '<td>' + orderDetail.cutting_qty +'</td>' +
-                                    '<td class="balance">' + (balance >= 0 ? '+' : '') + balance + '</td>' + 
-                                    '</tr>';
-                            tableBody.append(row);
-                        });
+            //             commonFields += '</div>';
+            //             $('#orderdet .modal-body').prepend(commonFields);
+            //             data.forEach(function(orderDetail) {
+            //                 var balance = orderDetail.cutting_qty - orderDetail.quantity;
+            //                 var row = '<tr>' +
+            //                         '<td>' + orderDetail.cloth_type + '</td>' +
+            //                         '<td>' + orderDetail.material_type + '</td>' +
+            //                         '<td>' + orderDetail.size + '</td>' +
+            //                         '<td>' + orderDetail.quantity + '</td>' +
+            //                         '<td>' + orderDetail.cutting_qty +'</td>' +
+            //                         '<td class="balance">' + (balance >= 0 ? '+' : '') + balance + '</td>' + 
+            //                         '</tr>';
+            //                 tableBody.append(row);
+            //             });
 
-                        $('#orderdet').modal('show');
-                    } else {
-                        alert('No order details found for this inquiry.');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                    alert('Failed to load order details. Please try again later.');
-                }
-            });
+            //             $('#orderdet').modal('show');
+            //         } else {
+            //             alert('No order details found for this inquiry.');
+            //         }
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.error(error);
+            //         alert('Failed to load order details. Please try again later.');
+            //     }
+            // });
 
             // Fetch Material Details
-            $.ajax({
-                url: "<?php echo base_url() ?>Materialdetail/Getmaterialdetails",
-                type: 'POST',
-                data: { inquiryid: id },
-                dataType: 'json',
-                success: function(data) {
-                    var tableBody = $('#materialdetailtable tbody');
-                    tableBody.empty();
-                    $('#commonFields').remove();
+            // $.ajax({
+            //     url: "<?php echo base_url() ?>Materialdetail/Getmaterialdetails",
+            //     type: 'POST',
+            //     data: { inquiryid: id },
+            //     dataType: 'json',
+            //     success: function(data) {
+            //         var tableBody = $('#materialdetailtable tbody');
+            //         tableBody.empty();
+            //         $('#commonFields').remove();
 
-                    if (data.length > 0) {
-                        data.forEach(function(materialDetail) {
-                            var row = '<tr>' +
-                                    '<td>' + materialDetail.type + '</td>' +
-                                    '<td>' + materialDetail.mat_odate + '</td>' +
-                                    '<td>' + materialDetail.mat_quantity + '</td>' +
-                                    '<td>' + materialDetail.mat_balance + '</td>' +
-                                    '<td>' + materialDetail.mat_remarks + '</td>' +
-                                    '</tr>';
-                            tableBody.append(row);
-                        });
+            //         if (data.length > 0) {
+            //             data.forEach(function(materialDetail) {
+            //                 var row = '<tr>' +
+            //                         '<td>' + materialDetail.type + '</td>' +
+            //                         '<td>' + materialDetail.mat_odate + '</td>' +
+            //                         '<td>' + materialDetail.mat_quantity + '</td>' +
+            //                         '<td>' + materialDetail.mat_balance + '</td>' +
+            //                         '<td>' + materialDetail.mat_remarks + '</td>' +
+            //                         '</tr>';
+            //                 tableBody.append(row);
+            //             });
 
-                        $('#materialdetail').modal('show');
-                    } else {
-                        alert('No material details found for this inquiry.');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                    alert('Failed to load material details. Please try again later.');
-                }
-            });
+            //             $('#materialdetail').modal('show');
+            //         } else {
+            //             alert('No material details found for this inquiry.');
+            //         }
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.error(error);
+            //         alert('Failed to load material details. Please try again later.');
+            //     }
+            // });
 
             // Fetch Received Details
-            $.ajax({
-                url: "<?php echo base_url() ?>Printingdetail/GetReceiveorderInfoDetails",
-                type: 'POST',
-                data: { inquiryid: id, customerid: customerid },
-                dataType: 'json',
-                success: function(data) {
-                    var orderTableBody = $('#receivedetailsinfotable tbody');
-                    var colorCuffTableBody = $('#receivedcolorcuff tbody');
-                    orderTableBody.empty();
-                    colorCuffTableBody.empty();
+            // $.ajax({
+            //     url: "<?php echo base_url() ?>Printingdetail/GetReceiveorderInfoDetails",
+            //     type: 'POST',
+            //     data: { inquiryid: id, customerid: customerid },
+            //     dataType: 'json',
+            //     success: function(data) {
+            //         var orderTableBody = $('#receivedetailsinfotable tbody');
+            //         var colorCuffTableBody = $('#receivedcolorcuff tbody');
+            //         orderTableBody.empty();
+            //         colorCuffTableBody.empty();
 
-                    if (data.received_order_details.length > 0) {
-                        $('#ReceivecustomerName').html(data.customer_name);
+            //         if (data.received_order_details.length > 0) {
+            //             $('#ReceivecustomerName').html(data.customer_name);
 
-                        data.received_order_details.forEach(function(orderDetail) {
-                            if (orderDetail.printing_company !== null || orderDetail.sewing_company !== null) {
-                                var row = '<tr>' +
-                                            '<td>' + orderDetail.cloth_type + '</td>' +
-                                            '<td>' + orderDetail.design_type + '</td>' +
-                                            '<td>' + orderDetail.printing_company + '</td>' +
-                                            '<td>' + orderDetail.sewing_company + '</td>' +
-                                            '<td>' + orderDetail.received_qty + '</td>' +
-                                            '<td>' + orderDetail.received_date + '</td>' +
-                                        '</tr>';
-                                orderTableBody.append(row);
-                            }
-                        });
-                    }
+            //             data.received_order_details.forEach(function(orderDetail) {
+            //                 if (orderDetail.printing_company !== null || orderDetail.sewing_company !== null) {
+            //                     var row = '<tr>' +
+            //                                 '<td>' + orderDetail.cloth_type + '</td>' +
+            //                                 '<td>' + orderDetail.design_type + '</td>' +
+            //                                 '<td>' + orderDetail.printing_company + '</td>' +
+            //                                 '<td>' + orderDetail.sewing_company + '</td>' +
+            //                                 '<td>' + orderDetail.received_qty + '</td>' +
+            //                                 '<td>' + orderDetail.received_date + '</td>' +
+            //                             '</tr>';
+            //                     orderTableBody.append(row);
+            //                 }
+            //             });
+            //         }
 
-                    if (data.received_colorcuff_details.length > 0) {
-                        data.received_colorcuff_details.forEach(function(detail) {
-                            var colorCuffMap = { "1": "color", "2": "cuff" };
-                            var colorCuffText = colorCuffMap[detail.colorcuff] || 'Unknown';
+            //         if (data.received_colorcuff_details.length > 0) {
+            //             data.received_colorcuff_details.forEach(function(detail) {
+            //                 var colorCuffMap = { "1": "color", "2": "cuff" };
+            //                 var colorCuffText = colorCuffMap[detail.colorcuff] || 'Unknown';
 
-                            if (colorCuffText !== 'Unknown' && detail.colorcuff_com) {
-                                var row = '<tr>' +
-                                            '<td>' + colorCuffText + '</td>' +
-                                            '<td>' + detail.colorcuff_com + '</td>' +
-                                            '<td>' + detail.received_qty + '</td>' +
-                                            '<td>' + detail.received_date + '</td>' +
-                                        '</tr>';
-                                colorCuffTableBody.append(row);
-                            }
-                        });
-                    }
+            //                 if (colorCuffText !== 'Unknown' && detail.colorcuff_com) {
+            //                     var row = '<tr>' +
+            //                                 '<td>' + colorCuffText + '</td>' +
+            //                                 '<td>' + detail.colorcuff_com + '</td>' +
+            //                                 '<td>' + detail.received_qty + '</td>' +
+            //                                 '<td>' + detail.received_date + '</td>' +
+            //                             '</tr>';
+            //                     colorCuffTableBody.append(row);
+            //                 }
+            //             });
+            //         }
 
-                    $('#receivedetailsinfo').modal('show');
-                },
-                error: function() {
-                    alert('An error occurred while fetching the details.');
-                }
-            });
+            //         $('#receivedetailsinfo').modal('show');
+            //     },
+            //     error: function() {
+            //         alert('An error occurred while fetching the details.');
+            //     }
+            // });
 
             // Fetch Delivery and Packaging Details
-            $.ajax({
-                url: "<?php echo base_url() ?>Deliverydetail/GetDeliveryAndPackagingDetails",
-                type: 'POST',
-                data: { inquiryid: id },
-                dataType: 'json',
-                success: function(data) {
-                    var deliveryTableBody = $('#deliverydetailtable tbody');
-                    var packagingTableBody = $('#packagingdetailtable tbody');
-                    deliveryTableBody.empty();
-                    packagingTableBody.empty();
+            // $.ajax({
+            //     url: "<?php echo base_url() ?>Deliverydetail/GetDeliveryAndPackagingDetails",
+            //     type: 'POST',
+            //     data: { inquiryid: id },
+            //     dataType: 'json',
+            //     success: function(data) {
+            //         var deliveryTableBody = $('#deliverydetailtable tbody');
+            //         var packagingTableBody = $('#packagingdetailtable tbody');
+            //         deliveryTableBody.empty();
+            //         packagingTableBody.empty();
 
-                    if (data.delivery.length > 0) {
-                        data.delivery.forEach(function(deliveryDetail) {
-                            var row = '<tr>' +
-                                '<td>' + deliveryDetail.cloth_type + '</td>' +
-                                '<td>' + deliveryDetail.size + '</td>' +
-                                '<td>' + deliveryDetail.deliver_quantity + '</td>' +
-                                '<td>' + deliveryDetail.delivery_date + '</td>' +
-                                '</tr>';
-                            deliveryTableBody.append(row);
-                        });
-                    } else {
-                        alert('No delivery details found for this inquiry.');
-                    }
+            //         if (data.delivery.length > 0) {
+            //             data.delivery.forEach(function(deliveryDetail) {
+            //                 var row = '<tr>' +
+            //                     '<td>' + deliveryDetail.cloth_type + '</td>' +
+            //                     '<td>' + deliveryDetail.size + '</td>' +
+            //                     '<td>' + deliveryDetail.deliver_quantity + '</td>' +
+            //                     '<td>' + deliveryDetail.delivery_date + '</td>' +
+            //                     '</tr>';
+            //                 deliveryTableBody.append(row);
+            //             });
+            //         } else {
+            //             alert('No delivery details found for this inquiry.');
+            //         }
 
-                    if (data.packaging.length > 0) {
-                        data.packaging.forEach(function(packagingDetail) {
-                            var row = '<tr>' +
-                                '<td>' + packagingDetail.cloth_type + '</td>' +
-                                '<td>' + packagingDetail.size + '</td>' +
-                                '<td>' + packagingDetail.packed_quantity + '</td>' +
-                                '<td>' + packagingDetail.packaging_date + '</td>' +
-                                '</tr>';
-                            packagingTableBody.append(row);
-                        });
-                    } else {
-                        alert('No packaging details found for this inquiry.');
-                    }
+            //         if (data.packaging.length > 0) {
+            //             data.packaging.forEach(function(packagingDetail) {
+            //                 var row = '<tr>' +
+            //                     '<td>' + packagingDetail.cloth_type + '</td>' +
+            //                     '<td>' + packagingDetail.size + '</td>' +
+            //                     '<td>' + packagingDetail.packed_quantity + '</td>' +
+            //                     '<td>' + packagingDetail.packaging_date + '</td>' +
+            //                     '</tr>';
+            //                 packagingTableBody.append(row);
+            //             });
+            //         } else {
+            //             alert('No packaging details found for this inquiry.');
+            //         }
 
-                    $('#deliverydetail').modal('show');
-                },
-                error: function() {
-                    alert('An error occurred while fetching the details.');
-                }
-            });
+            //         $('#deliverydetail').modal('show');
+            //     },
+            //     error: function() {
+            //         alert('An error occurred while fetching the details.');
+            //     }
+            // });
 
-            $.ajax({
-                url: "<?php echo base_url() ?>CRMCompletedorder/GetPaymentDetails",  
-                type: 'POST',
-                data: { inquiryid: id },
-                dataType: 'json',
-                success: function(data) {
-                    var tableBody = $('#paymentdetailtable tbody'); 
-                    tableBody.empty();
-                    $('#commonFields').remove();  
-                    if (data.length > 0) {
-                        data.forEach(function(paymentDetail) {
-                            var row = '<tr>' +
-                                        '<td>' + paymentDetail.p_type + '</td>' + 
-                                        '<td>' + paymentDetail.amount + '</td>' +  
-                                        '<td>' + paymentDetail.payment_date + '</td>' +  
-                                        '</tr>';
-                            tableBody.append(row);
-                        });
+            // $.ajax({
+            //     url: "<?php echo base_url() ?>CRMCompletedorder/GetPaymentDetails",  
+            //     type: 'POST',
+            //     data: { inquiryid: id },
+            //     dataType: 'json',
+            //     success: function(data) {
+            //         var tableBody = $('#paymentdetailtable tbody'); 
+            //         tableBody.empty();
+            //         $('#commonFields').remove();  
+            //         if (data.length > 0) {
+            //             data.forEach(function(paymentDetail) {
+            //                 var row = '<tr>' +
+            //                             '<td>' + paymentDetail.p_type + '</td>' + 
+            //                             '<td>' + paymentDetail.amount + '</td>' +  
+            //                             '<td>' + paymentDetail.payment_date + '</td>' +  
+            //                             '</tr>';
+            //                 tableBody.append(row);
+            //             });
 
-                        $('#paymentdetail').modal('show');  
-                    } else {
-                        alert('No payment details found for this inquiry.');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(error);
-                    alert('Failed to load payment details. Please try again later.');
-                }
-            });
+            //             $('#paymentdetail').modal('show');  
+            //         } else {
+            //             alert('No payment details found for this inquiry.');
+            //         }
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.error(error);
+            //         alert('Failed to load payment details. Please try again later.');
+            //     }
+            // });
 
         });
 
