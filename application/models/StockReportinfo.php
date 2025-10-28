@@ -102,7 +102,7 @@ class StockReportinfo extends CI_Model {
 
             $html .= '
                 <tr>
-                    <td>' . $colValue . '</td>
+                    <td>' . htmlspecialchars($r['name']) . '</td>
                     <td>' . htmlspecialchars($r['batchno']) . '</td>
                     <td>' . htmlspecialchars($r['qty']) . '</td>
                     <td class="text-right">' . number_format($r['unitprice'], 2) . '</td>

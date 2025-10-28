@@ -25,6 +25,7 @@ class Machineallocationinfo extends CI_Model{
         $this->db->from('machine_types AS u');
         $this->db->join('machine_ins AS ua', 'ua.machine_type_id = u.id');
         $this->db->where('u.active', 1);
+        $this->db->where('ua.is_deleted', 0);
 
         $query = $this->db->get();
         return $query->result();
