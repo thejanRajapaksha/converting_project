@@ -144,7 +144,7 @@ include "include/topnavbar.php";
                                     <th>Bag Weight</th>
                                     <th>Liner Weight</th>
                                     <th>Inner Bag</th>
-                                    <th>Off Print</th>
+                                    <th>Printing</th>
                                     <th>Printing Type</th>
                                     <th>Color No</th>
                                     <th class="text-right">Actions</th>

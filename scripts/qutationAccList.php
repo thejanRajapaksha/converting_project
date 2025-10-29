@@ -68,7 +68,7 @@ $joinQuery = "FROM `tbl_quotation` AS `u`
               LEFT JOIN `tbl_inquiry` AS `ua` ON (`ua`.`idtbl_inquiry` = `u`.`tbl_inquiry_idtbl_inquiry`) 
               LEFT JOIN `tbl_customer` AS `ub` ON (`ub`.`idtbl_customer` = `u`.`tbl_customer_idtbl_customer`)";
 
-$extraWhere = "`u`.`approvestatus` IN (1) AND `u`.`status` IN (1, 4)";
+$extraWhere = "`u`.`approvestatus` IN (1) AND `u`.`status` IN (1)";
 // AND `u`.`tbl_inquiry_idtbl_inquiry` = '$getid'
 
 echo json_encode(
