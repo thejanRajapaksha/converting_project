@@ -248,7 +248,7 @@ class Locationinfo extends CI_Model{
 
         
         $this->db->select('*');
-        $this->db->from('tbl_location');
+        $this->db->from('tbl_stock_location');
         $this->db->where('idtbl_location', $recordID);
         $this->db->where('status', 1);
 
@@ -257,9 +257,6 @@ class Locationinfo extends CI_Model{
         $obj=new stdClass();
         $obj->id=$respond->row(0)->idtbl_location;
         $obj->name=$respond->row(0)->name;
-        $obj->locationtype=$respond->row(0)->tbl_location_type_idtbl_location_type;
-        $obj->contact=$respond->row(0)->contact;
-        $obj->address=$respond->row(0)->address;
 
 
         echo json_encode($obj);

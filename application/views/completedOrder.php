@@ -51,7 +51,7 @@ include "include/topnavbar.php";
       <form id="transferForm">
         <div class="modal-body">
           <input type="hidden" id="orderId" name="orderId">
-          <input type="hidden" id="orderQty" name="orderQty">
+          <!-- <input type="hidden" id="orderQty" name="orderQty"> -->
 
           <div class="form-group">
             <label for="location">Select Location <span class="text-danger">*</span></label>
@@ -63,6 +63,11 @@ include "include/topnavbar.php";
                                             </option>
                                         <?php } ?>
             </select>
+          </div>
+
+          <div class="form-group">
+            <label for="transferQty">Transfer Quantity <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="transferQty" name="transferQty" required>
           </div>
 
         </div>
@@ -347,7 +352,7 @@ include "include/topnavbar.php";
             let quantity = $(this).data('quantity');
 
             $('#orderId').val(orderId);
-            $('#orderQty').val(quantity);
+            // $('#orderQty').val(quantity);
         });
 
         $('#transferForm').on('submit', function(e) {
@@ -355,7 +360,7 @@ include "include/topnavbar.php";
 
             let orderId = $('#orderId').val();
             let location = $('#location').val();
-            let transferQty = $('#orderQty').val();
+            let transferQty = $('#transferQty').val();
 
             if (!location) {
                 alert('Please select a valid location.');
