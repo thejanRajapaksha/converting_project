@@ -9,6 +9,7 @@ class StockReport extends CI_Controller {
         $this->load->model('Commeninfo');
         $result['menuaccess'] = $this->Commeninfo->Getmenuprivilege();
         $result['getsuppier'] = $this->StockReportinfo->Suppliearget();
+        $result['getmachinetype'] = $this->StockReportinfo->Machinetypeget();
         $result['getmachinemodel'] = $this->StockReportinfo->Machinemodelget();
         $this->load->view('stockreport', $result);
     }
@@ -80,5 +81,12 @@ class StockReport extends CI_Controller {
 
     }
 
+    public function getModelsByType() {
+        $this->load->model('StockReportinfo');
+
+        $typeId = $this->input->post('type_id');
+        $models = $this->StockReportinfo->getModelsByType($typeId);
+        echo json_encode($models);
+    }
 
 }

@@ -28,7 +28,7 @@ include "include/topnavbar.php";
 							<div class="container-fluid mt-3">
 
 								<div class="row">
-									<div class="col-2">
+									<!-- <div class="col-2">
 										<label class="small font-weight-bold">Type*</label>
 										<select class="form-control form-control-sm" name="type" id="type" required>
 											<option value="">Select</option>
@@ -36,7 +36,8 @@ include "include/topnavbar.php";
 											<option value="2">Material</option>
 											<option value="3">Machine</option>
 										</select>
-									</div>
+									</div> -->
+									<input type="hidden" name="type" id="type" value="1">
 
 									<div class="col-2">
 										<label class="small font-weight-bold">Supplier*</label>
@@ -45,6 +46,17 @@ include "include/topnavbar.php";
 											<option value="0">All</option>
 											<?php foreach ($getsuppier->result() as $row) { ?>
 												<option value="<?php echo $row->idtbl_supplier ?>"><?php echo $row->suppliername ?></option>
+											<?php } ?>
+										</select>
+									</div>
+
+									<div class="col-2">
+										<label class="small font-weight-bold">Machine Type*</label>
+										<select class="form-control form-control-sm selecter2 px-0" name="machinetype" id="machinetype">
+											<option value="">Select</option>
+											<option value="0">All</option>
+											<?php foreach ($getmachinetype->result() as $row) { ?>
+												<option value="<?php echo $row->id ?>"><?php echo $row->name ?></option>
 											<?php } ?>
 										</select>
 									</div>
@@ -212,6 +224,31 @@ $(document).ready(function () {
             cache: true
         }
     });
+
+	$('#machinetype').on('change', function () {
+		var typeId = $(this).val();
+		$('#machinemodel').html('<option value="">Loading...</option>');
+		$('#machineNoContainer').hide();
+		$('#machineno').html('<option value="">Select</option>');
+
+		if (typeId) {
+			$.ajax({
+				url: "<?php echo base_url('StockReport/getModelsByType'); ?>",
+				type: "POST",
+				data: { type_id: typeId },
+				dataType: "json",
+				success: function (data) {
+					let options = '<option value="">Select</option>';
+					$.each(data, function (index, item) {
+						options += `<option value="${item.id}">${item.name}</option>`;
+					});
+					$('#machinemodel').html(options);
+				}
+			});
+		} else {
+			$('#machinemodel').html('<option value="">Select</option>');
+		}
+	});
 
 });
 </script>

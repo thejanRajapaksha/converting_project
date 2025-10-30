@@ -12,12 +12,30 @@ class StockReportinfo extends CI_Model {
         return $respond;
     }
 
+    public function Machinetypeget() {
+        $this->db->select('name, id');
+        $this->db->from('machine_types');
+        $this->db->where('active', 1);
+        $respond = $this->db->get();
+        return $respond;
+    }
+
     public function Machinemodelget() {
         $this->db->select('name, id');
         $this->db->from('machine_models');
         $this->db->where('active', 1);
         $respond = $this->db->get();
         return $respond;
+    }
+
+    public function getModelsByType($typeId) {
+        $this->db->select('DISTINCT(mm.id), mm.name');
+        $this->db->from('machine_ins mi');
+        $this->db->join('machine_models mm', 'mi.machine_model_id = mm.id', 'left');
+        $this->db->where('mi.machine_type_id', $typeId);
+        $this->db->where('mi.active', 1);
+        $this->db->where('mm.active', 1);
+        return $this->db->get()->result();
     }
 
     public function generateStockReportPDF($rows, $filters)

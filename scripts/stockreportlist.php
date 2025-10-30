@@ -25,6 +25,8 @@ $type     = isset($_POST['type']) ? intval($_POST['type']) : 0;
 $supplier = isset($_POST['supplier']) ? intval($_POST['supplier']) : 0;
 $machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 $partname = isset($_POST['partname']) ? intval($_POST['partname']) : 0;
+$machinetype = isset($_POST['machinetype']) ? intval($_POST['machinetype']) : 0;
+$machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 
 // default extraWhere
 $extraWhere = " `u`.`status` = 1 AND `u`.`qty` > 0 ";
@@ -62,6 +64,9 @@ if ($machinemodel > 0 && $type == 1) {
 }
 if ($partname > 0 && $type == 1) {
     $extraWhere .= " AND `ua`.`id` = {$partname}";
+}
+if ($machinetype > 0 && $type == 1) {
+    $extraWhere .= " AND ua.type = {$machinetype}";
 }
 
 echo json_encode(
