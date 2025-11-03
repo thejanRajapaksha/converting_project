@@ -983,5 +983,39 @@ function checkjob(confirmnot){
         }
     });
 }
+
+
+$(document).ready(function() {
+    // Check for URL parameters and auto-fill form
+    const urlParams = new URLSearchParams(window.location.search);
+    const sparepart = urlParams.get('sparepart');
+    const suggestedQty = urlParams.get('suggested_qty');
+    const currentStock = urlParams.get('current_stock');
+    const reorderLevel = urlParams.get('reorder_level');
+    const partNo = urlParams.get('part_no');
+    const sparepartId = urlParams.get('sparepart_id');
+    
+    if (sparepart) {
+        $('#ordertype').val('1').trigger('change');
+        
+        setTimeout(function() {
+            $('#product').val(sparepart);
+            
+            if (suggestedQty) {
+                $('#newqty').val(suggestedQty);
+            }
+            
+            $('#newqty').focus().select();
+        }, 1000);
+    }
+    
+    if (sparepart && suggestedQty) {
+        setTimeout(function() {
+            if ($('#product').val() && $('#newqty').val()) {
+                $('#formsubmit').click();
+            }
+        }, 2000);
+    }
+});
 </script>
 <?php include "include/footer.php"; ?>

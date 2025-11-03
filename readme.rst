@@ -69,3 +69,9 @@ Acknowledgement
 
 The CodeIgniter team would like to thank EllisLab, all the
 contributors to the CodeIgniter project and you, the CodeIgniter user.
+
+
+
+
+INSERT INTO `tbl_menu_list` (`idtbl_menu_list`, `menu`, `status`)
+VALUES (54, 'SparepartFrequency', '1');
