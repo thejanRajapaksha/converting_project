@@ -327,6 +327,11 @@ else if ($functionmenu == 'FinishGoods') {
     $editcheck = checkprivilege($menuprivilegearray, 53, 2);
     $statuscheck = checkprivilege($menuprivilegearray, 53, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 53, 4);
+}else if ($functionmenu == 'SparepartFrequency') {
+    $addcheck = checkprivilege($menuprivilegearray, 54, 1);
+    $editcheck = checkprivilege($menuprivilegearray, 54, 2);
+    $statuscheck = checkprivilege($menuprivilegearray, 54, 3);
+    $deletecheck = checkprivilege($menuprivilegearray, 54, 4);
 }
 
 
@@ -547,13 +552,13 @@ function checkprivilege($arraymenu, $menuID, $type){
             <?php } ?>
 
             <!-- Reports -->
-            <?php if(menucheck($menuprivilegearray, 33)==1 | menucheck($menuprivilegearray, 34)==1 | menucheck($menuprivilegearray, 35)==1 | menucheck($menuprivilegearray, 36)==1 | menucheck($menuprivilegearray, 37)==1 | menucheck($menuprivilegearray, 38)==1 | menucheck($menuprivilegearray, 39)==1 | menucheck($menuprivilegearray, 40)==1 | menucheck($menuprivilegearray, 41)==1 | menucheck($menuprivilegearray, 42)==1 | menucheck($menuprivilegearray, 43)==1 | menucheck($menuprivilegearray, 44)==1){ ?>
+            <?php if(menucheck($menuprivilegearray, 33)==1 | menucheck($menuprivilegearray, 34)==1 | menucheck($menuprivilegearray, 35)==1 | menucheck($menuprivilegearray, 36)==1 | menucheck($menuprivilegearray, 37)==1 | menucheck($menuprivilegearray, 38)==1 | menucheck($menuprivilegearray, 39)==1 | menucheck($menuprivilegearray, 40)==1 | menucheck($menuprivilegearray, 41)==1 | menucheck($menuprivilegearray, 42)==1 | menucheck($menuprivilegearray, 43)==1 | menucheck($menuprivilegearray, 44)==1 | menucheck($menuprivilegearray, 54)==1){ ?>
             <a class="nav-link p-0 px-3 py-2 collapsed text-dark" href="javascript:void(0);" data-toggle="collapse" data-target="#collapseReports">
                 <div class="nav-link-icon"><i class="fas fa-chart-bar"></i></div>
                 Reports
                 <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse <?php if($controllermenu=="StockReport" | $controllermenu=="GrnReport" | $controllermenu=="MachineServicesCreated" | $controllermenu=="MachineServicesEmployee" | $controllermenu=="MachineServicesCostAnalysis" | $controllermenu=="UsedServiceItems" | $controllermenu=="MachineRepairsCreated" | $controllermenu=="MachineRepairsEmployee" | $controllermenu=="MachineRepairsCostAnalysis" | $controllermenu=="UsedRepairItems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP"){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
+            <div class="collapse <?php if($controllermenu=="StockReport" | $controllermenu=="GrnReport" | $controllermenu=="MachineServicesCreated" | $controllermenu=="MachineServicesEmployee" | $controllermenu=="MachineServicesCostAnalysis" | $controllermenu=="UsedServiceItems" | $controllermenu=="MachineRepairsCreated" | $controllermenu=="MachineRepairsEmployee" | $controllermenu=="MachineRepairsCostAnalysis" | $controllermenu=="UsedRepairItems" | $controllermenu=="MachineWIP" | $controllermenu=="CustomerPOWIP" | $controllermenu=="SparepartFrequency" ){echo 'show';} ?>" id="collapseReports" data-parent="#accordionSidenav">
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 33)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'StockReport'; ?>">Stock</a><?php } ?>
@@ -579,6 +584,8 @@ function checkprivilege($arraymenu, $menuID, $type){
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineWIP'; ?>">Machine WIP</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 44)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CustomerPOWIP'; ?>">Customer PO WIP</a><?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 54)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'SparepartFrequency'; ?>">Spare Part GRN Report</a><?php } ?>
                 </nav>
             </div>
             <?php } ?>

@@ -23,7 +23,7 @@
 		$this->db->from('tbl_print_porder_req');
 		$this->db->where('status', 1);
 		$this->db->where('confirmstatus', 1);
-        $this->db->where('porderconfirm', 0);
+        // $this->db->where('porderconfirm', 0);
 		$this->db->where('tbl_print_porder_req.tbl_company_idtbl_company', $comapnyID);
 
 

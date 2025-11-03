@@ -19,4 +19,6 @@ class Model_machine_dashboard extends CI_Model
         return $query->result_array();
     }
 
+    
+
 }

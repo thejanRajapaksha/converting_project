@@ -9,7 +9,8 @@ class MachineDashboard extends CI_Controller
         $this->load->model('model_machine_dashboard');
     }
 
-    public function index(){
+    public function index()
+    {
         $this->load->model('Commeninfo');
 
         // Initialize data array
@@ -34,7 +35,7 @@ class MachineDashboard extends CI_Controller
         $current_date_time = date('Y-m-d H:i:s');
 
         foreach ($machine_types as $d) {
-            $date_1 = date('Y-m-d', strtotime($current_date.' -1 year'));
+            $date_1 = date('Y-m-d', strtotime($current_date . ' -1 year'));
 
             // Count for 0-1 year
             $this->db->where(['is_deleted' => 0, 'machine_type_id' => $d['id']]);
@@ -43,23 +44,23 @@ class MachineDashboard extends CI_Controller
             $zero_1 = $this->db->get('machine_ins')->num_rows();
 
             // Count for 2-3 years
-            $date_2 = date('Y-m-d', strtotime($current_date.' -2 year'));
-            $date_3 = date('Y-m-d', strtotime($current_date.' -3 year'));
+            $date_2 = date('Y-m-d', strtotime($current_date . ' -2 year'));
+            $date_3 = date('Y-m-d', strtotime($current_date . ' -3 year'));
             $this->db->where(['is_deleted' => 0, 'machine_type_id' => $d['id']]);
             $this->db->where('origin_date >=', $date_3);
             $this->db->where('origin_date <=', $date_2);
             $two_3 = $this->db->get('machine_ins')->num_rows();
 
             // Count for 4-5 years
-            $date_4 = date('Y-m-d', strtotime($current_date.' -4 year'));
-            $date_5 = date('Y-m-d', strtotime($current_date.' -5 year'));
+            $date_4 = date('Y-m-d', strtotime($current_date . ' -4 year'));
+            $date_5 = date('Y-m-d', strtotime($current_date . ' -5 year'));
             $this->db->where(['is_deleted' => 0, 'machine_type_id' => $d['id']]);
             $this->db->where('origin_date >=', $date_5);
             $this->db->where('origin_date <=', $date_4);
             $four_5 = $this->db->get('machine_ins')->num_rows();
 
             // Count for >5 years
-            $date_6 = date('Y-m-d', strtotime($current_date.' -5 year'));
+            $date_6 = date('Y-m-d', strtotime($current_date . ' -5 year'));
             $this->db->where(['is_deleted' => 0, 'machine_type_id' => $d['id']]);
             $this->db->where('origin_date <', $date_6);
             $five_max = $this->db->get('machine_ins')->num_rows();
@@ -82,7 +83,7 @@ class MachineDashboard extends CI_Controller
             '0-1' => 0,
             '2-3' => 0,
             '4-5' => 0,
-            '5<'  => 0
+            '5<' => 0
         ];
 
         $this->db->select(' COUNT(machine_ins.id) AS total_count');
@@ -115,11 +116,11 @@ class MachineDashboard extends CI_Controller
         $total_counts = array();
         $colors = array();
 
-        foreach ($data as $val){
+        foreach ($data as $val) {
             $machine_types[] = $val['machine_type_name'];
             $total_counts[] = $val['total_count'];
             //random colors
-            $colors[] = '#'.str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+            $colors[] = '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
         }
 
         $result = array(
@@ -136,7 +137,7 @@ class MachineDashboard extends CI_Controller
     {
         $machine_type_id = $this->input->post('id');
 
-       // machine_ins not in machine_allocation_current
+        // machine_ins not in machine_allocation_current
         $this->db->select('COUNT(machine_ins.id) AS total_count');
         $this->db->from('machine_ins');
         $this->db->where('machine_type_id', $machine_type_id);
@@ -170,7 +171,7 @@ class MachineDashboard extends CI_Controller
         // $this->db->where('machine_ins.is_deleted', 0);
         // $query = $this->db->get();
         // $allocated_machines = $query->result_array();
-        
+
         $this->db->select('machine_ins.*, ma.allocatedate, ma.startdatetime , ma.enddatetime , ma.allocatedqty , td.deliveryId');
         $this->db->from('tbl_machine_allocation as ma');
         $this->db->join('machine_ins', 'machine_ins.id = ma.tbl_machine_idtbl_machine', 'left');
@@ -191,7 +192,8 @@ class MachineDashboard extends CI_Controller
 
     }
 
-    public function fetch_available_machines_data(){
+    public function fetch_available_machines_data()
+    {
         $machine_type_id = $this->input->post('machine_type_id');
 
         $this->db->select('machine_ins.*,
@@ -240,6 +242,32 @@ class MachineDashboard extends CI_Controller
 
     }
 
+    // Compact method for low stock spare parts
+    public function fetch_low_stock_spare_parts()
+    {
+        $company_id = $_SESSION['company_id'];
+        $branch_id = $_SESSION['branch_id'];
 
+        $this->db->select('sp.id, sp.name, 
+                      COALESCE(SUM(ps.qty), 0) as current_qty,
+                      10 as reorder_level');
+
+        $this->db->from('spare_parts sp');
+        $this->db->join('tbl_print_stock ps', 'ps.tbl_sparepart_id = sp.id AND ps.status = 1', 'left');
+        $this->db->where('sp.active', 1);
+        $this->db->where('sp.is_deleted', 0);
+        $this->db->where('ps.tbl_company_idtbl_company', $company_id);
+        $this->db->where('ps.tbl_company_branch_idtbl_company_branch', $branch_id);
+        $this->db->group_by('sp.id');
+        $this->db->having('current_qty <= 10');
+        $this->db->having('current_qty > 0');
+        $this->db->order_by('current_qty', 'ASC');
+        $this->db->limit(50); // Limit total results
+
+        $query = $this->db->get();
+        $result = $query->result_array();
+
+        echo json_encode($result);
+    }
 
 }
