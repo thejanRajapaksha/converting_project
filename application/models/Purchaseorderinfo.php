@@ -23,7 +23,7 @@
 		$this->db->from('tbl_print_porder_req');
 		$this->db->where('status', 1);
 		$this->db->where('confirmstatus', 1);
-        // $this->db->where('porderconfirm', 0);
+        $this->db->where('porderconfirm', 0);
 		$this->db->where('tbl_print_porder_req.tbl_company_idtbl_company', $comapnyID);
 
 
@@ -640,113 +640,241 @@
 		echo json_encode($obj);
 	}
 
+	// public function Purchaseorderstatus() {
+	// 	$this->db->trans_begin();
+
+	// 	$userID=$_SESSION['userid'];
+	// 	$recordID=$this->input->post('porderid');
+    //     $reqid=$this->input->post('reqestid');
+	// 	$confirmnot=$this->input->post('confirmnot');
+	// 	$updatedatetime=date('Y-m-d H:i:s');
+
+	// 	// if($type==1) {
+	// 		$data=array(
+	// 			'confirmstatus'=> $confirmnot,
+	// 			'updateuser'=> $userID,
+	// 			'updatedatetime'=> $updatedatetime);
+
+	// 		$this->db->where('idtbl_print_porder', $recordID);
+	// 		$this->db->update('tbl_print_porder', $data);
+
+    //         $data1 = array(
+    //             'porderconfirm' => '1',
+    //             'updateuser'=> $userID, 
+    //             'updatedatetime'=> $updatedatetime
+    //         );
+
+    //         $this->db->where('idtbl_print_porder_req', $reqid);
+    //         $this->db->update('tbl_print_porder_req', $data1);
+
+
+	// 		$this->db->select('tbl_print_porder.idtbl_print_porder,tbl_print_porder.orderdate, tbl_print_porder.nettotal,tbl_print_porder.tbl_order_type_idtbl_order_type,tbl_print_porder.tbl_supplier_idtbl_supplier');
+	// 		$this->db->from('tbl_print_porder');
+	// 		$this->db->where('tbl_print_porder.status', 1);
+	// 		$this->db->where('tbl_print_porder.idtbl_print_porder', $recordID);
+
+	// 		$respond=$this->db->get();
+
+	// 		if ($respond->num_rows() > 0) {
+	// 			foreach ($respond->result() as $row) {
+	// 				$grnid=$row->idtbl_print_porder;
+	// 				$totalamount=$row->nettotal;
+	// 				$supplier=$row->tbl_supplier_idtbl_supplier;
+	// 				$grndate=$row->orderdate;
+	// 				$orderType=$row->tbl_order_type_idtbl_order_type;
+
+
+	// 				if ($orderType == 2) {
+	// 					$accountsData = array(
+	// 						'grndate' => $grndate,
+	// 						'tbl_supplier_idtbl_supplier' => $supplier,
+	// 						'exptype' => '2',
+	// 						'grnno' => $grnid,
+	// 						'expcode' => 'SER',
+	// 						'amount' => $totalamount,
+	// 						'status' => '1',
+	// 						'insertdatetime' => $updatedatetime,
+	// 						'tbl_user_idtbl_user' => $userID
+	// 					);
+	// 					$this->db->insert('tbl_expence_info', $accountsData);
+	// 				} elseif ($orderType == 3 || $orderType == 4) {
+	// 				}
+	// 			}
+	// 		}
+
+
+
+	// 		$this->db->trans_complete();
+
+	// 		if ($this->db->trans_status()===TRUE) {
+	// 			$this->db->trans_commit();
+
+	// 			$actionObj=new stdClass();
+	// 			$actionObj->icon='fas fa-check';
+	// 			$actionObj->title='';
+	// 			if($confirmnot==1){$actionObj->message='Record Approved Successfully';}
+	// 			else{$actionObj->message='Record Rejected Successfully';}
+	// 			$actionObj->url='';
+	// 			$actionObj->target='_blank';
+	// 			$actionObj->type='success';
+
+	// 			$actionJSON=json_encode($actionObj);
+
+	// 			$obj=new stdClass();
+	// 			$obj->status=1;
+	// 			$obj->action=$actionJSON;
+
+	// 			echo json_encode($obj);
+	// 		}
+
+	// 		else {
+	// 			$this->db->trans_rollback();
+
+	// 			$actionObj=new stdClass();
+	// 			$actionObj->icon='fas fa-warning';
+	// 			$actionObj->title='';
+	// 			$actionObj->message='Record Error';
+	// 			$actionObj->url='';
+	// 			$actionObj->target='_blank';
+	// 			$actionObj->type='danger';
+
+	// 			$actionJSON=json_encode($actionObj);
+
+	// 			$obj=new stdClass();
+	// 			$obj->status=2;
+	// 			$obj->action=$actionJSON;
+
+	// 			echo json_encode($obj);
+	// 		}
+	// }
+
 	public function Purchaseorderstatus() {
-		$this->db->trans_begin();
+    $this->db->trans_begin();
 
-		$userID=$_SESSION['userid'];
-		$recordID=$this->input->post('porderid');
-        $reqid=$this->input->post('reqestid');
-		$confirmnot=$this->input->post('confirmnot');
-		$updatedatetime=date('Y-m-d H:i:s');
+    $userID = $_SESSION['userid'];
+    $recordID = $this->input->post('porderid');
+    $reqid = $this->input->post('reqestid');
+    $confirmnot = $this->input->post('confirmnot');
+    $updatedatetime = date('Y-m-d H:i:s');
 
-		// if($type==1) {
-			$data=array(
-				'confirmstatus'=> $confirmnot,
-				'updateuser'=> $userID,
-				'updatedatetime'=> $updatedatetime);
+    // Update purchase order status
+    $data = array(
+        'confirmstatus' => $confirmnot,
+        'updateuser' => $userID,
+        'updatedatetime' => $updatedatetime
+    );
 
-			$this->db->where('idtbl_print_porder', $recordID);
-			$this->db->update('tbl_print_porder', $data);
+    $this->db->where('idtbl_print_porder', $recordID);
+    $this->db->update('tbl_print_porder', $data);
 
+    // Check if all items from the purchase order request have been processed
+    if ($confirmnot == 1) {
+        $this->db->select('COUNT(*) as total_items');
+        $this->db->from('tbl_print_porder_req_detail');
+        $this->db->where('tbl_print_porder_req_idtbl_print_porder_req', $reqid);
+        $this->db->where('status', 1);
+        $total_items_query = $this->db->get();
+        $total_items = $total_items_query->row()->total_items;
+
+        $this->db->select('COUNT(DISTINCT pod.tbl_material_id, pod.tbl_machine_id, pod.tbl_service_type_id, pod.tbl_sparepart_id) as processed_items');
+        $this->db->from('tbl_print_porder_detail pod');
+        $this->db->join('tbl_print_porder po', 'po.idtbl_print_porder = pod.tbl_print_porder_idtbl_print_porder');
+        $this->db->where('po.tbl_print_porder_req_idtbl_print_porder_req', $reqid);
+        $this->db->where('po.confirmstatus', 1); 
+        $this->db->where('pod.status', 1);
+        $processed_items_query = $this->db->get();
+        $processed_items = $processed_items_query->row()->processed_items;
+
+        // Mark request as completed only if all items have been processed
+        if ($processed_items >= $total_items) {
             $data1 = array(
                 'porderconfirm' => '1',
-                'updateuser'=> $userID, 
-                'updatedatetime'=> $updatedatetime
+                'updateuser' => $userID,
+                'updatedatetime' => $updatedatetime
             );
 
             $this->db->where('idtbl_print_porder_req', $reqid);
             $this->db->update('tbl_print_porder_req', $data1);
+        }
+    }
 
+    $this->db->select('tbl_print_porder.idtbl_print_porder,tbl_print_porder.orderdate, tbl_print_porder.nettotal,tbl_print_porder.tbl_order_type_idtbl_order_type,tbl_print_porder.tbl_supplier_idtbl_supplier');
+    $this->db->from('tbl_print_porder');
+    $this->db->where('tbl_print_porder.status', 1);
+    $this->db->where('tbl_print_porder.idtbl_print_porder', $recordID);
 
-			$this->db->select('tbl_print_porder.idtbl_print_porder,tbl_print_porder.orderdate, tbl_print_porder.nettotal,tbl_print_porder.tbl_order_type_idtbl_order_type,tbl_print_porder.tbl_supplier_idtbl_supplier');
-			$this->db->from('tbl_print_porder');
-			$this->db->where('tbl_print_porder.status', 1);
-			$this->db->where('tbl_print_porder.idtbl_print_porder', $recordID);
+    $respond = $this->db->get();
 
-			$respond=$this->db->get();
+    if ($respond->num_rows() > 0) {
+        foreach ($respond->result() as $row) {
+            $grnid = $row->idtbl_print_porder;
+            $totalamount = $row->nettotal;
+            $supplier = $row->tbl_supplier_idtbl_supplier;
+            $grndate = $row->orderdate;
+            $orderType = $row->tbl_order_type_idtbl_order_type;
 
-			if ($respond->num_rows() > 0) {
-				foreach ($respond->result() as $row) {
-					$grnid=$row->idtbl_print_porder;
-					$totalamount=$row->nettotal;
-					$supplier=$row->tbl_supplier_idtbl_supplier;
-					$grndate=$row->orderdate;
-					$orderType=$row->tbl_order_type_idtbl_order_type;
+            if ($orderType == 2) {
+                $accountsData = array(
+                    'grndate' => $grndate,
+                    'tbl_supplier_idtbl_supplier' => $supplier,
+                    'exptype' => '2',
+                    'grnno' => $grnid,
+                    'expcode' => 'SER',
+                    'amount' => $totalamount,
+                    'status' => '1',
+                    'insertdatetime' => $updatedatetime,
+                    'tbl_user_idtbl_user' => $userID
+                );
+                $this->db->insert('tbl_expence_info', $accountsData);
+            } elseif ($orderType == 3 || $orderType == 4) {
+            }
+        }
+    }
 
+    $this->db->trans_complete();
 
-					if ($orderType == 2) {
-						$accountsData = array(
-							'grndate' => $grndate,
-							'tbl_supplier_idtbl_supplier' => $supplier,
-							'exptype' => '2',
-							'grnno' => $grnid,
-							'expcode' => 'SER',
-							'amount' => $totalamount,
-							'status' => '1',
-							'insertdatetime' => $updatedatetime,
-							'tbl_user_idtbl_user' => $userID
-						);
-						$this->db->insert('tbl_expence_info', $accountsData);
-					} elseif ($orderType == 3 || $orderType == 4) {
-					}
-				}
-			}
+    if ($this->db->trans_status() === TRUE) {
+        $this->db->trans_commit();
 
+        $actionObj = new stdClass();
+        $actionObj->icon = 'fas fa-check';
+        $actionObj->title = '';
+        if ($confirmnot == 1) {
+            $actionObj->message = 'Record Approved Successfully';
+        } else {
+            $actionObj->message = 'Record Rejected Successfully';
+        }
+        $actionObj->url = '';
+        $actionObj->target = '_blank';
+        $actionObj->type = 'success';
 
+        $actionJSON = json_encode($actionObj);
 
-			$this->db->trans_complete();
+        $obj = new stdClass();
+        $obj->status = 1;
+        $obj->action = $actionJSON;
 
-			if ($this->db->trans_status()===TRUE) {
-				$this->db->trans_commit();
+        echo json_encode($obj);
+    } else {
+        $this->db->trans_rollback();
 
-				$actionObj=new stdClass();
-				$actionObj->icon='fas fa-check';
-				$actionObj->title='';
-				if($confirmnot==1){$actionObj->message='Record Approved Successfully';}
-				else{$actionObj->message='Record Rejected Successfully';}
-				$actionObj->url='';
-				$actionObj->target='_blank';
-				$actionObj->type='success';
+        $actionObj = new stdClass();
+        $actionObj->icon = 'fas fa-warning';
+        $actionObj->title = '';
+        $actionObj->message = 'Record Error';
+        $actionObj->url = '';
+        $actionObj->target = '_blank';
+        $actionObj->type = 'danger';
 
-				$actionJSON=json_encode($actionObj);
+        $actionJSON = json_encode($actionObj);
 
-				$obj=new stdClass();
-				$obj->status=1;
-				$obj->action=$actionJSON;
+        $obj = new stdClass();
+        $obj->status = 2;
+        $obj->action = $actionJSON;
 
-				echo json_encode($obj);
-			}
-
-			else {
-				$this->db->trans_rollback();
-
-				$actionObj=new stdClass();
-				$actionObj->icon='fas fa-warning';
-				$actionObj->title='';
-				$actionObj->message='Record Error';
-				$actionObj->url='';
-				$actionObj->target='_blank';
-				$actionObj->type='danger';
-
-				$actionJSON=json_encode($actionObj);
-
-				$obj=new stdClass();
-				$obj->status=2;
-				$obj->action=$actionJSON;
-
-				echo json_encode($obj);
-			}
-	}
+        echo json_encode($obj);
+    }
+}
 
     public function POmanualconfirm($x){
         $this->db->trans_begin();

@@ -175,26 +175,25 @@ include "include/topnavbar.php";
         $('#machinetype').on('change', function () {
             var typeId = $(this).val();
             $('#machinemodel').html('<option value="">Loading...</option>');
+            $('#machineNoContainer').hide();
+            $('#machineno').html('<option value="">Select</option>');
 
-            if (typeId && typeId !== '0') {
+            if (typeId) {
                 $.ajax({
-                    url: "<?php echo base_url('SparepartFrequency/getModelsByType'); ?>",
+                    url: "<?php echo base_url('StockReport/getModelsByType'); ?>",
                     type: "POST",
                     data: { type_id: typeId },
                     dataType: "json",
                     success: function (data) {
-                        let options = '<option value="">Select</option><option value="0">All</option>';
+                        let options = '<option value="">Select</option>';
                         $.each(data, function (index, item) {
                             options += `<option value="${item.id}">${item.name}</option>`;
                         });
                         $('#machinemodel').html(options);
-                    },
-                    error: function () {
-                        $('#machinemodel').html('<option value="">Select</option><option value="0">All</option>');
                     }
                 });
             } else {
-                $('#machinemodel').html('<option value="">Select</option><option value="0">All</option>');
+                $('#machinemodel').html('<option value="">Select</option>');
             }
         });
 
