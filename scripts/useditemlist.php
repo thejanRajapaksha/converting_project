@@ -4,36 +4,37 @@ header('Content-Type: application/json');
 
 $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
 
-// Check for DB connection errors
+// Check DB connection
 if ($conn->connect_error) {
     echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
     exit;
 }
 
-// DataTables server-side parameters
-$draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
-$start = isset($_POST['start']) ? intval($_POST['start']) : 0;
+// DataTables server-side params
+$draw   = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
+$start  = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
-
 
 // Filters
 $machinetype  = isset($_POST['machinetype']) ? intval($_POST['machinetype']) : 0;
 $machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 $machine      = isset($_POST['machine']) ? intval($_POST['machine']) : 0;
-$search_date  = isset($_POST['search_date']) && $_POST['search_date'] != '' ? $_POST['search_date'] : null;
+$search_date  = !empty($_POST['search_date']) ? $_POST['search_date'] : null;
 
-
-// Base query (UNION of Repairs and Services)
+// Base UNION query
 $baseQuery = "
 SELECT 
     sp.name AS spare_part_name,
     sp.unit_price AS spares_unit_price,
     COALESCE(dri.quantity,0) AS qty,
+    mt.id AS machine_type_id,
     mt.name AS machine_type,
+    mm.id AS machine_model_id,
     mm.name AS machine_model,
+    mi.id AS machine_id,
     mi.reference AS machine_name,
     'Repair' AS source,
-    dri.created_at AS used_date
+    DATE(dri.created_at) AS used_date
 FROM machine_repair_details_items AS dri
 INNER JOIN machine_repair_details AS dr ON dri.machine_repair_details_id = dr.id
 INNER JOIN machine_repairs AS r ON dr.repair_id = r.id
@@ -46,13 +47,16 @@ UNION ALL
 
 SELECT 
     sp.name AS spare_part_name,
-    sp.unit_price As spares_unit_price,
+    sp.unit_price AS spares_unit_price,
     COALESCE(sri.qty,0) AS qty,
+    mt.id AS machine_type_id,
     mt.name AS machine_type,
+    mm.id AS machine_model_id,
     mm.name AS machine_model,
+    mi.id AS machine_id,
     mi.reference AS machine_name,
     'Service' AS source,
-    sri.created_at AS used_date
+    DATE(sri.created_at) AS used_date
 FROM machine_service_received_items AS sri
 INNER JOIN machine_services AS s ON sri.machine_service_id = s.id
 INNER JOIN machine_ins AS mi ON s.machine_in_id = mi.id
@@ -64,45 +68,37 @@ LEFT JOIN spare_parts AS sp ON sri.spare_part_id = sp.id
 $where = " WHERE 1=1 ";
 
 if ($machinetype > 0) {
-    $where .= " AND mt.id = $machinetype ";
+    $where .= " AND combined.machine_type_id = $machinetype ";
 }
 if ($machinemodel > 0) {
-    $where .= " AND mm.id = $machinemodel ";
+    $where .= " AND combined.machine_model_id = $machinemodel ";
 }
 if ($machine > 0) {
-    $where .= " AND mi.id = $machine ";
+    $where .= " AND combined.machine_id = $machine ";
 }
-
 if ($search_date) {
-    $where .= " AND DATE(combined.used_date) = '$search_date' ";
+    $where .= " AND combined.used_date = '$search_date' ";
 }
 
-
-// Total records without filtering
+// Count total records
 $totalQuery = "SELECT COUNT(*) AS cnt FROM ($baseQuery) AS combined";
 $totalResult = $conn->query($totalQuery);
 $totalData = $totalResult ? intval($totalResult->fetch_assoc()['cnt']) : 0;
 
-// Total records with filtering
-$filteredQuery = "SELECT COUNT(*) AS cnt FROM ($baseQuery) AS combined
-                  LEFT JOIN machine_types AS mt ON combined.machine_type = mt.name
-                  LEFT JOIN machine_models AS mm ON combined.machine_model = mm.name
-                  LEFT JOIN machine_ins AS mi ON combined.machine_name = mi.reference
-                  $where";
+// Count filtered records
+$filteredQuery = "SELECT COUNT(*) AS cnt FROM ($baseQuery) AS combined $where";
 $filteredResult = $conn->query($filteredQuery);
 $recordsFiltered = $filteredResult ? intval($filteredResult->fetch_assoc()['cnt']) : 0;
 
-// Fetch data with limit for pagination
+// Fetch paginated data
 $dataQuery = "SELECT * FROM ($baseQuery) AS combined
-              LEFT JOIN machine_types AS mt ON combined.machine_type = mt.name
-              LEFT JOIN machine_models AS mm ON combined.machine_model = mm.name
-              LEFT JOIN machine_ins AS mi ON combined.machine_name = mi.reference
               $where
               ORDER BY combined.source ASC, combined.machine_name ASC
               LIMIT $start, $length";
 
 $dataResult = $conn->query($dataQuery);
 $data = [];
+
 if ($dataResult) {
     while ($row = $dataResult->fetch_assoc()) {
         $data[] = [
@@ -113,12 +109,12 @@ if ($dataResult) {
             'spare_part_name' => $row['spare_part_name'],
             'unit_price' => $row['spares_unit_price'],
             'qty' => $row['qty'],
-            'used_date' => $row['created_at']
+            'used_date' => $row['used_date'], // ✅ Correct alias
         ];
     }
 }
 
-// Output JSON for DataTables
+// Output JSON
 echo json_encode([
     "draw" => $draw,
     "recordsTotal" => $totalData,
