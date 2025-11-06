@@ -27,7 +27,7 @@ include "include/topnavbar.php";
 						<div class="row">
 							<div class="container-fluid mt-3">
 
-								<div class="row">
+									<div class="row">
 									<input type="hidden" name="type" id="type" value="1">
 
 									<div class="col-2">
@@ -59,16 +59,22 @@ include "include/topnavbar.php";
 											<option value="0">All</option>
 											<?php foreach ($getmachine->result() as $row) { ?>
 												<option value="<?php echo $row->id ?>">
-													<?php echo $row->reference.'-'.$row->s_no; ?>
+													<?php echo $row->reference . '-' . $row->s_no; ?>
 												</option>
 											<?php } ?>
 										</select>
+									</div>
+
+									<div class="col-2">
+										<label class="small font-weight-bold">Date</label>
+										<input type="date" class="form-control form-control-sm" id="search_date" name="search_date">
 									</div>
 
 									<div class="col-2 align-self-end">
 										<button class="btn btn-sm btn-primary" id="btnSearch">Search</button>
 									</div>
 								</div>
+
 
 								<hr>
 
@@ -156,8 +162,10 @@ $(document).ready(function () {
 				d.machinetype = $('#machinetype').val();
 				d.machinemodel = $('#machinemodel').val();
 				d.machine = $('#machine').val();
+				d.search_date = $('#search_date').val();
 			}
 		},
+
 		"order": [[0, "desc"]],
 		columns: [
 				{ data: 'source', title: 'Source' },
@@ -165,7 +173,9 @@ $(document).ready(function () {
 				{ data: 'machine_model', title: 'Machine Model' },
 				{ data: 'machine_name', title: 'Machine' },
 				{ data: 'spare_part_name', title: 'Spare Part' },
-				{ data: 'qty', title: 'Quantity' }
+				{ data: 'unit_price', title: 'Unit price' },
+				{ data: 'qty', title: 'Quantity' },
+				{ data: 'used_date', title: 'Used Date' },
 			],
 		drawCallback: function (settings) {
 			$('[data-toggle="tooltip"]').tooltip();

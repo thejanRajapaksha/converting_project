@@ -15,20 +15,25 @@ $draw = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
 $start = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
 
+
 // Filters
 $machinetype  = isset($_POST['machinetype']) ? intval($_POST['machinetype']) : 0;
 $machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 $machine      = isset($_POST['machine']) ? intval($_POST['machine']) : 0;
+$search_date  = isset($_POST['search_date']) && $_POST['search_date'] != '' ? $_POST['search_date'] : null;
+
 
 // Base query (UNION of Repairs and Services)
 $baseQuery = "
 SELECT 
     sp.name AS spare_part_name,
+    sp.unit_price AS spares_unit_price,
     COALESCE(dri.quantity,0) AS qty,
     mt.name AS machine_type,
     mm.name AS machine_model,
     mi.reference AS machine_name,
-    'Repair' AS source
+    'Repair' AS source,
+    dri.created_at AS used_date
 FROM machine_repair_details_items AS dri
 INNER JOIN machine_repair_details AS dr ON dri.machine_repair_details_id = dr.id
 INNER JOIN machine_repairs AS r ON dr.repair_id = r.id
@@ -41,11 +46,13 @@ UNION ALL
 
 SELECT 
     sp.name AS spare_part_name,
+    sp.unit_price As spares_unit_price,
     COALESCE(sri.qty,0) AS qty,
     mt.name AS machine_type,
     mm.name AS machine_model,
     mi.reference AS machine_name,
-    'Service' AS source
+    'Service' AS source,
+    sri.created_at AS used_date
 FROM machine_service_received_items AS sri
 INNER JOIN machine_services AS s ON sri.machine_service_id = s.id
 INNER JOIN machine_ins AS mi ON s.machine_in_id = mi.id
@@ -54,7 +61,6 @@ LEFT JOIN machine_types AS mt ON mi.machine_type_id = mt.id
 LEFT JOIN spare_parts AS sp ON sri.spare_part_id = sp.id
 ";
 
-// Filtering
 $where = " WHERE 1=1 ";
 
 if ($machinetype > 0) {
@@ -66,6 +72,11 @@ if ($machinemodel > 0) {
 if ($machine > 0) {
     $where .= " AND mi.id = $machine ";
 }
+
+if ($search_date) {
+    $where .= " AND DATE(combined.used_date) = '$search_date' ";
+}
+
 
 // Total records without filtering
 $totalQuery = "SELECT COUNT(*) AS cnt FROM ($baseQuery) AS combined";
@@ -100,7 +111,9 @@ if ($dataResult) {
             'machine_model' => $row['machine_model'],
             'machine_name' => $row['machine_name'],
             'spare_part_name' => $row['spare_part_name'],
-            'qty' => $row['qty']
+            'unit_price' => $row['spares_unit_price'],
+            'qty' => $row['qty'],
+            'used_date' => $row['created_at']
         ];
     }
 }
