@@ -560,10 +560,10 @@ $(document).ready(function() {
             var productID = $('#product').val();
             var comment = $('#comment').val();
             var product = $("#product option:selected").text();
-            var unitprice = parseFloat($('#unitprice').val());
-            var newqty = parseFloat($('#newqty').val());
-            var pieces = parseFloat($('#piecesper_qty').val());
-            var discount = $('#unitdiscount').val();
+            var unitprice = parseFloat($('#unitprice').val()) || 0;
+            var newqty = parseFloat($('#newqty').val()) || 0;
+            var pieces = parseFloat($('#piecesper_qty').val()) || 0;
+            var discount = parseFloat($('#unitdiscount').val()) || 0;
             var uomID = $('#uom').val();
             var uom = $("#uom option:selected").text();
             var expdate = $('#expdate').val();
@@ -571,16 +571,16 @@ $(document).ready(function() {
 
             var newtotal;
             var newprice;console.log(pieces);
-            if (pieces !== 0) {
+            if (pieces !== 0 && newqty > 0) {
                 newtotal = (unitprice * pieces) - discount;
-                newprice = (unitprice * pieces / newqty)  - discount;
+                newprice = ((unitprice * pieces) / newqty) - discount;
             } else {
                 newtotal = (unitprice * newqty) - discount;
                 newprice = 0;
             }
 
-            var total = parseFloat(newtotal);
-            var showtotal = addCommas(parseFloat(total).toFixed(2));
+            var total = parseFloat(newtotal) || 0;
+            var showtotal = addCommas(total.toFixed(2));
 
             $('#tableorder > tbody:last').append('<tr class="pointer"><td>' + product + '</td><td>' +
                 comment + '</td><td class="d-none">' + productID +

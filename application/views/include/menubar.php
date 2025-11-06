@@ -568,8 +568,12 @@ function checkprivilege($arraymenu, $menuID, $type){
                 <nav class="sidenav-menu-nested nav">
                     <?php if(menucheck($menuprivilegearray, 33)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'StockReport'; ?>">Stock</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 34)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GrnReport'; ?>">GRN</a><?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 55)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'UsedItem'; ?>">Used items</a><?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 54)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'SparepartFrequency'; ?>">Spare Part GRN Report</a><?php } ?>
+                    <!-- <?php if(menucheck($menuprivilegearray, 34)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GrnReport'; ?>">GRN</a><?php } ?> -->
                     <?php if(menucheck($menuprivilegearray, 35)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineServicesCreated'; ?>">Service Created List</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 36)==1){ ?>
@@ -590,10 +594,7 @@ function checkprivilege($arraymenu, $menuID, $type){
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'MachineWIP'; ?>">Machine WIP</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 44)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'CustomerPOWIP'; ?>">Customer PO WIP</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 54)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'SparepartFrequency'; ?>">Spare Part GRN Report</a><?php } ?>
-                    <?php if(menucheck($menuprivilegearray, 55)==1){ ?>
-                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'UsedItem'; ?>">Used items</a><?php } ?>
+                    
                 </nav>
             </div>
             <?php } ?>
