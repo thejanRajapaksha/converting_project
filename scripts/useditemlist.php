@@ -33,7 +33,7 @@ SELECT
     mm.name AS machine_model,
     mi.reference AS machine_name,
     'Repair' AS source,
-    dri.created_at AS used_date
+    DATE(dri.created_at) AS used_date
 FROM machine_repair_details_items AS dri
 INNER JOIN machine_repair_details AS dr ON dri.machine_repair_details_id = dr.id
 INNER JOIN machine_repairs AS r ON dr.repair_id = r.id
@@ -52,7 +52,7 @@ SELECT
     mm.name AS machine_model,
     mi.reference AS machine_name,
     'Service' AS source,
-    sri.created_at AS used_date
+    DATE(sri.created_at) AS used_date
 FROM machine_service_received_items AS sri
 INNER JOIN machine_services AS s ON sri.machine_service_id = s.id
 INNER JOIN machine_ins AS mi ON s.machine_in_id = mi.id
