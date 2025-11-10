@@ -19,7 +19,8 @@ $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
 $machinetype  = isset($_POST['machinetype']) ? intval($_POST['machinetype']) : 0;
 $machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 $machine      = isset($_POST['machine']) ? intval($_POST['machine']) : 0;
-$search_date  = !empty($_POST['search_date']) ? $_POST['search_date'] : null;
+$from_date    = !empty($_POST['from_date']) ? $_POST['from_date'] : null;
+$to_date      = !empty($_POST['to_date']) ? $_POST['to_date'] : null;
 
 // Base UNION query
 $baseQuery = "
@@ -65,8 +66,10 @@ LEFT JOIN machine_types AS mt ON mi.machine_type_id = mt.id
 LEFT JOIN spare_parts AS sp ON sri.spare_part_id = sp.id
 ";
 
+// Initialize WHERE clause
 $where = " WHERE 1=1 ";
 
+// Apply filters
 if ($machinetype > 0) {
     $where .= " AND combined.machine_type_id = $machinetype ";
 }
@@ -76,8 +79,12 @@ if ($machinemodel > 0) {
 if ($machine > 0) {
     $where .= " AND combined.machine_id = $machine ";
 }
-if ($search_date) {
-    $where .= " AND combined.used_date = '$search_date' ";
+if ($from_date && $to_date) {
+    $where .= " AND combined.used_date BETWEEN '$from_date' AND '$to_date' ";
+} elseif ($from_date) {
+    $where .= " AND combined.used_date >= '$from_date' ";
+} elseif ($to_date) {
+    $where .= " AND combined.used_date <= '$to_date' ";
 }
 
 // Count total records
@@ -109,7 +116,7 @@ if ($dataResult) {
             'spare_part_name' => $row['spare_part_name'],
             'unit_price' => $row['spares_unit_price'],
             'qty' => $row['qty'],
-            'used_date' => $row['used_date'], // ✅ Correct alias
+            'used_date' => $row['used_date'],
         ];
     }
 }

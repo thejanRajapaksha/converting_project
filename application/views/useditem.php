@@ -66,8 +66,13 @@ include "include/topnavbar.php";
 									</div>
 
 									<div class="col-2">
-										<label class="small font-weight-bold">Date</label>
-										<input type="date" class="form-control form-control-sm" id="search_date" name="search_date">
+										<label class="small font-weight-bold">From</label>
+										<input type="date" class="form-control form-control-sm" id="from_date" name="from_date">
+									</div>
+
+									<div class="col-2">
+										<label class="small font-weight-bold">To</label>
+										<input type="date" class="form-control form-control-sm" id="to_date" name="to_date">
 									</div>
 
 									<div class="col-2 align-self-end">
@@ -162,7 +167,8 @@ $(document).ready(function () {
 				d.machinetype = $('#machinetype').val();
 				d.machinemodel = $('#machinemodel').val();
 				d.machine = $('#machine').val();
-				d.search_date = $('#search_date').val();
+				d.from_date = $('#from_date').val(); 
+        		d.to_date = $('#to_date').val(); 
 			}
 		},
 
