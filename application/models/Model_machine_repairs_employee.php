@@ -14,11 +14,11 @@ class Model_machine_repairs_employee extends CI_Model
         $date_to = $data['date_to'];
 
             $sql = "SELECT msd.*,  
-                e.emp_name_with_initial as employee_name,
-                e.id as employee_id,
+                e.employee_name as employee_name,
+                e.employee_id as employee_id,
                 COUNT(msd.id) as repair_count
-                FROM employees e 
-                LEFT JOIN machine_repair_details msd ON msd.repair_done_by = e.id
+                FROM service_employee e 
+                LEFT JOIN machine_repair_details msd ON msd.repair_done_by = e.employee_id
                 LEFT JOIN machine_repairs ms ON msd.repair_id = ms.id
                 WHERE msd.is_deleted = 0 ";
 

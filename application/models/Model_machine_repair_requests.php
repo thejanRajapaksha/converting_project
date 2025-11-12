@@ -61,4 +61,19 @@ class Model_machine_repair_requests extends CI_Model
 
         return false;
     }
+
+    public function get_sparepart_batches($sparepart_id) {
+        $this->db->select('batchno, unitprice, qty');
+        $this->db->from('tbl_print_stock');
+        $this->db->where('tbl_sparepart_id', $sparepart_id);
+        $this->db->where('qty >', 0);
+        $this->db->order_by('idtbl_print_stock', 'ASC');
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) {
+            return $query->result_array();
+        } else {
+            return false;
+        }
+    }
 }

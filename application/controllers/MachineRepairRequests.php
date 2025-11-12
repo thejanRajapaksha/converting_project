@@ -219,6 +219,21 @@ class MachineRepairRequests extends CI_Controller
         echo json_encode($service_no);
     }
 
+    public function get_sparepart_batches() {
+        $sparepart_id = $this->input->post('sparepart_id');
+        $response = array('success' => false);
 
+        if (!empty($sparepart_id)) {
+            $batches = $this->model_machine_repair_requests->get_sparepart_batches($sparepart_id);
+            if ($batches) {
+                $response = array(
+                    'success' => true,
+                    'batches' => $batches
+                );
+            }
+        }
+
+        echo json_encode($response);
+    }
 
 }

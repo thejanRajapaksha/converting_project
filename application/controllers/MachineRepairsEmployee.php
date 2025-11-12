@@ -68,7 +68,7 @@ class MachineRepairsEmployee extends CI_Controller
 
     }
 
-    public function get_employees_select()
+    public function get_service_employee_select()
     {
         $term = $this->input->get('term');
         $page = $this->input->get('page');
@@ -76,29 +76,29 @@ class MachineRepairsEmployee extends CI_Controller
         $resultCount = 25;
         $offset = ($page - 1) * $resultCount;
 
-        $this->db->select('employees.emp_name_with_initial, employees.id');
-        $this->db->from('employees');
-        $this->db->join('machine_repair_details', 'employees.id = machine_repair_details.repair_done_by', 'left');
+        $this->db->select('service_employee.employee_name, service_employee.employee_id');
+        $this->db->from('service_employee');
+        $this->db->join('machine_repair_details', 'service_employee.employee_id = machine_repair_details.repair_done_by', 'left');
         $this->db->where('machine_repair_details.is_deleted', 0 );
-        $this->db->like('employees.emp_name_with_initial', $term, 'both');
-        $this->db->group_by('employees.id');
+        $this->db->like('service_employee.employee_name', $term, 'both');
+        $this->db->group_by('service_employee.employee_id');
         $query = $this->db->get();
         $this->db->limit($resultCount, $offset);
         $departments = $query->result_array();
 
-        $this->db->select('employees.emp_name_with_initial, employees.id');
-        $this->db->from('employees');
-        $this->db->join('machine_repair_details', 'employees.id = machine_repair_details.repair_done_by', 'left');
+        $this->db->select('service_employee.employee_name, service_employee.employee_id');
+        $this->db->from('service_employee');
+        $this->db->join('machine_repair_details', 'service_employee.employee_id = machine_repair_details.repair_done_by', 'left');
         $this->db->where('machine_repair_details.is_deleted', 0 );
-        $this->db->like('employees.emp_name_with_initial', $term, 'both');
-        $this->db->group_by('employees.id');
+        $this->db->like('service_employee.employee_name', $term, 'both');
+        $this->db->group_by('service_employee.employee_id');
         $count = $this->db->count_all_results();
 
         $data = array();
         foreach ($departments as $v) {
             $data[] = array(
-                'id' => $v['id'],
-                'text' => $v['emp_name_with_initial'],
+                'id' => $v['employee_id'],
+                'text' => $v['employee_name'],
             );
         }
 
@@ -114,6 +114,37 @@ class MachineRepairsEmployee extends CI_Controller
 
         echo json_encode($results);
 
+    }
+
+    public function get_employees_select() {
+        $term = $this->input->get('term'); 
+        $page = $this->input->get('page');
+        $limit = 20; 
+        $offset = ($page - 1) * $limit;
+
+        $this->db->select('employee_id, employee_name');
+        $this->db->from('service_employee');
+        $this->db->where('status', 1);
+        if (!empty($term)) {
+            $this->db->like('employee_name', $term, 'both');
+        }
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get();
+
+        $results = [];
+        foreach ($query->result() as $row) {
+            $results[] = [
+                'id' => $row->employee_id,
+                'text' => $row->employee_name
+            ];
+        }
+
+        $response = [
+            'results' => $results,
+            'pagination' => ['more' => false]
+        ];
+
+        echo json_encode($response);
     }
 
 

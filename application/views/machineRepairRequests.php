@@ -202,6 +202,7 @@ include "include/topnavbar.php";
                                                 </select>
                                                 <div id="service_item_id_error"></div>
                                             </div>
+                                            <div id="batch_list" class="border rounded p-2 mb-3 small" style="background-color:#f8f9fa;"></div>
                                             <div class="form-group">
                                                 <label for="quantity">Quantity</label>
                                                 <input type="number" class="form-control form-control-sm" id="quantity"
@@ -831,6 +832,31 @@ $(document).ready(function() {
                 };
             },
             cache: true
+        }
+    });
+
+    $('#service_item_id').on('change', function() {
+        var sparepart_id = $(this).val();
+        if (sparepart_id !== '') {
+            $.ajax({
+                url: "<?php echo base_url('MachineRepairRequests/get_sparepart_batches'); ?>",
+                type: "POST",
+                data: { sparepart_id: sparepart_id },
+                dataType: "json",
+                success: function(response) {
+                    if (response.success && response.batches.length > 0) {
+                        var html = '';
+                        $.each(response.batches, function(i, batch) {
+                            html += batch.batchno + ' | ' + batch.qty + 'pcs | Rs.' + batch.unitprice + '<br>';
+                        });
+                        $('#batch_list').html(html).show();
+                    } else {
+                        $('#batch_list').html('No batches found.').show();
+                    }
+                }
+            });
+        } else {
+            $('#batch_list').hide().html('');
         }
     });
 
