@@ -69,50 +69,35 @@ class MachineServicesEmployee extends CI_Controller
 
     }
 
-    public function get_employees_select()
-    {
-        $term = $this->input->get('term');
+    public function get_employees_select() {
+        $term = $this->input->get('term'); 
         $page = $this->input->get('page');
+        $limit = 20; 
+        $offset = ($page - 1) * $limit;
 
-        $resultCount = 25;
-        $offset = ($page - 1) * $resultCount;
-
-        $this->db->select('employees.emp_name_with_initial, employees.id');
-        $this->db->from('employees');
-        $this->db->join('machine_service_details', 'employees.id = machine_service_details.service_done_by', 'left');
-        $this->db->where('machine_service_details.is_deleted', 0 );
-        $this->db->like('employees.emp_name_with_initial', $term, 'both');
+        $this->db->select('employee_id, employee_name');
+        $this->db->from('service_employee');
+        $this->db->where('status', 1);
+        if (!empty($term)) {
+            $this->db->like('employee_name', $term, 'both');
+        }
+        $this->db->limit($limit, $offset);
         $query = $this->db->get();
-        $this->db->limit($resultCount, $offset);
-        $departments = $query->result_array();
 
-        $this->db->select('employees.emp_name_with_initial, employees.id');
-        $this->db->from('employees');
-        $this->db->join('machine_service_details', 'employees.id = machine_service_details.service_done_by', 'left');
-        $this->db->where('machine_service_details.is_deleted', 0 );
-        $this->db->like('employees.emp_name_with_initial', $term, 'both');
-        $count = $this->db->count_all_results();
-
-        $data = array();
-        foreach ($departments as $v) {
-            $data[] = array(
-                'id' => $v['id'],
-                'text' => $v['name_with_initial'],
-            );
+        $results = [];
+        foreach ($query->result() as $row) {
+            $results[] = [
+                'id' => $row->employee_id,
+                'text' => $row->employee_name
+            ];
         }
 
-        $endCount = $offset + $resultCount;
-        $morePages = $endCount < $count;
+        $response = [
+            'results' => $results,
+            'pagination' => ['more' => false]
+        ];
 
-        $results = array(
-            "results" => $data,
-            "pagination" => array(
-                "more" => $morePages
-            )
-        );
-
-        echo json_encode($results);
-
+        echo json_encode($response);
     }
 
 

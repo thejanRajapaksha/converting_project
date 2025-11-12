@@ -127,6 +127,7 @@ include "include/topnavbar.php";
                                                 </select>
                                                 <div id="service_item_id_error"></div>
                                             </div>
+                                            <div id="batch_list" class="border rounded p-2 mb-3 small" style="background-color:#f8f9fa;"></div>
                                             <div class="form-group">
                                                 <label for="quantity">Quantity</label>
                                                 <input type="number" class="form-control form-control-sm" id="quantity"
@@ -595,19 +596,44 @@ include "include/topnavbar.php";
         });
 
         //service_item_id change event
+        // $('#service_item_id').on('change', function() {
+        //     let service_item_id = $(this).val();
+        //     $.ajax({
+        //         url: base_url + 'ServiceItems/get_service_item_price',
+        //         type: 'POST',
+        //         data: {
+        //             service_item_id: service_item_id
+        //         },
+        //         dataType: 'json',
+        //         success: function(response) {
+        //             $('#price').val(response);
+        //         }
+        //     });
+        // });
+
         $('#service_item_id').on('change', function() {
-            let service_item_id = $(this).val();
-            $.ajax({
-                url: base_url + 'ServiceItems/get_service_item_price',
-                type: 'POST',
-                data: {
-                    service_item_id: service_item_id
-                },
-                dataType: 'json',
-                success: function(response) {
-                    $('#price').val(response);
-                }
-            });
+            var sparepart_id = $(this).val();
+            if (sparepart_id !== '') {
+                $.ajax({
+                    url: "<?php echo base_url('MachineRepairRequests/get_sparepart_batches'); ?>",
+                    type: "POST",
+                    data: { sparepart_id: sparepart_id },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success && response.batches.length > 0) {
+                            var html = '';
+                            $.each(response.batches, function(i, batch) {
+                                html += batch.batchno + ' | ' + batch.qty + 'pcs | Rs.' + batch.unitprice + '<br>';
+                            });
+                            $('#batch_list').html(html).show();
+                        } else {
+                            $('#batch_list').html('No batches found.').show();
+                        }
+                    }
+                });
+            } else {
+                $('#batch_list').hide().html('');
+            }
         });
 
         $('#service_item_add_form').on('submit', function(event) {

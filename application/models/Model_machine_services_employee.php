@@ -14,11 +14,11 @@ class Model_machine_services_employee extends CI_Model
         $date_to = $data['date_to'];
 
             $sql = "SELECT msd.*,  
-                e.emp_name_with_initial as employee_name,
-                e.id as employee_id,
+                e.employee_name as employee_name,
+                e.employee_id as employee_id,
                 COUNT(msd.id) as service_count
-                FROM employees e 
-                LEFT JOIN machine_service_details msd ON msd.service_done_by = e.id
+                FROM service_employee e 
+                LEFT JOIN machine_service_details msd ON msd.service_done_by = e.employee_id
                 LEFT JOIN machine_services ms ON msd.service_id = ms.id
                 WHERE msd.is_deleted = 0 ";
 
