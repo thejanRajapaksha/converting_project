@@ -23,7 +23,7 @@ class PdfGRNinfo extends CI_Model {
         if ($query->num_rows() > 0) {
             $company_id = $query->row(0)->tbl_company_idtbl_company;
         
-            $prefix = 'MO';
+            $prefix = 'LSPL';
             if ($company_id == 2) {
                 $prefix = 'FT';
             } elseif ($company_id == 3) {
