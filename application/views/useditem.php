@@ -174,14 +174,23 @@ $(document).ready(function () {
 
 		"order": [[0, "desc"]],
 		columns: [
-				{ data: 'source', title: 'Source' },
+				{ data: 'used_date', title: 'Used Date' },
 				{ data: 'machine_type', title: 'Machine Type' },
 				{ data: 'machine_model', title: 'Machine Model' },
 				{ data: 'machine_name', title: 'Machine' },
 				{ data: 'spare_part_name', title: 'Spare Part' },
 				{ data: 'unit_price', title: 'Unit price' },
 				{ data: 'qty', title: 'Quantity' },
-				{ data: 'used_date', title: 'Used Date' },
+				{ data: null,
+					title: 'Total',
+					render: function (data, type, row) {
+						let unit = parseFloat(row.unit_price) || 0;
+						let qty = parseFloat(row.qty) || 0;
+						return (unit * qty).toFixed(2);
+					},
+					className: 'text-right'
+				},
+				{ data: 'source', title: 'Source' }, 			
 			],
 		drawCallback: function (settings) {
 			$('[data-toggle="tooltip"]').tooltip();
