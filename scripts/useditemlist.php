@@ -19,20 +19,24 @@ $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
 $machinetype  = isset($_POST['machinetype']) ? intval($_POST['machinetype']) : 0;
 $machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 $machine      = isset($_POST['machine']) ? intval($_POST['machine']) : 0;
+$partname     = !empty($_POST['partname']) ? $_POST['partname'] : null;
 $from_date    = !empty($_POST['from_date']) ? $_POST['from_date'] : null;
 $to_date      = !empty($_POST['to_date']) ? $_POST['to_date'] : null;
 
 // Base UNION query
 $baseQuery = "
 SELECT 
+    sp.id AS spare_part_id,
     sp.name AS spare_part_name,
     sp.unit_price AS spares_unit_price,
     COALESCE(dri.quantity,0) AS qty,
+    dri.price AS unit_price,
     mt.id AS machine_type_id,
     mt.name AS machine_type,
     mm.id AS machine_model_id,
     mm.name AS machine_model,
     mi.id AS machine_id,
+    mi.bar_code AS bar_code,
     mi.reference AS machine_name,
     'Repair' AS source,
     DATE(dri.created_at) AS used_date
@@ -47,19 +51,23 @@ LEFT JOIN spare_parts AS sp ON dri.service_item_id = sp.id
 UNION ALL
 
 SELECT 
+    sp.id AS spare_part_id,
     sp.name AS spare_part_name,
     sp.unit_price AS spares_unit_price,
     COALESCE(sri.qty,0) AS qty,
+    si.unitprice AS unit_price,
     mt.id AS machine_type_id,
     mt.name AS machine_type,
     mm.id AS machine_model_id,
     mm.name AS machine_model,
     mi.id AS machine_id,
+    mi.bar_code AS bar_code,
     mi.reference AS machine_name,
     'Service' AS source,
     DATE(sri.created_at) AS used_date
 FROM machine_service_received_items AS sri
 INNER JOIN machine_services AS s ON sri.machine_service_id = s.id
+INNER JOIN machine_service_issued_items AS si ON s.id = si.machine_service_id
 INNER JOIN machine_ins AS mi ON s.machine_in_id = mi.id
 LEFT JOIN machine_models AS mm ON mi.machine_model_id = mm.id
 LEFT JOIN machine_types AS mt ON mi.machine_type_id = mt.id
@@ -78,6 +86,9 @@ if ($machinemodel > 0) {
 }
 if ($machine > 0) {
     $where .= " AND combined.machine_id = $machine ";
+}
+if ($partname > 0) {
+    $where .= " AND combined.spare_part_id = $partname ";
 }
 if ($from_date && $to_date) {
     $where .= " AND combined.used_date BETWEEN '$from_date' AND '$to_date' ";
@@ -112,9 +123,9 @@ if ($dataResult) {
             'source' => $row['source'],
             'machine_type' => $row['machine_type'],
             'machine_model' => $row['machine_model'],
-            'machine_name' => $row['machine_name'],
+            'machine_name' => $row['machine_name'] . ' (' . $row['bar_code'] . ')',
             'spare_part_name' => $row['spare_part_name'],
-            'unit_price' => $row['spares_unit_price'],
+            'unit_price' => $row['unit_price'],
             'qty' => $row['qty'],
             'used_date' => $row['used_date'],
         ];

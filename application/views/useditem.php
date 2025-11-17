@@ -28,55 +28,64 @@ include "include/topnavbar.php";
 							<div class="container-fluid mt-3">
 
 									<div class="row">
-									<input type="hidden" name="type" id="type" value="1">
+										<input type="hidden" name="type" id="type" value="1">
 
-									<div class="col-2">
-										<label class="small font-weight-bold">Machine Type*</label>
-										<select class="form-control form-control-sm selecter2 px-0" name="machinetype" id="machinetype">
-											<option value="">Select</option>
-											<option value="0">All</option>
-											<?php foreach ($getmachinetype->result() as $row) { ?>
-												<option value="<?php echo $row->id ?>"><?php echo $row->name ?></option>
-											<?php } ?>
-										</select>
+										<div class="col-2">
+											<label class="small font-weight-bold">Machine Type*</label>
+											<select class="form-control form-control-sm selecter2 px-0" name="machinetype" id="machinetype">
+												<option value="">Select</option>
+												<option value="0">All</option>
+												<?php foreach ($getmachinetype->result() as $row) { ?>
+													<option value="<?php echo $row->id ?>"><?php echo $row->name ?></option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<div class="col-2">
+											<label class="small font-weight-bold">Machine Model*</label>
+											<select class="form-control form-control-sm selecter2 px-0" name="machinemodel" id="machinemodel">
+												<option value="">Select</option>
+												<option value="0">All</option>
+												<?php foreach ($getmachinemodel->result() as $row) { ?>
+													<option value="<?php echo $row->id ?>"><?php echo $row->name ?></option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<div class="col-2">
+											<label class="small font-weight-bold">Machine*</label>
+											<select class="form-control form-control-sm selecter2 px-0" name="machine" id="machine">
+												<option value="">Select</option>
+												<option value="0">All</option>
+												<?php foreach ($getmachine->result() as $row) { ?>
+													<option value="<?php echo $row->id ?>">
+														<?php echo $row->reference . '-' . $row->s_no; ?>
+													</option>
+												<?php } ?>
+											</select>
+										</div>
+
+										<div class="col-2">
+											<label class="small font-weight-bold">Part Name*</label>
+											<select class="form-control form-control-sm select2-ajax" name="partname" id="partname" style="width:100%;">
+												<option value="">Select</option>
+											</select>
+										</div>
+
+										<div class="col-2">
+											<label class="small font-weight-bold">From</label>
+											<input type="date" class="form-control form-control-sm" id="from_date" name="from_date">
+										</div>
+
+										<div class="col-2">
+											<label class="small font-weight-bold">To</label>
+											<input type="date" class="form-control form-control-sm" id="to_date" name="to_date">
+										</div>
 									</div>
 
-									<div class="col-2">
-										<label class="small font-weight-bold">Machine Model*</label>
-										<select class="form-control form-control-sm selecter2 px-0" name="machinemodel" id="machinemodel">
-											<option value="">Select</option>
-											<option value="0">All</option>
-											<?php foreach ($getmachinemodel->result() as $row) { ?>
-												<option value="<?php echo $row->id ?>"><?php echo $row->name ?></option>
-											<?php } ?>
-										</select>
-									</div>
-
-									<div class="col-2">
-										<label class="small font-weight-bold">Machine*</label>
-										<select class="form-control form-control-sm selecter2 px-0" name="machine" id="machine">
-											<option value="">Select</option>
-											<option value="0">All</option>
-											<?php foreach ($getmachine->result() as $row) { ?>
-												<option value="<?php echo $row->id ?>">
-													<?php echo $row->reference . '-' . $row->s_no; ?>
-												</option>
-											<?php } ?>
-										</select>
-									</div>
-
-									<div class="col-2">
-										<label class="small font-weight-bold">From</label>
-										<input type="date" class="form-control form-control-sm" id="from_date" name="from_date">
-									</div>
-
-									<div class="col-2">
-										<label class="small font-weight-bold">To</label>
-										<input type="date" class="form-control form-control-sm" id="to_date" name="to_date">
-									</div>
-
-									<div class="col-2 align-self-end">
-										<button class="btn btn-sm btn-primary" id="btnSearch">Search</button>
+								<div class="row mt-2">
+									<div class="col-12 text-right">
+										<button class="btn btn-sm btn-primary px-4" id="btnSearch">Search</button>
 									</div>
 								</div>
 
@@ -167,6 +176,7 @@ $(document).ready(function () {
 				d.machinetype = $('#machinetype').val();
 				d.machinemodel = $('#machinemodel').val();
 				d.machine = $('#machine').val();
+				d.partname = $('#partname').val();
 				d.from_date = $('#from_date').val(); 
         		d.to_date = $('#to_date').val(); 
 			}
@@ -229,30 +239,57 @@ $(document).ready(function () {
 	});
 
 	$('#machinemodel').on('change', function () {
-    var modelId = $(this).val();
-    $('#machine').html('<option value="">Loading...</option>');
+		var modelId = $(this).val();
+		$('#machine').html('<option value="">Loading...</option>');
 
-    if (modelId) {
-        $.ajax({
-            url: "<?php echo base_url('UsedItem/getMachinesByModel'); ?>",
-            type: "POST",
-            data: { model_id: modelId },
-            dataType: "json",
-            success: function (data) {
-                let options = '<option value="">Select</option><option value="0">All</option>';
-                $.each(data, function (index, item) {
-                    options += `<option value="${item.id}">${item.reference} - ${item.s_no}</option>`;
-                });
-                $('#machine').html(options);
+		if (modelId) {
+			$.ajax({
+				url: "<?php echo base_url('UsedItem/getMachinesByModel'); ?>",
+				type: "POST",
+				data: { model_id: modelId },
+				dataType: "json",
+				success: function (data) {
+					let options = '<option value="">Select</option><option value="0">All</option>';
+					$.each(data, function (index, item) {
+						options += `<option value="${item.id}">${item.reference} - ${item.s_no}</option>`;
+					});
+					$('#machine').html(options);
+				},
+				error: function () {
+					$('#machine').html('<option value="">Error loading data</option>');
+				}
+			});
+		} else {
+			$('#machine').html('<option value="">Select</option><option value="0">All</option>');
+		}
+	});
+
+	$('#partname').select2({
+        placeholder: 'Search part name or part number',
+        width: '100%',
+        allowClear: true,
+        ajax: {
+            url: "<?php echo base_url('StockReport/Getpartname'); ?>",
+            dataType: 'json',
+            data: function (params) {
+                return {
+                    term: params.term || '',
+                    page: params.page || 1
+                }
             },
-            error: function () {
-                $('#machine').html('<option value="">Error loading data</option>');
-            }
-        });
-    } else {
-        $('#machine').html('<option value="">Select</option><option value="0">All</option>');
-    }
-});
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: data.pagination.more
+                    }
+                };
+            },
+            cache: true
+        }
+    });
 
 
 });
