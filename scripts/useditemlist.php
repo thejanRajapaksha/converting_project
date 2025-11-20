@@ -4,18 +4,15 @@ header('Content-Type: application/json');
 
 $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
 
-// Check DB connection
 if ($conn->connect_error) {
     echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
     exit;
 }
 
-// DataTables server-side params
 $draw   = isset($_POST['draw']) ? intval($_POST['draw']) : 1;
 $start  = isset($_POST['start']) ? intval($_POST['start']) : 0;
 $length = isset($_POST['length']) ? intval($_POST['length']) : 10;
 
-// Filters
 $machinetype  = isset($_POST['machinetype']) ? intval($_POST['machinetype']) : 0;
 $machinemodel = isset($_POST['machinemodel']) ? intval($_POST['machinemodel']) : 0;
 $machine      = isset($_POST['machine']) ? intval($_POST['machine']) : 0;
@@ -23,7 +20,6 @@ $partname     = !empty($_POST['partname']) ? $_POST['partname'] : null;
 $from_date    = !empty($_POST['from_date']) ? $_POST['from_date'] : null;
 $to_date      = !empty($_POST['to_date']) ? $_POST['to_date'] : null;
 
-// Base UNION query
 $baseQuery = "
 SELECT 
     sp.id AS spare_part_id,
@@ -74,10 +70,8 @@ LEFT JOIN machine_types AS mt ON mi.machine_type_id = mt.id
 LEFT JOIN spare_parts AS sp ON sri.spare_part_id = sp.id
 ";
 
-// Initialize WHERE clause
 $where = " WHERE 1=1 ";
 
-// Apply filters
 if ($machinetype > 0) {
     $where .= " AND combined.machine_type_id = $machinetype ";
 }
@@ -98,20 +92,17 @@ if ($from_date && $to_date) {
     $where .= " AND combined.used_date <= '$to_date' ";
 }
 
-// Count total records
 $totalQuery = "SELECT COUNT(*) AS cnt FROM ($baseQuery) AS combined";
 $totalResult = $conn->query($totalQuery);
 $totalData = $totalResult ? intval($totalResult->fetch_assoc()['cnt']) : 0;
 
-// Count filtered records
 $filteredQuery = "SELECT COUNT(*) AS cnt FROM ($baseQuery) AS combined $where";
 $filteredResult = $conn->query($filteredQuery);
 $recordsFiltered = $filteredResult ? intval($filteredResult->fetch_assoc()['cnt']) : 0;
 
-// Fetch paginated data
 $dataQuery = "SELECT * FROM ($baseQuery) AS combined
               $where
-              ORDER BY combined.source ASC, combined.machine_name ASC
+              ORDER BY combined.used_date DESC, combined.source ASC, combined.machine_name ASC
               LIMIT $start, $length";
 
 $dataResult = $conn->query($dataQuery);
@@ -132,7 +123,6 @@ if ($dataResult) {
     }
 }
 
-// Output JSON
 echo json_encode([
     "draw" => $draw,
     "recordsTotal" => $totalData,
