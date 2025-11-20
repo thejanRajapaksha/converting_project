@@ -393,6 +393,7 @@ include "include/topnavbar.php";
                                                     <option value="">Select...</option>
                                                 </select>
                                             </div>
+                                            <div id="edit_batch_list" class="border rounded p-2 mb-3 small" style="background-color:#f8f9fa;"></div>
                                             <div class="form-group">
                                                 <label>Quantity</label>
                                                 <input type="number" step="0.01" class="form-control form-control-sm" id="edit_quantity" name="edit_quantity" required>
@@ -885,6 +886,31 @@ $(document).ready(function() {
                 };
             },
             cache: true
+        }
+    });
+
+    $('#edit_service_item_id').on('change', function() {
+        var sparepart_id = $(this).val();
+        if (sparepart_id !== '') {
+            $.ajax({
+                url: "<?php echo base_url('MachineRepairRequests/get_sparepart_batches'); ?>",
+                type: "POST",
+                data: { sparepart_id: sparepart_id },
+                dataType: "json",
+                success: function(response) {
+                    if (response.success && response.batches.length > 0) {
+                        var html = '';
+                        $.each(response.batches, function(i, batch) {
+                            html += batch.batchno + ' | ' + batch.qty + 'pcs | Rs.' + batch.unitprice + '<br>';
+                        });
+                        $('#edit_batch_list').html(html).show();
+                    } else {
+                        $('#edit_batch_list').html('No batches found.').show();
+                    }
+                }
+            });
+        } else {
+            $('#edit_batch_list').hide().html('');
         }
     });
 
