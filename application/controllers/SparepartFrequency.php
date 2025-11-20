@@ -11,7 +11,6 @@ class SparepartFrequency extends CI_Controller
         $this->load->model('SparepartFrequency_model');
         $this->load->model('Commeninfo');
         $this->load->model('StockReportinfo');
-
     }
 
     public function index()
@@ -21,49 +20,79 @@ class SparepartFrequency extends CI_Controller
         $data['spareparts'] = $this->SparepartFrequency_model->getAllSpareParts();
         $data['getmachinemodel'] = $this->StockReportinfo->Machinemodelget();
         $this->load->view('sparepart_frequency_view', $data);
-
     }
 
     public function getFrequencyData()
-{
-    try {
-        $sparepart_id = $this->input->post('sparepart_id');
-        $month = $this->input->post('month');
-        $machinetype = $this->input->post('machinetype');
-        $machinemodel = $this->input->post('machinemodel');
+    {
+        try {
+            $sparepart_id = $this->input->post('sparepart_id');
+            $from_date     = $this->input->post('from_date');
+            $to_date       = $this->input->post('to_date');
+            $machinetype   = $this->input->post('machinetype');
+            $machinemodel  = $this->input->post('machinemodel');
 
-        if (empty($sparepart_id) || empty($month)) {
-            echo json_encode(['success' => false, 'message' => 'Spare part and month are required']);
-            return;
+            if (empty($from_date) || empty($to_date)) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'date range is required'
+                ]);
+                return;
+            }
+
+            $data = $this->SparepartFrequency_model
+                ->getSparePartFrequency(
+                    $sparepart_id,
+                    $from_date,
+                    $to_date,
+                    $machinetype,
+                    $machinemodel
+                );
+
+            echo json_encode(['success' => true, 'data' => $data]);
+
+        } catch (Exception $e) {
+            error_log('Error in getFrequencyData: ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ]);
         }
-
-        $data = $this->SparepartFrequency_model->getSparePartFrequency($sparepart_id, $month, $machinetype, $machinemodel);
-        echo json_encode(['success' => true, 'data' => $data]);
-
-    } catch (Exception $e) {
-        error_log('Error in getFrequencyData: ' . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
     }
-}
 
-public function generatePDF()
-{
-    try {
-        $sparepart_id = $this->input->post('sparepart_id');
-        $month = $this->input->post('month');
-        $sparepart_name = $this->input->post('sparepart_name');
-        $machinetype = $this->input->post('machinetype');
-        $machinemodel = $this->input->post('machinemodel');
 
-        if (empty($sparepart_id) || empty($month)) {
-            die('Spare part and month are required');
+    public function generatePDF()
+    {
+        try {
+            $sparepart_id   = $this->input->post('sparepart_id');
+            $from_date      = $this->input->post('from_date');
+            $to_date        = $this->input->post('to_date');
+            $sparepart_name = $this->input->post('sparepart_name');
+            $machinetype    = $this->input->post('machinetype');
+            $machinemodel   = $this->input->post('machinemodel');
+
+            if (empty($from_date) || empty($to_date)) {
+                die('Spare part and date range are required');
+            }
+
+            $data = $this->SparepartFrequency_model
+                ->getSparePartFrequency(
+                    $sparepart_id,
+                    $from_date,
+                    $to_date,
+                    $machinetype,
+                    $machinemodel
+                );
+
+            $this->SparepartFrequency_model
+                ->generateFrequencyPDF(
+                    $data,
+                    $sparepart_name,
+                    $from_date,
+                    $to_date
+                );
+
+        } catch (Exception $e) {
+            die('Error generating PDF: ' . $e->getMessage());
         }
-
-        $data = $this->SparepartFrequency_model->getSparePartFrequency($sparepart_id, $month, $machinetype, $machinemodel);
-        $this->SparepartFrequency_model->generateFrequencyPDF($data, $sparepart_name, $month, $machinetype, $machinemodel);
-
-    } catch (Exception $e) {
-        die('Error generating PDF: ' . $e->getMessage());
     }
-}
 }

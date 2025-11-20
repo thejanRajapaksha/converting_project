@@ -22,49 +22,50 @@ class SparepartFrequency_model extends CI_Model
         }
     }
 
-    public function getSparePartFrequency($sparepart_id, $month, $machinetype = null, $machinemodel = null)
+    public function getSparePartFrequency($sparepart_id, $from_date, $to_date, $machinetype = null, $machinemodel = null)
     {
         try {
-            if (empty($sparepart_id) || empty($month)) {
+
+            if (empty($from_date) || empty($to_date)) {
                 return [];
             }
 
-            $month_arr = explode('-', $month);
-            $year = $month_arr[0];
-            $month_num = $month_arr[1];
-
             $this->db->select('
-            g.idtbl_print_grn,
-            g.grn_no,
-            g.batchno,
-            g.grndate,
-            s.suppliername,
-            l.location,
-            gd.qty,
-            gd.unitprice,
-            sp.name as sparepart_name,
-            sp.part_no,
-            sp.type as machine_type,  
-            sp.model as machine_model 
-        ');
+                g.idtbl_print_grn,
+                g.grn_no,
+                g.batchno,
+                g.grndate,
+                s.suppliername,
+                l.location,
+                gd.qty,
+                gd.unitprice,
+                sp.name as sparepart_name,
+                sp.part_no,
+                sp.type as machine_type,
+                sp.model as machine_model 
+            ');
+
             $this->db->from('tbl_print_grn g');
             $this->db->join('tbl_print_grndetail gd', 'g.idtbl_print_grn = gd.tbl_print_grn_idtbl_print_grn', 'left');
             $this->db->join('tbl_supplier s', 'g.tbl_supplier_idtbl_supplier = s.idtbl_supplier', 'left');
             $this->db->join('tbl_location l', 'g.tbl_location_idtbl_location = l.idtbl_location', 'left');
             $this->db->join('spare_parts sp', 'gd.tbl_sparepart_id = sp.id', 'left');
 
-            $this->db->where('gd.tbl_sparepart_id', $sparepart_id);
-            $this->db->where('YEAR(g.grndate)', $year);
-            $this->db->where('MONTH(g.grndate)', $month_num);
-            $this->db->where('g.status IN (1,2)');
+            $this->db->where('g.grndate >=', $from_date);
+            $this->db->where('g.grndate <=', $to_date);
+            $this->db->where('g.status IN (1,2)', NULL, FALSE);
             $this->db->where('gd.qty >', 0);
 
-            if (!empty($machinetype) && $machinetype !== '0') {
-                $this->db->where('sp.type', $machinetype); 
+            if (!empty($sparepart_id) && $sparepart_id != "0") {
+                $this->db->where('gd.tbl_sparepart_id', $sparepart_id);
             }
 
-            if (!empty($machinemodel) && $machinemodel !== '0') {
-                $this->db->where('sp.model', $machinemodel); 
+            if (!empty($machinetype) && $machinetype != "0") {
+                $this->db->where('sp.type', $machinetype);
+            }
+
+            if (!empty($machinemodel) && $machinemodel != "0") {
+                $this->db->where('sp.model', $machinemodel);
             }
 
             $this->db->order_by('g.grndate', 'DESC');
@@ -78,17 +79,17 @@ class SparepartFrequency_model extends CI_Model
         }
     }
 
-    public function generateFrequencyPDF($data, $sparepart_name, $month)
+    public function generateFrequencyPDF($data, $sparepart_name, $from_date, $to_date)
     {
         try {
-            $this->generateHTMLReport($data, $sparepart_name, $month);
+            $this->generateHTMLReport($data, $sparepart_name, $from_date, $to_date);
 
         } catch (Exception $e) {
-            $this->generateHTMLReport($data, $sparepart_name, $month);
+            $this->generateHTMLReport($data, $sparepart_name, $from_date, $to_date);
         }
     }
 
-    private function generateHTMLReport($data, $sparepart_name, $month)
+    private function generateHTMLReport($data, $sparepart_name, $from_date, $to_date)
     {
         header('Content-Type: text/html; charset=utf-8');
         ?>
@@ -103,64 +104,43 @@ class SparepartFrequency_model extends CI_Model
                     font-size: 12px;
                     margin: 20px;
                 }
-
                 table {
                     border-collapse: collapse;
                     width: 100%;
                     margin-top: 10px;
                 }
-
-                th,
-                td {
+                th, td {
                     border: 1px solid #000;
                     padding: 8px;
                     text-align: left;
                 }
-
                 th {
                     background-color: #f2f2f2;
                 }
-
-                .text-center {
-                    text-align: center;
-                }
-
-                .text-right {
-                    text-align: right;
-                }
-
                 .header {
                     text-align: center;
                     margin-bottom: 20px;
                     border-bottom: 2px solid #333;
                     padding-bottom: 10px;
                 }
-
                 .summary-info {
                     margin-bottom: 15px;
                     padding: 10px;
                     background-color: #f9f9f9;
                     border-left: 4px solid #007bff;
                 }
-
-                .footer {
-                    margin-top: 20px;
-                    padding-top: 10px;
-                    border-top: 1px solid #333;
-                    text-align: center;
-                    font-size: 10px;
-                }
             </style>
         </head>
 
         <body>
+
             <div class="header">
                 <h2>Spare Part GRN Frequency Report</h2>
             </div>
 
             <div class="summary-info">
                 <strong>Spare Part:</strong> <?php echo htmlspecialchars($sparepart_name); ?><br>
-                <strong>Month:</strong> <?php echo htmlspecialchars($month); ?><br>
+                <strong>Date Range:</strong> <?php echo $from_date . " to " . $to_date; ?><br>
                 <strong>Total GRN Count:</strong> <?php echo count($data); ?>
             </div>
 
@@ -189,42 +169,25 @@ class SparepartFrequency_model extends CI_Model
                             $total = $r['qty'] * $r['unitprice'];
                             $total_qty += $r['qty'];
                             $total_amount += $total;
-                            ?>
+                        ?>
                             <tr>
                                 <td><?php echo $counter++; ?></td>
-                                <td><?php echo htmlspecialchars($r['grn_no']); ?></td>
-                                <td><?php echo htmlspecialchars($r['batchno']); ?></td>
-                                <td><?php echo htmlspecialchars($r['grndate']); ?></td>
-                                <td><?php echo htmlspecialchars($r['suppliername']); ?></td>
-                                <td><?php echo htmlspecialchars($r['location']); ?></td>
-                                <td><?php echo htmlspecialchars($r['qty']); ?></td>
+                                <td><?php echo $r['grn_no']; ?></td>
+                                <td><?php echo $r['batchno']; ?></td>
+                                <td><?php echo $r['grndate']; ?></td>
+                                <td><?php echo $r['suppliername']; ?></td>
+                                <td><?php echo $r['location']; ?></td>
+                                <td><?php echo $r['qty']; ?></td>
                                 <td class="text-right"><?php echo number_format($r['unitprice'], 2); ?></td>
                                 <td class="text-right"><?php echo number_format($total, 2); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                    <tfoot>
-                        <tr style="background-color: #e9ecef;">
-                            <td colspan="6" class="text-right"><strong>Grand Total:</strong></td>
-                            <td><strong><?php echo $total_qty; ?></strong></td>
-                            <td></td>
-                            <td class="text-right"><strong><?php echo number_format($total_amount, 2); ?></strong></td>
-                        </tr>
-                    </tfoot>
                 </table>
             <?php else: ?>
-                <p style="text-align: center; color: #666; margin-top: 20px;">No GRN records found for the selected criteria.</p>
+                <p style="text-align:center;color:#555;">No GRN records found.</p>
             <?php endif; ?>
 
-            <div class="footer">
-                Generated on: <?php echo date('Y-m-d H:i:s'); ?>
-            </div>
-
-            <script>
-                window.onload = function () {
-                    window.print();
-                }
-            </script>
         </body>
 
         </html>

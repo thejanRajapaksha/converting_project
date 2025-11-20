@@ -25,7 +25,7 @@ include "include/topnavbar.php";
                         <div class="col-12">
                             <form id="frequencyForm">
                                 <div class="form-row">
-                                    <div class="col-3">
+                                    <div class="col-2">
                                         <label class="small font-weight-bold text-dark">Machine Type</label>
                                         <select class="form-control form-control-sm" name="machinetype"
                                             id="machinetype">
@@ -37,7 +37,7 @@ include "include/topnavbar.php";
                                         </select>
                                     </div>
 
-                                    <div class="col-3">
+                                    <div class="col-2">
                                         <label class="small font-weight-bold text-dark">Machine Model</label>
                                         <select class="form-control form-control-sm" name="machinemodel"
                                             id="machinemodel">
@@ -48,23 +48,23 @@ include "include/topnavbar.php";
                                             <?php } ?>
                                         </select>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-2">
                                         <label class="small font-weight-bold text-dark">Spare Part*</label>
                                         <select class="form-control form-control-sm select2-ajax" name="sparepart_id"
                                             id="sparepart_id" style="width:100%;">
-                                            <option value="">Select</option>
+                                            <option value="0">Select</option>
                                         </select>
                                     </div>
 
-
-
-                                    <div class="col-3">
-                                        <label class="small font-weight-bold text-dark">Month*</label>
-                                        <input type="month" class="form-control form-control-sm" name="month" id="month"
-                                            required value="<?php echo date('Y-m'); ?>">
+                                    <div class="col-2">
+                                        <label class="small font-weight-bold text-dark">From Date*</label>
+                                        <input type="date" class="form-control form-control-sm" name="from_date" id="from_date" required>
                                     </div>
 
-
+                                    <div class="col-2">
+                                        <label class="small font-weight-bold text-dark">To Date*</label>
+                                        <input type="date" class="form-control form-control-sm" name="to_date" id="to_date" required>
+                                    </div>
                                 </div>
 
                                 <div class="form-row mt-2">
@@ -116,7 +116,7 @@ include "include/topnavbar.php";
                                         <tbody id="tableBody">
                                             <tr>
                                                 <td colspan="9" class="text-center text-muted">
-                                                    Please select a spare part and month to view GRN frequency
+                                                    Please select a spare part and date range to view GRN frequency
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -212,24 +212,26 @@ include "include/topnavbar.php";
 
         function searchFrequency() {
             var sparepart_id = $('#sparepart_id').val();
-            var month = $('#month').val();
+            var from_date = $('#from_date').val();
+            var to_date = $('#to_date').val();
             var machinetype = $('#machinetype').val();
             var machinemodel = $('#machinemodel').val();
 
             console.log('Filter parameters:', {
                 sparepart_id: sparepart_id,
-                month: month,
+                from_date: from_date,
+                to_date: to_date,
                 machinetype: machinetype,
                 machinemodel: machinemodel
             });
 
-            if (!sparepart_id || sparepart_id === '') {
-                alert('Please select a spare part');
-                return;
-            }
+            // if (!sparepart_id || sparepart_id === '') {
+            //     alert('Please select a spare part');
+            //     return;
+            // }
 
-            if (!month || month === '') {
-                alert('Please select a month');
+            if (!from_date || !to_date) {
+                alert('Please select both From and To dates');
                 return;
             }
 
@@ -238,7 +240,8 @@ include "include/topnavbar.php";
 
             var formData = new FormData();
             formData.append('sparepart_id', sparepart_id);
-            formData.append('month', month);
+            formData.append('from_date', from_date);
+            formData.append('to_date', to_date);
             formData.append('machinetype', machinetype || '');
             formData.append('machinemodel', machinemodel || '');
 
@@ -252,7 +255,7 @@ include "include/topnavbar.php";
                 success: function (response) {
                     console.log('Response received:', response);
                     if (response.success) {
-                        displayData(response.data, sparepart_id, month, machinetype, machinemodel);
+                        displayData(response.data, sparepart_id, from_date, to_date, machinetype, machinemodel);
                         $('#generateReport').prop('disabled', false);
                     } else {
                         $('#tableBody').html('<tr><td colspan="9" class="text-center text-danger">' + (response.message || 'Error loading data') + '</td></tr>');
@@ -269,13 +272,14 @@ include "include/topnavbar.php";
 
         function generateReport() {
             var sparepart_id = $('#sparepart_id').val();
-            var month = $('#month').val();
+            var from_date = $('#from_date').val();
+            var to_date = $('#to_date').val();
             var sparepart_name = $('#sparepart_id option:selected').text();
             var machinetype = $('#machinetype').val();
             var machinemodel = $('#machinemodel').val();
 
-            if (!sparepart_id || !month) {
-                alert('Please select both spare part and month');
+            if (!sparepart_id || !from_date || !to_date ) {
+                alert('Please select both spare part and date range');
                 return;
             }
 
@@ -285,7 +289,8 @@ include "include/topnavbar.php";
                 target: "_blank"
             }).append(
                 $('<input>', { type: 'hidden', name: 'sparepart_id', value: sparepart_id }),
-                $('<input>', { type: 'hidden', name: 'month', value: month }),
+                $('<input>', { type: 'hidden', name: 'from_date', value: from_date }),
+                $('<input>', { type: 'hidden', name: 'to_date', value: to_date }),
                 $('<input>', { type: 'hidden', name: 'sparepart_name', value: sparepart_name }),
                 $('<input>', { type: 'hidden', name: 'machinetype', value: machinetype }),
                 $('<input>', { type: 'hidden', name: 'machinemodel', value: machinemodel })
@@ -299,13 +304,13 @@ include "include/topnavbar.php";
         function resetForm() {
             $('#frequencyForm')[0].reset();
             $('#machinemodel').html('<option value="">Select</option><option value="0">All</option>');
-            $('#tableBody').html('<tr><td colspan="9" class="text-center text-muted">Please select a spare part and month to view GRN frequency</td></tr>');
+            $('#tableBody').html('<tr><td colspan="9" class="text-center text-muted">' +'Please select a spare part and date range to view GRN frequency' +'</td></tr>');
             $('#tableFooter').hide();
             $('#summaryAlert').hide();
             $('#generateReport').prop('disabled', true);
         }
 
-        function displayData(data, sparepart_id, month, machinetype, machinemodel) {
+        function displayData(data, sparepart_id, from_date, to_date, machinetype, machinemodel) {
             var tableBody = $('#tableBody');
             var tableFooter = $('#tableFooter');
             var summaryAlert = $('#summaryAlert');
@@ -357,12 +362,14 @@ include "include/topnavbar.php";
                 filterInfo += ' | Model: <strong>' + machineModelName + '</strong>';
             }
 
-            summaryText.html('Spare Part: <strong>' + sparepartName + '</strong> | ' +
-                'Month: <strong>' + month + '</strong>' + filterInfo + ' | ' +
+            summaryText.html(
+                'Spare Part: <strong>' + sparepartName + '</strong> | ' +
+                'Date Range: <strong>' + from_date + ' to ' + to_date + '</strong>' +
+                filterInfo + ' | ' +
                 'Total GRN Count: <strong>' + data.length + '</strong> | ' +
                 'Total Quantity: <strong>' + totalQty + '</strong> | ' +
-                'Total Amount: <strong>Rs. ' + totalAmount.toFixed(2) + '</strong>');
-            summaryAlert.show();
+                'Total Amount: <strong>Rs. ' + totalAmount.toFixed(2) + '</strong>'
+            );
         }
     });
 </script>
