@@ -48,6 +48,55 @@ class Model_machine_services_calendar extends CI_Model
         }
     }
 
+    public function getServiceById($service_id)
+    {
+        if (empty($service_id)) {
+            return false;
+        }
+        $this->db->select('
+            id,
+            service_id,
+            service_done_by,
+            se.employee_name AS service_done_by_name,
+            service_charge,
+            transport_charge,
+            service_type,
+            remarks
+        ');
+        $this->db->from('machine_service_details');
+        $this->db->join('service_employee as se', 'se.employee_id = machine_service_details.service_done_by', 'left');
+        $this->db->where('service_id', $service_id);
+        $this->db->where('is_deleted', 0);
+        $headerQuery = $this->db->get();
+
+        if ($headerQuery->num_rows() == 0) {
+            return false;
+        }
+
+        $header = $headerQuery->row();
+
+        $this->db->select('
+            msdi.id,
+            msdi.spare_part_id,
+            sp.name AS item_name,
+            msdi.quantity,
+            msdi.price,
+            msdi.total
+        ');
+        $this->db->from('machine_service_details_items as msdi');
+        $this->db->join('spare_parts as sp', 'sp.id = msdi.spare_part_id', 'left');
+        $this->db->where('msdi.machine_service_details_id', $header->id);
+        $this->db->where('msdi.is_deleted', 0);
+        $detailsQuery = $this->db->get();
+
+        $details = $detailsQuery->result();
+
+        return [
+            'header'  => $header,
+            'details' => $details
+        ];
+    }
+
     public function update($id = null, $data = array())
     {
         if($id && $data) {
@@ -81,4 +130,48 @@ class Model_machine_services_calendar extends CI_Model
         $query = $this->db->query($sql, array(1));
         return $query->num_rows();
     }
+
+    public function getServiceHeader($id)
+    {
+        return $this->db->get_where('machine_service_details', ['id' => $id])->row_array();
+    }
+
+    public function getServiceDetailItems($id)
+    {
+        $this->db->select('machine_service_details_items.*, spare_parts.name as item_name');
+        $this->db->from('machine_service_details_items');
+        $this->db->join('spare_parts', 'spare_parts.id = machine_service_details_items.spare_part_id');
+        $this->db->where('machine_service_details_id', $id);
+        return $this->db->get()->result_array();
+    }
+
+    public function updateHeader($id, $data)
+    {
+        $this->db->where('id', $id);
+        return $this->db->update('machine_service_details', $data);
+    }
+
+    public function deleteDetailItems($id)
+    {
+        return $this->db->delete('machine_service_details_items', [
+            'machine_service_details_id' => $id
+        ]);
+    }
+
+    public function EditServiceDetailItems($data = array())
+    {
+        if (!empty($data)) {
+            return $this->db->insert('machine_service_details_items', $data);
+        }
+        return false;
+    }
+
+    public function getHeaderByServiceId($service_id)
+    {
+        return $this->db->get_where('machine_service_details', [
+            'service_id' => $service_id,
+            'is_deleted' => 0
+        ])->row_array();
+    }
+
 }

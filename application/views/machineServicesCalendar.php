@@ -243,6 +243,130 @@ include "include/topnavbar.php";
                     </div><!-- /.modal-dialog -->
                 </div><!-- /.modal -->
 
+                <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title">Edit Service</h5>
+                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div class="row mb-4">
+                                    <div class="col-sm-3">
+                                        <label>Service No :</label>
+                                        <span id="edit_service_no_span"></span>
+                                        <input type="hidden" id="edit_service_id_span">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label>Machine Type :</label>
+                                        <span id="edit_machine_type_span"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-3">
+
+                                        <!-- SAME FIELDS AS ADD -->
+                                        <form id="edit_service_item_add_form">
+                                            <div class="form-group">
+                                                <label>Service Item</label>
+                                                <select id="edit_service_item_id" class="form-control form-control-sm">
+                                                    <option value="">Select...</option>
+                                                </select>
+                                            </div>
+                                            <div id="edit_batch_list" class="border rounded p-2 mb-3 small" style="background-color:#f8f9fa;"></div>
+                                            
+                                            <div class="form-group">
+                                                <label>Quantity</label>
+                                                <input type="number" id="edit_quantity" class="form-control form-control-sm">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Price</label>
+                                                <input type="number" id="edit_price" class="form-control form-control-sm">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-success btn-sm float-right">Add</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+
+                                    <div class="col-sm-9">
+
+                                        <div id="edit_modal_msg"></div>
+
+                                        <table class="table table-bordered table-sm" id="edit_service_detail_table">
+                                            <thead>
+                                            <tr>
+                                                <th>Service Item</th>
+                                                <th>Qty</th>
+                                                <th>Price</th>
+                                                <th>Total</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                            <tfoot>
+                                            <tr>
+                                                <td colspan="3" class="text-right">Sub Total</td>
+                                                <td id="edit_sub_total"></td>
+                                                <td></td>
+                                            </tr>
+                                            </tfoot>
+                                        </table>
+
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <label>Service Done By</label>
+                                                <select id="edit_service_done_by" class="form-control form-control-sm">
+                                                    <option value="">Select...</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label>Service Charge</label>
+                                                <input type="number" id="edit_service_charge" class="form-control form-control-sm">
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label>Transport Charge</label>
+                                                <input type="number" id="edit_transport_charge" class="form-control form-control-sm">
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label>Service Type</label><br>
+                                                <input type="radio" name="edit_service_type" value="inside"> Inside
+                                                <input type="radio" name="edit_service_type" value="outside"> Outside
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label>Remarks</label>
+                                                <textarea id="edit_remarks" class="form-control form-control-sm"></textarea>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                                <button class="btn btn-primary btn-sm" id="edit_save_btn">Update</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
                 <!-- create brand modal -->
                 <div class="modal fade" tabindex="-1" role="dialog" id="postponeModal">
                     <div class="modal-dialog " role="document">
@@ -559,11 +683,166 @@ include "include/topnavbar.php";
             $('#addModal').modal('show');
         });
 
+        $(document).on('click', '.btn_edit', function() {
+            let id = $(this).data('id');
+            let service_no = $(this).data('service_no');
+            let machine_type_name = $(this).data('machine_type_name');
+
+            $('#edit_service_no_span').html(service_no);
+            $('#edit_service_id_span').val(id);
+            $('#edit_machine_type_span').html(machine_type_name);
+
+            $('#edit_modal_msg').html('');
+            $("#edit_service_detail_table tbody").empty();
+
+            $.ajax({
+                url: base_url + "MachineServicesCalendar/getServiceById",
+                type: "POST",
+                data: { service_id: id },
+                dataType: "json",
+                success: function(response) {
+
+                    $('#edit_service_done_by').html(`
+            <option value="${response.header.service_done_by}">${response.header.service_done_by_name}</option>
+        `);
+                    $('#edit_service_charge').val(response.header.service_charge);
+                    $('#edit_transport_charge').val(response.header.transport_charge);
+                    $('#edit_remarks').val(response.header.remarks);
+                    $("input[name=edit_service_type][value='" + response.header.service_type + "']").prop("checked", true);
+
+                    $.each(response.details, function(index, row) {
+                        let html = `
+                            <tr>
+                                <td>${row.item_name}
+                                    <input type="hidden" class="sp_id" value="${row.spare_part_id}">
+                                </td>
+                                <td>${row.quantity}</td>
+                                <td>${row.price}</td>
+                                <td>${row.total}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm btn_remove_edit_service_item">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        $("#edit_service_detail_table tbody").append(html);
+                    });
+
+                    calculateEditSubTotal();
+                }
+            });
+
+            $('#edit_save_btn').off('click').on('click', function() {
+
+                let edit_service_details = [];
+
+                $('#edit_service_detail_table tbody tr').each(function(index, element) {
+                    let detail = {};
+                    detail.service_id = id;
+                    detail.service_item_id = $(element).find('.sp_id').val();
+                    detail.quantity = $(element).find('td:eq(1)').text();
+                    detail.price = $(element).find('td:eq(2)').text();
+                    detail.total = $(element).find('td:eq(3)').text();
+                    edit_service_details.push(detail);
+                });
+
+                let sub_total = $('#edit_sub_total').text();
+                let service_done_by = $('#edit_service_done_by').val();
+                let service_charge = $('#edit_service_charge').val();
+                let transport_charge = $('#edit_transport_charge').val();
+                let service_type = $('input[name=edit_service_type]:checked').val();
+                let remarks = $('#edit_remarks').val();
+
+                $('#edit_modal_msg').html('');
+
+                // ------------------------
+                // VALIDATION
+                // ------------------------
+                if (edit_service_details.length === 0) {
+                    showError("Please add at least one item");
+                    return false;
+                }
+                if (service_done_by === '') { showError("Service Done By required"); return false; }
+                if (service_charge === '') { showError("Service Charge required"); return false; }
+                if (transport_charge === '') { showError("Transport Charge required"); return false; }
+                if (!service_type) { showError("Service Type required"); return false; }
+                if (remarks === '') { showError("Remarks required"); return false; }
+
+                function showError(msg) {
+                    $("#edit_modal_msg").html(`
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <strong><span class="glyphicon glyphicon-ok-sign"></span></strong> ${msg}
+                        </div>
+                    `);
+                }
+
+                // -------------------------
+                // AJAX - UPDATE SERVICE
+                // -------------------------
+                $.ajax({
+                    url: base_url + 'MachineServicesCalendar/updateService',
+                    type: 'POST',
+                    data: {
+                        service_details: edit_service_details,
+                        sub_total: sub_total,
+                        service_done_by: service_done_by,
+                        service_charge: service_charge,
+                        transport_charge: transport_charge,
+                        service_type: service_type,
+                        remarks: remarks,
+                        service_id: id
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            $('#editModal').modal('hide');
+
+                            $("#messages").html(`
+                                <div class="alert alert-success alert-dismissible" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <strong><span class="glyphicon glyphicon-ok-sign"></span></strong> 
+                                    ${response.messages}
+                                </div>
+                            `);
+
+                            // reload after update
+                            setTimeout(function() { location.reload(); }, 2000);
+                        }
+                    }
+                });
+
+            });
+
+            $('#editModal').modal('show');
+
+        });
+
         $('#service_done_by').select2({
             placeholder: 'Select...',
             width: '100%',
             allowClear: true,
             dropdownParent: $('#addModal'),
+            ajax: {
+                url: base_url + 'MachineServicesCalendar/get_employees_select',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term || '',
+                        page: params.page || 1
+                    }
+                },
+                cache: true
+            }
+        });
+
+        $('#edit_service_done_by').select2({
+            placeholder: 'Select...',
+            width: '100%',
+            allowClear: true,
+            dropdownParent: $('#editModal'),
             ajax: {
                 url: base_url + 'MachineServicesCalendar/get_employees_select',
                 dataType: 'json',
@@ -589,6 +868,25 @@ include "include/topnavbar.php";
                         term: params.term || '',
                         page: params.page || 1,
                         service_id: $('#service_id_span').val()
+                    }
+                },
+                cache: true
+            }
+        });
+
+        $('#edit_service_item_id').select2({
+            placeholder: 'Select...',
+            width: '100%',
+            allowClear: true,
+            dropdownParent: $('#editModal'),
+            ajax: {
+                url: base_url + 'MachineServicesCalendar/get_sp_for_service_id_select',
+                dataType: 'json',
+                data: function (params) {
+                    return {
+                        term: params.term || '',
+                        page: params.page || 1,
+                        service_id: $('#edit_service_id_span').val()
                     }
                 },
                 cache: true
@@ -636,6 +934,31 @@ include "include/topnavbar.php";
             }
         });
 
+        $('#edit_service_item_id').on('change', function() {
+            var sparepart_id = $(this).val();
+            if (sparepart_id !== '') {
+                $.ajax({
+                    url: "<?php echo base_url('MachineRepairRequests/get_sparepart_batches'); ?>",
+                    type: "POST",
+                    data: { sparepart_id: sparepart_id },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.success && response.batches.length > 0) {
+                            var html = '';
+                            $.each(response.batches, function(i, batch) {
+                                html += batch.batchno + ' | ' + batch.qty + 'pcs | Rs.' + batch.unitprice + '<br>';
+                            });
+                            $('#edit_batch_list').html(html).show();
+                        } else {
+                            $('#edit_batch_list').html('No batches found.').show();
+                        }
+                    }
+                });
+            } else {
+                $('#edit_batch_list').hide().html('');
+            }
+        });
+
         $('#service_item_add_form').on('submit', function(event) {
             event.preventDefault();
             let service_item_id = $('#service_item_id').val();
@@ -658,9 +981,50 @@ include "include/topnavbar.php";
             calculate_sub_total();
         });
 
+        $('#edit_service_item_add_form').on('submit', function(event) {
+            event.preventDefault();
+
+            let service_item_id = $('#edit_service_item_id').val();
+            let service_item_name = $('#edit_service_item_id option:selected').text();
+            let price = $('#edit_price').val();
+            let qty = $('#edit_quantity').val();
+
+            let total = (price * qty).toFixed(2);
+
+            let row = `
+                <tr>
+                    <td>${service_item_name}
+                        <input type="hidden" class="sp_id" value="${service_item_id}">
+                    </td>
+                    <td>${qty}</td>
+                    <td>${price}</td>
+                    <td>${total}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm btn_remove_edit_service_item">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+            $('#edit_service_detail_table tbody').append(row);
+
+            // reset fields
+            $('#edit_service_item_id').val('').trigger('change');
+            $('#edit_price').val('');
+            $('#edit_quantity').val('');
+
+            calculateEditSubTotal();
+        });
+
         $(document).on('click', '.btn_remove_service_item', function() {
             $(this).closest('tr').remove();
             calculate_sub_total();
+        });
+
+        $(document).on('click', '.btn_remove_edit_service_item', function() {
+            $(this).closest('tr').remove();
+            calculateEditSubTotal();
         });
 
         function calculate_sub_total(){
@@ -670,6 +1034,17 @@ include "include/topnavbar.php";
             });
             sub_total = sub_total.toFixed(2);
             $('#sub_total').html(sub_total);
+        }
+
+        function calculateEditSubTotal() {
+            let sub_total = 0;
+
+            $('#edit_service_detail_table tbody tr').each(function() {
+                let total = parseFloat($(this).find('td:eq(3)').text());
+                sub_total += total;
+            });
+
+            $('#edit_sub_total').html(sub_total.toFixed(2));
         }
 
         $(document).on('click', '.btn_postpone', function() {

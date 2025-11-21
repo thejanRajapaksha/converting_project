@@ -149,14 +149,13 @@ class MachineServicesCalendar extends CI_Controller
             $query = $this->db->get();
             $service_detail = $query->row_array();
 
-            if(empty($service_detail)){
 
                 $html .= '<button type="button" style="margin:1px;" class="btn btn-success btn-sm" onclick="viewFunc(' . $data['id'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye text-white"></i></button>';
                 $html .= '<button type="button" style="margin:1px;" class="btn btn-primary btn-sm btn_create" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Create Service" > <i class="fa fa-wrench"></i> </button>';
+                $html .= '<button type="button" style="margin:1px;" class="btn btn-primary btn-sm btn_edit" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Edit Service" > <i class="fa fa-pen"></i> </button>';
                 $html .= '<button type="button" style="margin:1px;" class="btn btn-warning btn-sm btn_postpone" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Postpone"> <i class="fa fa-stop-circle"></i> </button>';
                 $html .= '<button type="button" style="margin:1px;" class="btn btn-danger btn-sm btn_delete" data-service_no="'.$data['service_no'].'" data-machine_type_name="'.$data['machine_type_name'].'" data-id="'.$data['id'].'" title="Delete"> <i class="fa fa-trash"></i> </button>';
 
-            }
 
             $html .= '</td>';
             $html .= '</tr>';
@@ -217,6 +216,65 @@ class MachineServicesCalendar extends CI_Controller
         }
 
         echo json_encode($response);
+    }
+
+    public function updateService()
+    {
+        $service_id = $this->input->post('service_id');
+
+        // 1. Get header row (machine_service_details)
+        $header = $this->model_machine_services_calendar->getHeaderByServiceId($service_id);
+        $header_id = $header['id'];
+
+        // --- HEADER DATA ---
+        $data = array(
+            'sub_total'        => $this->input->post('sub_total'),
+            'service_done_by'  => $this->input->post('service_done_by'),
+            'service_charge'   => $this->input->post('service_charge'),
+            'transport_charge' => $this->input->post('transport_charge'),
+            'service_type'     => $this->input->post('service_type'),
+            'remarks'          => $this->input->post('remarks'),
+            'updated_by'       => $this->session->userdata('id'),
+            'updated_at'       => date('Y-m-d H:i:s'),
+        );
+
+        // 2. Update header row correctly
+        $this->model_machine_services_calendar->updateHeader($header_id, $data);
+
+        // 3. Delete old items using correct header_id
+        $this->model_machine_services_calendar->deleteDetailItems($header_id);
+
+        // 4. Insert new items
+        $service_details = $this->input->post('service_details');
+
+        foreach ($service_details as $value) {
+
+            $insert_data = array(
+                'machine_service_details_id' => $header_id,
+                'spare_part_id'              => $value['service_item_id'],
+                'quantity'                   => $value['quantity'],
+                'price'                      => $value['price'],
+                'total'                      => $value['total'],
+                'created_by'                 => $this->session->userdata('id'),
+                'created_at'                 => date('Y-m-d H:i:s')
+            );
+
+            $this->model_machine_services_calendar->createServiceDetailItems($insert_data);
+        }
+
+        echo json_encode([
+            'success'  => true,
+            'messages' => 'Updated successfully!'
+        ]);
+    }
+
+    public function getServiceById()
+    {
+        $service_id = $this->input->post('service_id');
+
+        $result = $this->model_machine_services_calendar->getServiceById($service_id);
+
+        echo json_encode($result);
     }
 
     //postponeService
