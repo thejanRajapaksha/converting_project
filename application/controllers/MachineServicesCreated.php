@@ -45,20 +45,20 @@ class MachineServicesCreated extends CI_Controller
 
         foreach ($data as $key => $value) {
             // button
-            $buttons = '';
+            // $buttons = '';
 
-            $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="View" onclick="viewFunc('.$value['id'].')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>&nbsp;';
+            // $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="View" onclick="viewFunc('.$value['id'].')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>&nbsp;';
 
-            if($value['is_completed'] == 0){
-                    $buttons .= '<button type="button" class="btn btn-success btn-sm" title="Complete Service" onclick="completeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#completeModal"><i class="fas fa-check"></i></button>&nbsp;';
+            // if($value['is_completed'] == 0){
+            //         $buttons .= '<button type="button" class="btn btn-success btn-sm" title="Complete Service" onclick="completeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#completeModal"><i class="fas fa-check"></i></button>&nbsp;';
                 
-            }else{
-                    $buttons .= '<button type="button" class="btn btn-danger btn-sm" title="Remove Complete Status" onclick="removeCompleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeCompleteModal"><i class="fas fa-times"></i></button>&nbsp;';
-            }
+            // }else{
+            //         $buttons .= '<button type="button" class="btn btn-danger btn-sm" title="Remove Complete Status" onclick="removeCompleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeCompleteModal"><i class="fas fa-times"></i></button>&nbsp;';
+            // }
 
-                    $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i></button>';
+            //         $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i></button>';
 
-                    $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
+            //         $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
 
             $result['data'][$key] = array(
                 $value['machine_type_name'], 
@@ -69,7 +69,7 @@ class MachineServicesCreated extends CI_Controller
                 $value['service_type'],
                 $value['sub_total'],
                 $value['remarks'],
-                $buttons
+                // $buttons
             );
         } // /foreach
 
@@ -331,51 +331,70 @@ class MachineServicesCreated extends CI_Controller
     }
 
     //get_service_no_select
-    public function get_service_no_select()
-    {
-        $term = $this->input->get('term');
-        $page = $this->input->get('page');
+public function get_service_no_select()
+{
+    $term = $this->input->get('term');
+    $page = $this->input->get('page');
 
-        $resultCount = 25;
-        $offset = ($page - 1) * $resultCount;
+    $resultCount = 25;
+    $offset = ($page - 1) * $resultCount;
 
-        $this->db->select('machine_services.id, machine_services.service_no');
-        $this->db->from('machine_services');
-        $this->db->join('machine_service_details', 'machine_service_details.service_id = machine_services.id', 'left');
-        $this->db->where('machine_services.is_deleted', 0);
-        $this->db->like('machine_services.service_no', $term, 'both');
-        $query = $this->db->get();
-        $this->db->limit($resultCount, $offset);
-        $departments = $query->result_array();
+    // Main query - get paginated results
+    $this->db->select('machine_services.id, machine_services.service_no');
+    $this->db->from('machine_services');
+    $this->db->join('machine_service_details', 'machine_service_details.service_id = machine_services.id', 'left');
+    $this->db->where('machine_services.is_deleted', 0);
+    $this->db->like('machine_services.service_no', $term, 'both');
+    $this->db->order_by('machine_services.id', 'DESC');  // NEWEST FIRST
+    $this->db->limit($resultCount, $offset);             // APPLY LIMIT BEFORE get()
+    $query = $this->db->get();
+    $departments = $query->result_array();
 
-        $this->db->select('machine_services.id, machine_services.service_no');
-        $this->db->from('machine_services');
-        $this->db->join('machine_service_details', 'machine_service_details.service_id = machine_services.id', 'left');
-        $this->db->where('machine_services.is_deleted', 0);
-        $this->db->like('machine_services.service_no', $term, 'both');
-        $count = $this->db->count_all_results();
+    // Count total results for pagination
+    $this->db->select('COUNT(*) as count');
+    $this->db->from('machine_services');
+    $this->db->join('machine_service_details', 'machine_service_details.service_id = machine_services.id', 'left');
+    $this->db->where('machine_services.is_deleted', 0);
+    $this->db->like('machine_services.service_no', $term, 'both');
+    $countResult = $this->db->get()->row();
+    $count = $countResult->count;
 
-        $data = array();
-        foreach ($departments as $v) {
-            $data[] = array(
-                'id' => $v['service_no'],
-                'text' => $v['service_no']
-            );
-        }
-
-        $endCount = $offset + $resultCount;
-        $morePages = $endCount < $count;
-
-        $results = array(
-            "results" => $data,
-            "pagination" => array(
-                "more" => $morePages
-            )
+    // Format for Select2
+    $data = array();
+    foreach ($departments as $v) {
+        $data[] = array(
+            'id' => $v['service_no'],
+            'text' => $v['service_no']
         );
-
-        echo json_encode($results);
-
     }
+
+    $morePages = ($offset + $resultCount) < $count;
+
+    echo json_encode([
+        "results" => $data,
+        "pagination" => ["more" => $morePages]
+    ]);
+}
+public function generatePDF()
+{
+    $filters = [
+        'status'        => $this->input->post('status'),
+        'service_type'  => $this->input->post('service_type'),
+        'machine_type'  => $this->input->post('machine_type'),
+        'machine_in_id' => $this->input->post('machine_in_id'),
+        'service_no'    => $this->input->post('service_no'),
+        'date_from'     => $this->input->post('date_from'),
+        'date_to'       => $this->input->post('date_to')
+    ];
+
+    $this->load->model('Model_machine_services_created');
+    $rows = $this->Model_machine_services_created->getMachineServicesForPDF($filters);
+
+    $this->Model_machine_services_created->generateMachineServicesPDF($rows);
+}
+
+
+
 
 
 

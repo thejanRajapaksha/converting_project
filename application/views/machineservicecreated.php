@@ -88,8 +88,6 @@ include "include/topnavbar.php";
                                 <th>Service Type</th>
                                 <th>Sub Total</th>
                                 <th>Remarks</th>
-                               
-                                    <th>Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -187,7 +185,7 @@ $(document).ready(function() {
         let service_no = $('#service_no_filter').val();
         let date_from = $('#date_from_filter').val();
         let date_to = $('#date_to_filter').val();
-
+        
         manageTable = $('#manageTable').DataTable({
             'ajax': {
                 'url': base_url + 'MachineServicesCreated/fetchCategoryData',
@@ -204,7 +202,37 @@ $(document).ready(function() {
             },
             'order': [],
             destroy: true,
+
+            dom:
+                "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+
+            buttons: [
+
+                {
+                    text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+                    className: 'btn btn-danger btn-sm',
+                    action: function () {
+                        let rows = manageTable.rows({ search: 'applied' }).data().toArray();
+
+
+                        $.ajax({
+                            url: base_url + 'MachineServicesCreated/generatePDF',
+                            type: "POST",
+                            data: { rows: rows },
+                            xhrFields: { responseType: 'blob' },
+                            success: function (data) {
+                                const blob = new Blob([data], { type: 'application/pdf' });
+                                const url = window.URL.createObjectURL(blob);
+                                window.open(url);
+                            }
+                        });
+                    }
+                }
+            ]
         });
+
     }
 
 

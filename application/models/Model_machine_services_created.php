@@ -12,7 +12,7 @@ class Model_machine_services_created extends CI_Model
         if($id) {
             $sql = "SELECT msd.*,
                 m.s_no, m.bar_code, mt.name as machine_type_name,
-               ms.service_no, ms.service_date_from, ms.service_date_to, e.name_with_initial 
+               ms.service_no, ms.service_date_from, ms.service_date_to, e.emp_name_with_initial 
             FROM machine_service_details msd  
             LEFT JOIN machine_services ms ON msd.service_id = ms.id
             LEFT JOIN machine_ins m on ms.machine_in_id = m.id
@@ -95,5 +95,118 @@ class Model_machine_services_created extends CI_Model
         $delete = $this->db->delete('machine_service_details_items');
         return ($delete == true) ? true : false;
     }
+
+    public function generateMachineServicesPDF($rows)
+{
+    $this->load->library('pdf');
+
+    $options = new \Dompdf\Options();
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isPhpEnabled', true);
+    $dompdf = new \Dompdf\Dompdf($options);
+
+    $html = '
+    <html>
+    <head>
+        <style>
+            body { font-family: DejaVu Sans, sans-serif; font-size: 11px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { border: 1px solid #000; padding: 5px; text-align: center; }
+            th { background: #f2f2f2; }
+        </style>
+    </head>
+    <body>
+        <h3 style="text-align:center;">MACHINE SERVICES REPORT</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Machine Type</th>
+                    <th>S.No</th>
+                    <th>Service No</th>
+                    <th>Service From</th>
+                    <th>Service To</th>
+                    <th>Service Type</th>
+                    <th>Sub Total</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+    foreach ($rows as $r) {
+        $html .= '<tr>
+            <td>' . $r['machine_type'] . '</td>
+            <td>' . $r['s_no'] . '</td>
+            <td>' . $r['service_no'] . '</td>
+            <td>' . $r['service_date_from'] . '</td>
+            <td>' . $r['service_date_to'] . '</td>
+            <td>' . $r['service_type'] . '</td>
+            <td>' . $r['sub_total'] . '</td>
+            <td>' . $r['remarks'] . '</td>
+        </tr>';
+    }
+
+    $html .= '
+            </tbody>
+        </table>
+    </body>
+    </html>';
+
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+    $dompdf->stream("machine_services_report.pdf", ["Attachment" => 0]);
+}
+public function getMachineServicesForPDF($filters)
+{
+    $status        = $filters['status'];
+    $service_type  = $filters['service_type'];
+    $machine_type  = $filters['machine_type'];
+    $machine_in_id = $filters['machine_in_id'];
+    $service_no    = $filters['service_no'];
+    $date_from     = $filters['date_from'];
+    $date_to       = $filters['date_to'];
+
+    $sql = "SELECT msd.*,
+                m.s_no,
+                ms.service_no,
+                mt.name AS machine_type,
+                ms.service_date_from,
+                ms.service_date_to,
+                msd.sub_total,
+                msd.remarks
+            FROM machine_service_details msd
+            LEFT JOIN machine_services ms ON msd.service_id = ms.id
+            LEFT JOIN machine_ins m ON ms.machine_in_id = m.id
+            LEFT JOIN machine_types mt ON m.machine_type_id = mt.id
+            WHERE msd.is_deleted = 0 ";
+
+    if ($status !== '') {
+        $sql .= " AND msd.is_completed = '$status' ";
+    }
+    if ($service_type !== '') {
+        $sql .= " AND msd.service_type = '$service_type' ";
+    }
+    if ($machine_type !== '') {
+        $sql .= " AND mt.id = '$machine_type' ";
+    }
+    if ($machine_in_id !== '') {
+        $sql .= " AND m.id = '$machine_in_id' ";
+    }
+    if ($service_no !== '') {
+        $sql .= " AND ms.service_no = '$service_no' ";
+    }
+    if ($date_from !== '' && $date_to !== '') {
+        $sql .= " AND ms.service_date_from <= '$date_from'
+                  AND ms.service_date_to >= '$date_to' ";
+    }
+
+    $sql .= " ORDER BY msd.id DESC";
+
+    $query = $this->db->query($sql);
+    return $query->result_array();
+}
+
+
 
 }

@@ -6,35 +6,41 @@ class Model_machine_services_employee extends CI_Model
     {
         parent::__construct();
     }
-
     public function getEmployeeServicesData($id = null, $data = null)
     {
         $employee_id = $data['employee_id'];
         $date_from = $data['date_from'];
         $date_to = $data['date_to'];
 
-            $sql = "SELECT msd.*,  
-                e.employee_name as employee_name,
-                e.employee_id as employee_id,
-                COUNT(msd.id) as service_count
+        $sql = "SELECT 
+                    msd.*,  
+                    e.employee_name AS employee_name,
+                    e.employee_id AS employee_id,
+                    COUNT(msd.id) AS service_count
                 FROM service_employee e 
                 LEFT JOIN machine_service_details msd ON msd.service_done_by = e.employee_id
                 LEFT JOIN machine_services ms ON msd.service_id = ms.id
                 WHERE msd.is_deleted = 0 ";
 
-            if($employee_id != '') {
-                $sql .= " AND msd.service_done_by = '$employee_id' ";
-            }
+        if ($employee_id != '') {
+            $sql .= " AND msd.service_done_by = '$employee_id' ";
+        }
 
-            if($date_from && $date_to != '') {
-                $sql .= " AND ms.service_date BETWEEN '$date_from' AND '$date_to' ";
-            }
+        if ($date_from != '' && $date_to != '') {
+            // overlap check
+            $sql .= " AND (
+                            ms.service_date_from <= '$date_to'
+                            AND ms.service_date_to >= '$date_from'
+                    ) ";
+        }
 
         $sql .= " GROUP BY msd.service_done_by
                 ORDER BY msd.service_done_by DESC";
+
         $query = $this->db->query($sql);
         return $query->result_array();
     }
+
 
     //getEmployeeServicesDataById($id = null, $date_from = null, $date_to = null)
     public function getEmployeeServicesDataById($id = null, $date_from = null, $date_to = null)
@@ -52,10 +58,12 @@ class Model_machine_services_employee extends CI_Model
             $sql .= " AND msd.service_done_by = '$id' ";
         }
 
-        if($date_from && $date_to != '') {
-           // $sql .= " AND ms.service_date BETWEEN '$date_from' AND '$date_to' ";
-           $sql .= " AND ms.service_date_from <= '$date_from' AND ms.service_date_to >= '$date_to";
-        }
+    if ($date_from != '' && $date_to != '') {
+        $sql .= " AND (
+                    ms.service_date_from <= '$date_to'
+                    AND ms.service_date_to >= '$date_from'
+                ) ";
+    }
 
         $sql .= " ORDER BY msd.service_done_by DESC";
 
