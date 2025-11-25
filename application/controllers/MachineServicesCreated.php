@@ -377,21 +377,12 @@ public function get_service_no_select()
 }
 public function generatePDF()
 {
-    $filters = [
-        'status'        => $this->input->post('status'),
-        'service_type'  => $this->input->post('service_type'),
-        'machine_type'  => $this->input->post('machine_type'),
-        'machine_in_id' => $this->input->post('machine_in_id'),
-        'service_no'    => $this->input->post('service_no'),
-        'date_from'     => $this->input->post('date_from'),
-        'date_to'       => $this->input->post('date_to')
-    ];
-
+    $filters = $this->input->post();
     $this->load->model('Model_machine_services_created');
     $rows = $this->Model_machine_services_created->getMachineServicesForPDF($filters);
-
     $this->Model_machine_services_created->generateMachineServicesPDF($rows);
 }
+
 
 
 
