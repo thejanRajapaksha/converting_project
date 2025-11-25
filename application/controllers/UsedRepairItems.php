@@ -119,13 +119,5 @@ class UsedRepairItems extends CI_Controller
 
     }
 
-    public function generatePDF()
-{
-    $filters = $this->input->post();
-    $this->load->model('model_used_repair_items');
-    $rows = $this->model_used_repair_items->getUsedRepairItemsForPDF($filters);
-    $this->model_used_repair_items->generateUsedRepairItemsPDF($rows);
-}
-
 
 }

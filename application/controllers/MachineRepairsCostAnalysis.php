@@ -129,14 +129,6 @@ class MachineRepairsCostAnalysis extends CI_Controller
 
     }
 
-    public function generatePDF()
-    {
-        $filters = $this->input->post();
-        $this->load->model('model_machine_repairs_cost_analysis');
-        $rows = $this->model_machine_repairs_cost_analysis->getMachineRepairsCostAnalysisForPDF($filters);
-        $this->model_machine_repairs_cost_analysis->generateMachineRepairsCostPDF($rows);
-    }
-
 
 
 

@@ -214,20 +214,13 @@ $(document).ready(function() {
                     text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
                     className: 'btn btn-danger btn-sm',
                     action: function () {
-                        let filters = {
-                            status: $('#status_filter').val(),
-                            service_type: $('#service_type_filter').val(),
-                            machine_type: $('#machine_type_filter').val(),
-                            machine_in_id: $('#s_no_filter').val(),
-                            service_no: $('#service_no_filter').val(),
-                            date_from: $('#date_from_filter').val(),
-                            date_to: $('#date_to_filter').val()
-                        };
+                        let rows = manageTable.rows({ search: 'applied' }).data().toArray();
+
 
                         $.ajax({
                             url: base_url + 'MachineServicesCreated/generatePDF',
                             type: "POST",
-                            data: filters,
+                            data: { rows: rows },
                             xhrFields: { responseType: 'blob' },
                             success: function (data) {
                                 const blob = new Blob([data], { type: 'application/pdf' });
@@ -235,7 +228,6 @@ $(document).ready(function() {
                                 window.open(url);
                             }
                         });
-
                     }
                 }
             ]

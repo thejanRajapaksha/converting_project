@@ -124,7 +124,7 @@ include "include/topnavbar.php";
         // initialize the datatable
         load_dt();
 
-        function load_dt() {
+        function load_dt(){
 
             let service_item_id = $('#service_item_filter').val();
             let date_from = $('#date_from_filter').val();
@@ -142,42 +142,8 @@ include "include/topnavbar.php";
                 },
                 'order': [],
                 destroy: true,
-
-                dom:
-                    "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" +
-                    "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-
-                buttons: [
-                    {
-                        text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
-                        className: 'btn btn-danger btn-sm',
-                        action: function () {
-                            let filters = {
-                                service_item_id: $('#service_item_filter').val(),
-                                date_from: $('#date_from_filter').val(),
-                                date_to: $('#date_to_filter').val()
-                            };
-
-                            $.ajax({
-                                url: base_url + 'UsedRepairItems/generatePDF',
-                                type: "POST",
-                                data: filters,
-                                xhrFields: { responseType: 'blob' },
-                                success: function (data) {
-                                    const blob = new Blob([data], { type: 'application/pdf' });
-                                    const url = window.URL.createObjectURL(blob);
-                                    window.open(url);
-                                }
-                            });
-
-                        }
-                    }
-                ]
             });
-
         }
-
 
     });
 
