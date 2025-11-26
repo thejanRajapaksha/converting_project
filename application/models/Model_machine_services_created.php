@@ -60,9 +60,18 @@ class Model_machine_services_created extends CI_Model
             $sql .= " AND ms.service_no = '$service_no' ";
         }
 
-        if($date_from && $date_to != '') { 
-            $sql .= " AND ms.service_date_from <= '$date_from' AND ms.service_date_to >= '$date_to' ";
+        // Date range filter
+        if(!empty($date_from) && !empty($date_to)) {
+            $sql .= " AND DATE(ms.service_date_from) >= '$date_from' 
+                    AND DATE(ms.service_date_to) <= '$date_to' ";
+        } 
+        else if(!empty($date_from) && empty($date_to)) {
+            $sql .= " AND DATE(ms.service_date_from) >= '$date_from' ";
         }
+        else if(empty($date_from) && !empty($date_to)) {
+            $sql .= " AND DATE(ms.service_date_to) <= '$date_to' ";
+        }
+
 
         $sql .="ORDER BY id DESC";
         $query = $this->db->query($sql);
@@ -196,10 +205,11 @@ public function getMachineServicesForPDF($filters)
     if ($service_no !== '') {
         $sql .= " AND ms.service_no = '$service_no' ";
     }
-    if ($date_from !== '' && $date_to !== '') {
-        $sql .= " AND ms.service_date_from <= '$date_from'
-                  AND ms.service_date_to >= '$date_to' ";
+    if (!empty($date_from) && !empty($date_to)) {
+        $sql .= " AND DATE(ms.service_date_from) >= '$date_from'
+                AND DATE(ms.service_date_to) <= '$date_to' ";
     }
+
 
     $sql .= " ORDER BY msd.id DESC";
 

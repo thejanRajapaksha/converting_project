@@ -233,32 +233,70 @@ $(document).ready(function() {
     // initialize the datatable
     load_dt();
 
-    function load_dt(){
+function load_dt() {
 
-        let status = $('#status_filter').val();
-        let repair_type = $('#repair_type_filter').val();
-        let machine_type = $('#machine_type_filter').val();
-        let machine_in_id = $('#s_no_filter').val();
-        let date_from = $('#date_from_filter').val();
-        let date_to = $('#date_to_filter').val();
+    let status = $('#status_filter').val();
+    let repair_type = $('#repair_type_filter').val();
+    let machine_type = $('#machine_type_filter').val();
+    let machine_in_id = $('#s_no_filter').val();
+    let date_from = $('#date_from_filter').val();
+    let date_to = $('#date_to_filter').val();
 
-        manageTable = $('#manageTable').DataTable({
-            'ajax': {
-                'url': base_url + 'MachineRepairsCreated/fetchCategoryData',
-                'type': 'GET',
-                'data': {
-                    'status': status,
-                    'repair_type': repair_type,
-                    'machine_type': machine_type,
-                    'machine_in_id': machine_in_id,
-                    'date_from': date_from,
-                    'date_to': date_to
+    manageTable = $('#manageTable').DataTable({
+        'ajax': {
+            'url': base_url + 'MachineRepairsCreated/fetchCategoryData',
+            'type': 'GET',
+            'data': {
+                'status': status,
+                'repair_type': repair_type,
+                'machine_type': machine_type,
+                'machine_in_id': machine_in_id,
+                'date_from': date_from,
+                'date_to': date_to
+            }
+        },
+        'order': [],
+        destroy: true,
+
+        dom:
+            "<'row'<'col-sm-5'B><'col-sm-2'l><'col-sm-5'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+
+        buttons: [
+
+            {
+                text: '<i class="fas fa-file-pdf mr-2"></i> PDF',
+                className: 'btn btn-danger btn-sm',
+                action: function () {
+                    let filters = {
+                        status: $('#status_filter').val(),
+                        repair_type: $('#repair_type_filter').val(),
+                        machine_type: $('#machine_type_filter').val(),
+                        machine_in_id: $('#s_no_filter').val(),
+                        date_from: $('#date_from_filter').val(),
+                        date_to: $('#date_to_filter').val()
+                    };
+
+                    $.ajax({
+                        url: base_url + 'MachineRepairsCreated/generatePDF',
+                        type: "POST",
+                        data: filters,
+                        xhrFields: { responseType: 'blob' },
+                        success: function (data) {
+                            const blob = new Blob([data], { type: 'application/pdf' });
+                            const url = window.URL.createObjectURL(blob);
+                            window.open(url);
+                        }
+                    });
+
                 }
-            },
-            'order': [],
-            destroy: true,
-        });
-    }
+            }
+        ]
+    });
+
+}
+
 
 
 });

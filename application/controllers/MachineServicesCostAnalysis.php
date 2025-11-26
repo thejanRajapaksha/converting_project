@@ -131,6 +131,17 @@ class MachineServicesCostAnalysis extends CI_Controller
 
     }
 
+    public function generateCostAnalysisPDF()
+    {
+        $this->load->model('Model_machine_services_cost_analysis');
+
+        $filters = $this->input->post();
+        
+        $rows = $this->Model_machine_services_cost_analysis->getMachineServicesCostAnalysisForPDF($filters);
+
+        $this->Model_machine_services_cost_analysis->generateMachineServicesCostAnalysisPDF($rows);
+    }
+
 
 
 
