@@ -48,18 +48,18 @@ class MachineRepairsCreated extends CI_Controller
 
             $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="View" onclick="viewFunc('.$value['id'].')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>&nbsp;';
 
-            if($value['is_completed'] == 0){
+            // if($value['is_completed'] == 0){
                 
-                    $buttons .= '<button type="button" class="btn btn-success btn-sm" title="Complete Repair" onclick="completeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#completeModal"><i class="fas fa-check"></i></button>&nbsp;';
-            }else{
+            //         $buttons .= '<button type="button" class="btn btn-success btn-sm" title="Complete Repair" onclick="completeFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#completeModal"><i class="fas fa-check"></i></button>&nbsp;';
+            // }else{
                 
-                    $buttons .= '<button type="button" class="btn btn-danger btn-sm" title="Remove Complete Status" onclick="removeCompleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeCompleteModal"><i class="fas fa-times"></i></button>&nbsp;';
+            //         $buttons .= '<button type="button" class="btn btn-danger btn-sm" title="Remove Complete Status" onclick="removeCompleteFunc(' . $value['id'] . ')" data-toggle="modal" data-target="#removeCompleteModal"><i class="fas fa-times"></i></button>&nbsp;';
                 
-            }
+            // }
 
-                $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i></button>';
+            //     $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-edit"></i></button>';
 
-                $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
+            //     $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
             
 
             $result['data'][$key] = array(
