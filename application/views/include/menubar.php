@@ -339,7 +339,12 @@ else if ($functionmenu == 'UsedItem') {
     $statuscheck = checkprivilege($menuprivilegearray, 55, 3);
     $deletecheck = checkprivilege($menuprivilegearray, 55, 4);
 }
-
+else if ($functionmenu == 'StoresValue') {
+    $addcheck = checkprivilege($menuprivilegearray, 56, 1);
+    $editcheck = checkprivilege($menuprivilegearray, 56, 2);
+    $statuscheck = checkprivilege($menuprivilegearray, 56, 3);
+    $deletecheck = checkprivilege($menuprivilegearray, 56, 4);
+}
 
  
 function checkprivilege($arraymenu, $menuID, $type){
@@ -572,6 +577,8 @@ function checkprivilege($arraymenu, $menuID, $type){
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'UsedItem'; ?>">Used items</a><?php } ?>
                     <?php if(menucheck($menuprivilegearray, 54)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'SparepartFrequency'; ?>">Spare Part GRN Report</a><?php } ?>
+                    <?php if(menucheck($menuprivilegearray, 56)==1){ ?>
+                    <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'StoresValue'; ?>">Stores Value Report</a><?php } ?>
                     <!-- <?php if(menucheck($menuprivilegearray, 34)==1){ ?>
                     <a class="nav-link p-0 px-3 py-1 text-dark" href="<?php echo base_url().'GrnReport'; ?>">GRN</a><?php } ?> -->
                     <?php if(menucheck($menuprivilegearray, 35)==1){ ?>
