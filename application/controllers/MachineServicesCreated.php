@@ -242,8 +242,8 @@ class MachineServicesCreated extends CI_Controller
         $this->db->select('machine_types.id, machine_types.name');
         $this->db->from('machine_types');
         $this->db->join('machine_ins', 'machine_ins.machine_type_id = machine_types.id', 'left');
-        $this->db->join('machine_services', 'machine_services.machine_in_id = machine_ins.id', 'left');
-        $this->db->where('machine_services.is_deleted', 0);
+        // $this->db->join('machine_services', 'machine_services.machine_in_id = machine_ins.id', 'left');
+        // $this->db->where('machine_services.is_deleted', 0);
         $this->db->like('machine_types.name', $term, 'both');
         $this->db->group_by('machine_types.id');
         $query = $this->db->get();
@@ -253,8 +253,8 @@ class MachineServicesCreated extends CI_Controller
         $this->db->select('machine_types.id, machine_types.name');
         $this->db->from('machine_types');
         $this->db->join('machine_ins', 'machine_ins.machine_type_id = machine_types.id', 'left');
-        $this->db->join('machine_services', 'machine_services.machine_in_id = machine_ins.id', 'left');
-        $this->db->where('machine_services.is_deleted', 0);
+        // $this->db->join('machine_services', 'machine_services.machine_in_id = machine_ins.id', 'left');
+        // $this->db->where('machine_services.is_deleted', 0);
         $this->db->like('machine_types.name', $term, 'both');
         $this->db->group_by('machine_types.id');
         $count = $this->db->count_all_results();
