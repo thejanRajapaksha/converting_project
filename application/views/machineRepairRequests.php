@@ -503,6 +503,59 @@ include "include/topnavbar.php";
                     </div>
                 </div>
 
+                <!-- View Modal -->
+                <div class="modal fade" tabindex="-1" role="dialog" id="viewModal">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">View Repair items Detais</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <div class="row mb-4">
+                                    <div class="col-sm-3">
+                                        <label>Machine Type :</label>
+                                        <span id="view_machine_type_span"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <h5>Repair Detail</h5>
+                                        <hr>
+                                        <div id="modal_msg"></div>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-sm" id="view_service_detail_table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Service Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Unit Price</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="3" align="right"><label>Sub Total</label></td>
+                                                        <td align="right" id="sub_total_span"></td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         <?php include "include/footerbar.php"; ?>
     </div>
@@ -1314,6 +1367,39 @@ function removeFunc(id) {
 
 
   }
+}
+
+function viewFunc(id)
+{
+    $.ajax({
+        url: base_url + 'MachineRepairsCreated/fetchMachineRepairsCreatedDataById/'+id,
+        type: 'post',
+        dataType: 'json',
+        success:function(response) {
+
+            $("#view_service_detail_table tbody").empty();
+
+            let repair_no = response.repair_details.repair_no;
+            let machine_type_name = response.repair_details.machine_type_name;
+
+            $('#view_machine_type_span').html(machine_type_name);
+            $('#sub_total_span').html(response.repair_details.sub_total);
+
+
+            //each service_items
+            let service_items = response.service_items;
+            service_items.forEach(function(item) {
+                let service_item_row = '<tr>';
+                service_item_row += '<td>'+item.item_name+'</td>';
+                service_item_row += '<td>'+item.quantity+'</td>';
+                service_item_row += '<td>'+item.price+'</td>';
+                service_item_row += '<td align="right">'+item.total+'</td>';
+                service_item_row += '</tr>';
+                $('#view_service_detail_table tbody').append(service_item_row);
+            });
+
+        }
+    });
 }
 
 </script>

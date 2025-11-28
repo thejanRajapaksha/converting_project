@@ -16,59 +16,68 @@ class MachineRepairRequests extends CI_Controller
         $this->load->view('machineRepairRequests', $data);
     }
 
-    public function fetchCategoryData()
-    {
-        $result = array('data' => array());
+public function fetchCategoryData()
+{
+    $result = array('data' => array());
 
-        $data = $this->model_machine_repair_requests->getMachineRepairRequestsData();
+    $data = $this->model_machine_repair_requests->getMachineRepairRequestsData();
 
-        foreach ($data as $key => $value) {
-            // button
-            $buttons = '';
+    foreach ($data as $key => $value) {
 
-            //check if machine_repair_details exists for repair_id
-            $this->db->select('*');
-            $this->db->from('machine_repair_details');
-            $this->db->where('repair_id', $value['id']);
-            $query = $this->db->get();
-            $result1 = $query->row_array();
+        // WRAPPER FOR BUTTONS
+        $buttons = '<div class="action-buttons d-flex align-items-center">';
 
-            if($value['is_completed'] == 0){
-                // Edit Button
-                $buttons .= '<button type="button" class="btn btn-info btn-sm" title="Edit" onclick="editRepair('.$value['id'].')" data-toggle="modal" data-target="#repairEditModal">
-                                <i class="fas fa-pen"></i>
-                            </button> ';
-                // Complete Button
-                $buttons .= '<button type="button" class="btn btn-success btn-sm" title="Complete" data-id="'.$value['id'].'" data-toggle="modal" data-target="#completeModal">
-                                <i class="fas fa-check-circle"></i>
-                            </button> ';
+        //check if machine_repair_details exists for repair_id
+        $this->db->select('*');
+        $this->db->from('machine_repair_details');
+        $this->db->where('repair_id', $value['id']);
+        $query = $this->db->get();
+        $result1 = $query->row_array();
 
-                if(empty($result1)){
-                    $buttons .= '<button type="button" class="btn btn-info btn-sm repair_add_btn" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Create Repair" data-toggle="modal" data-target="#repairAddModal"><i class="fas fa-wrench"></i></button> ';
-                    $buttons .= '<button type="button" style="margin:1px;" class="btn btn-warning btn-sm btn_postpone" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Postpone"> <i class="fas fa-stop-circle"></i> </button> ';
-                }
-                    $buttons .= '<button type="button" class="btn btn-primary btn-sm" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
-                if($value['is_repair'] == 0){
-                    $buttons .= ' <button type="button" class="btn btn-danger btn-sm" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
-                }
+        if($value['is_completed'] == 0){
 
+            $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1" title="Edit" onclick="editRepair('.$value['id'].')" data-toggle="modal" data-target="#repairEditModal">
+                            <i class="fas fa-pen"></i>
+                        </button>';
+
+            $buttons .= '<button type="button" class="btn btn-success btn-sm mr-1" title="Complete" data-id="'.$value['id'].'" data-toggle="modal" data-target="#completeModal">
+                            <i class="fas fa-check-circle"></i>
+                        </button>';
+
+            if(empty($result1)){
+                $buttons .= '<button type="button" class="btn btn-info btn-sm mr-1 repair_add_btn" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Create Repair" data-toggle="modal" data-target="#repairAddModal"><i class="fas fa-wrench"></i></button>';
+
+                $buttons .= '<button type="button" class="btn btn-warning btn-sm mr-1 btn_postpone" data-id="'.$value['id'].'" data-machine_type_name="'.$value['machine_type_name'].'" title="Postpone"><i class="fas fa-stop-circle"></i></button>';
             }
 
-            
-            //$status = ($value['active'] == 1) ? '<span class="badge badge-success btn-sm">Active</span>' : '<span class="badge badge-warning">Inactive</span>';
+            $buttons .= '<button type="button" class="btn btn-primary btn-sm mr-1" title="Edit" onclick="editFunc('.$value['id'].')" data-toggle="modal" data-target="#editModal"><i class="fas fa-pen"></i></button>';
 
-            $result['data'][$key] = array(
-                $value['machine_type_name'],
-                $value['bar_code'],
-                $value['s_no'],
-                $value['repair_in_date'],
-                //$status,
-                $buttons
-            );
-        } // /foreach
+            if($value['is_repair'] == 0){
+                $buttons .= '<button type="button" class="btn btn-danger btn-sm mr-1" title="Delete" onclick="removeFunc('.$value['id'].')" data-toggle="modal" data-target="#removeModal"><i class="fas fa-trash"></i></button>';
+            }
+        }
 
-        echo json_encode($result);
+        if(!empty($result1)){
+            if($value['is_completed'] == 0 || $value['is_completed'] == 1){
+                $buttons .= '<button type="button" class="btn btn-primary btn-sm mr-1" title="View" onclick="viewFunc('.$value['id'].')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+            }
+        }
+
+        // CLOSE WRAPPER
+        $buttons .= '</div>';
+
+        $result['data'][$key] = array(
+            $value['machine_type_name'],
+            $value['bar_code'],
+            $value['s_no'],
+            $value['repair_in_date'],
+            $buttons
+        );
     }
+
+    echo json_encode($result);
+}
+
 
     public function create()
     {
