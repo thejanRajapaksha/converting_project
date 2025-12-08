@@ -894,13 +894,18 @@ $(document).ready(function() {
     				success: function (result) {
     					try {
     						var obj = JSON.parse(result);
+                            var supplierID = obj.supplier;           
+                            var supplierName = obj.supplier_name;    
+                            var option = new Option(supplierName, supplierID, true, true); 
+
+
     						console.log(obj);
 
     						$('#hiddenporderid').val(obj.id);
     						$('#hiddenporderreqid').val(obj.requestid);
     						$('#editorderdate').val(obj.orderdate);
-    						$('#editsupplier').val(obj.supplier);
     						$('#editordertype').val(obj.type);
+                            $("#editsupplier").append(option).trigger('change');
                             $("#editmain_vat").val(obj.vat);
                             $("#editvatamount").val(obj.vatamount);
                             $("#editmodeltotalpayment").val(obj.modeltotalpayment);
@@ -1429,251 +1434,177 @@ $(document).ready(function() {
         }
     });
     $('#btncreateorder').click(function () {
-    	var ordertype = $('#ordertype').val();
-    	if (![1, 2, 3, 4].includes(parseInt(ordertype))) return; 
 
-    	$('#btncreateorder').prop('disabled', true).html(
-    		'<i class="fas fa-circle-notch fa-spin mr-2"></i> Creating Order...'
-    	);
+        var ordertype = $('#ordertype').val();
+        if (![1, 2, 3, 4].includes(parseInt(ordertype))) return;
 
-    	var tbodySelector = (ordertype == 2) ? "#vehicletableorder tbody" : "#tableorder tbody";
-    	var jsonObj = [];
+        $('#btncreateorder').prop('disabled', true).html(
+            '<i class="fas fa-circle-notch fa-spin mr-2"></i> Creating Order...'
+        );
 
-    	$(tbodySelector + " tr").each(function () {
-    		var item = {};
-    		$(this).find('td').each(function (col_idx) {
-    			item["col_" + (col_idx + 1)] = $(this).text();
-    		});
-    		jsonObj.push(item);
-    	});
+        /** FAST ROW READING (NO UI FREEZE) **/
+        var tbodySelector = (ordertype == 2) ? "#vehicletableorder tbody" : "#tableorder tbody";
+        var rows = document.querySelectorAll(tbodySelector + " tr");
 
-    	var orderData = {
-    		ordertype: ordertype,
-    		tableData: jsonObj,
-    		orderdate: $('#orderdate').val(),
-    		duedate: $('#duedate').val(),
-    		total: $('#hidetotalorder').val(),
-    		discounttotal: $('#hidediscountlorder').val(),
-    		vatamounttotal: $('#hidevatlorder').val(),
-    		vat: $('#main_vat').val(),
-            vat_type: $('#vat_type').val(),
-    		vatamount: $('#vatamount').val(),
-            modeltotalpayment: $('#modeltotalpayment').val(),
-            discount: $('#discount').val(),
-    		grosstotal: $('#hidegrosstotalorder').val(),
-    		remark: $('#remark').val(),
-    		supplier: $('#supplier').val(),
-    		company_id: $('#f_company_id').val(),
-    		branch_id: $('#f_branch_id').val(),
-    		porderrequest: $('#porderrequest').val()
-    	};
+        if (rows.length === 0) {
+            Swal.fire("No Items", "Please add items before creating the order!", "warning");
+            $('#btncreateorder').prop('disabled', false).html('<i class="fas fa-save"></i> Create Purchase Order');
+            return;
+        }
 
-    	if (ordertype == 2) {
-    		orderData.location = $('#location').val();
-    	}
+        // MUCH FASTER JSON BUILDING
+        var tableData = Array.from(rows).map(tr => {
+            let obj = {};
+            Array.from(tr.children).forEach((td, i) => {
+                obj["col_" + (i + 1)] = td.textContent.trim();
+            });
+            return obj;
+        });
 
-    	Swal.fire({
-    		title: "",
-    		html: '<div class="div-spinner"><div class="custom-loader"></div></div>',
-    		allowOutsideClick: false,
-    		showConfirmButton: false,
-    		backdrop: "rgba(255, 255, 255, 0.5)",
-    		customClass: {
-    			popup: "fullscreen-swal"
-    		},
-    		didOpen: () => {
-    			document.body.style.overflow = "hidden";
+        // Use FormData for fast transmission of large data
+        var fd = new FormData();
+        fd.append("ordertype", ordertype);
+        fd.append("orderdate", $('#orderdate').val());
+        fd.append("duedate", $('#duedate').val());
+        fd.append("total", $('#hidetotalorder').val());
+        fd.append("discounttotal", $('#hidediscountlorder').val());
+        fd.append("vatamounttotal", $('#hidevatlorder').val());
+        fd.append("vat", $('#main_vat').val());
+        fd.append("vat_type", $('#vat_type').val());
+        fd.append("vatamount", $('#vatamount').val());
+        fd.append("modeltotalpayment", $('#modeltotalpayment').val());
+        fd.append("discount", $('#discount').val());
+        fd.append("grosstotal", $('#hidegrosstotalorder').val());
+        fd.append("remark", $('#remark').val());
+        fd.append("supplier", $('#supplier').val());
+        fd.append("company_id", $('#f_company_id').val());
+        fd.append("branch_id", $('#f_branch_id').val());
+        fd.append("porderrequest", $('#porderrequest').val());
 
-    			$.ajax({
-    				type: "POST",
-    				data: orderData,
-    				url: 'Purchaseorder/Purchaseorderinsertupdate',
-    				success: function (result) {
-    					Swal.close();
-    					document.body.style.overflow = "auto";
+        if (ordertype == 2) {
+            fd.append("location", $('#location').val());
+        }
 
-    					var response = JSON.parse(result);
-    					if (response.status == 1) {
-    						Swal.fire({
-    							icon: "success",
-    							title: "Order Created!",
-    							text: "Purchase order created successfully!",
-    							timer: 2000,
-    							showConfirmButton: false
-    						}).then(() => {
-    							window.location.reload();
-    						});
-    					} else {
-    						Swal.fire({
-    							icon: "error",
-    							title: "Error",
-    							text: "Something went wrong. Please try again later.",
-    						});
-    					}
-    				},
-    				error: function () {
-    					Swal.close();
-    					document.body.style.overflow = "auto";
-    					Swal.fire({
-    						icon: "error",
-    						title: "Error",
-    						text: "Something went wrong. Please try again later.",
-    					});
-    				}
-    			});
-    		},
-    	});
+        // Serialize large table data as JSON string
+        fd.append("tableData", JSON.stringify(tableData));
+
+        Swal.fire({
+            title: "",
+            html: '<div class="div-spinner"><div class="custom-loader"></div></div>',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            backdrop: "rgba(255,255,255,0.5)",
+            customClass: { popup: "fullscreen-swal" }
+        });
+
+        $.ajax({
+            url: 'Purchaseorder/Purchaseorderinsertupdate',
+            type: 'POST',
+            data: fd,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                Swal.close();
+                var response = JSON.parse(result);
+
+                if (response.status == 1) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Order Created!",
+                        text: "Purchase order created successfully!",
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => window.location.reload());
+                } else {
+                    Swal.fire("Error", "Something went wrong. Please try again later.", "error");
+                }
+            },
+            error: function () {
+                Swal.close();
+                Swal.fire("Error", "Server error occurred. Try again.", "error");
+            }
+        });
+
     });
 
 
-    $('#editbtncreateorder').click(function() {
+    $('#editbtncreateorder').click(function () {
+
         var ordertype = $('#editordertype').val();
-        if (ordertype == 3 || ordertype == 4 || ordertype == 1) {
-            $('#editbtncreateorder').prop('disabled', true).html(
-                '<i class="fas fa-circle-notch fa-spin mr-2"></i> Create Order')
-            var tbody = $("#edittableorder tbody");
 
-            if (tbody.children().length > 0) {
-                jsonObj = [];
-                $("#edittableorder tbody tr").each(function() {
-                    item = {}
-                    $(this).find('td').each(function(col_idx) {
-                        item["col_" + (col_idx + 1)] = $(this).text();
-                    });
+        $('#editbtncreateorder')
+            .prop('disabled', true)
+            .html('<i class="fas fa-circle-notch fa-spin mr-2"></i> Create Order');
 
-                    jsonObj.push(item);
-                });
-                console.log("edittableorder");
-                console.log(jsonObj);
-                var orderdate = $('#editorderdate').val();
-                var duedate = $('#editduedate').val();
-                var remark = $('#editremark').val();
-                var total = $('#edithidetotalorder').val();
-                var discounttotal = $('#edithidediscountlorder').val();
-                var vatamounttotal = $('#edithidevatlorder').val();
-                var vat = $('#editmain_vat').val();
-                var vat_type = $('#editvat_type').val();
-                var vatamount = $('#editvatamount').val();
-                var modeltotalpayment = $('#editmodeltotalpayment').val();
-                var grosstotal = $('#edithidegrosstotalorder').val();
-                var supplier = $('#editsupplier').val();
-                var ordertype = $('#editordertype').val();
-                var branch_id = $('#f_branch_id').val();
-                var company_id = $('#f_company_id').val();
-                
-                var porderID = $('#hiddenporderid').val();
-                var porderreqID = $('#hiddenporderreqid').val();
+        // Select correct table
+        var tbodySelector = (ordertype == 2) 
+            ? "#editvehicletableorder tbody" 
+            : "#edittableorder tbody";
 
+        var tbody = $(tbodySelector);
 
-                // alert(orderdate);
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        tableData: jsonObj,
-                        orderdate: orderdate,
-                        duedate: duedate,
-                        total: total,
-                        discounttotal: discounttotal,
-                        vatamounttotal: vatamounttotal,
-                        vat : vat,
-                        vat_type : vat_type,    
-                        vatamount : vatamount,
-                        modeltotalpayment: modeltotalpayment,
-                        grosstotal: grosstotal,
-                        remark: remark,
-                        supplier: supplier,
-                        ordertype: ordertype,
-                        company_id: company_id,
-                        branch_id: branch_id,
-                        porderreqID: porderreqID,
-                        porderID: porderID
-
-                    },
-                    url: 'Purchaseorder/Purchaseorderupdate',
-                    success: function(result) { //alert(result);
-                        $('#staticBackdrop').modal('hide');
-                        var objfirst = JSON.parse(result);
-                        if (objfirst.status == 1) {
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 2000);
-                        }
-                        action(objfirst.action)
-                    }
-                });
-            }
-        } else if (ordertype == 2) {
-            $('#editbtncreateorder').prop('disabled', true).html(
-                '<i class="fas fa-circle-notch fa-spin mr-2"></i> Create Order');
-
-            var tbodySelector = ordertype == 2 ? "#editvehicletableorder tbody" :
-                "#edittableorder tbody";
-            var jsonObj = [];
-
-            $(tbodySelector + " tr").each(function() {
-                var item = {};
-                $(this).find('td').each(function(col_idx) {
-                    item["col_" + (col_idx + 1)] = $(this).text();
-                });
-                jsonObj.push(item);
-            });
-
-            var orderdate = $('#editorderdate').val();
-            var duedate = $('#editduedate').val();
-            var remark = $('#editremark').val();
-            var total = $('#edithidetotalorder').val();
-            var discounttotal = $('#edithidediscountlorder').val();
-            var vatamounttotal = $('#edithidevatlorder').val();
-            var vat = $('#editmain_vat').val();
-            var vat_type = $('#editvat_type').val();    
-            var vatamount = $('#editvatamount').val();
-            var modeltotalpayment = $('#editmodeltotalpayment').val();
-            var grosstotal = $('#edithidegrosstotalorder').val();
-            var location = $('#editlocation').val();
-            var supplier = $('#editsupplier').val();
-            var branch_id = $('#f_branch_id').val();
-            var company_id = $('#f_company_id').val();
-            var porderID = $('#hiddenporderid').val();
-            var porderreqID = $('#hiddenporderreqid').val();
-
-
-            $.ajax({
-                type: "POST",
-                data: {
-                    ordertype: ordertype,
-                    tableData: jsonObj,
-                    orderdate: orderdate,
-                    duedate: duedate,
-                    total: total,
-                    discounttotal: discounttotal,
-                    vatamounttotal: vatamounttotal,
-                    vat : vat,
-                    vat_type : vat_type,
-                    vatamount : vatamount,
-                    modeltotalpayment: modeltotalpayment,
-                    grosstotal: grosstotal,
-                    remark: remark,
-                    location: location,
-                    supplier: supplier,
-                    company_id: company_id,
-                    branch_id: branch_id,
-                    porderreqID: porderreqID,
-                    porderID: porderID
-
-                },
-                url: 'Purchaseorder/Purchaseorderupdate',
-                success: function(result) {
-                    $('#staticBackdrop').modal('hide');
-                    var objfirst = JSON.parse(result);
-                    if (objfirst.status == 1) {
-                        setTimeout(function() {
-                            window.location.reload();
-                        }, 2000);
-                    }
-                    action(objfirst.action)
-                }
-            });
+        if (tbody.children().length === 0) {
+            alert("Please add items before creating the order.");
+            $('#editbtncreateorder').prop('disabled', false).html('Create Order');
+            return;
         }
+
+        // Convert table rows into JSON
+        var jsonObj = [];
+        $(tbodySelector + " tr").each(function () {
+            var item = {};
+            $(this).find("td").each(function (col_idx) {
+                item["col_" + (col_idx + 1)] = $(this).text();
+            });
+            jsonObj.push(item);
+        });
+
+        // NEW FIELD VALUES (Aligned to your new form)
+        var payload = {
+            ordertype: ordertype,
+            tableData: jsonObj,
+            orderdate: $('#editorderdate').val(),
+            duedate: $('#editduedate').val(),
+            remark: $('#editremark').val(),
+
+            // Updated values from new form
+            vat_type: $('#editvat_type').val(),
+            vat: $('#editmain_vat').val(),
+            vatamount: $('#editvatamount').val(),
+            modeltotalpayment: $('#editmodeltotalpayment').val(),
+            grosstotal: $('#edithidegrosstotalorder').val(),
+
+            // Required values
+            supplier: $('#editsupplier').val(),
+            company_id: $('#f_company_id').val(),
+            branch_id: $('#f_branch_id').val(),
+
+            // PO update reference
+            porderreqID: $('#hiddenporderreqid').val(),
+            porderID: $('#hiddenporderid').val()
+        };
+
+        // For order type 2 (vehicle), include location
+        if (ordertype == 2) {
+            payload.location = $('#editlocation').val();
+        }
+
+        // AJAX submit
+        $.ajax({
+            type: "POST",
+            url: 'Purchaseorder/Purchaseorderupdate',
+            data: payload,
+            success: function (result) {
+                $('#staticBackdrop').modal('hide');
+                var objfirst = JSON.parse(result);
+
+                if (objfirst.status == 1) {
+                    setTimeout(() => { window.location.reload(); }, 1500);
+                }
+
+                action(objfirst.action);
+            }
+        });
 
     });
 

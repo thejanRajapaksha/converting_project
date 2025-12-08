@@ -261,8 +261,12 @@
 
 		$companyID=$_SESSION['company_id'];
 
+		$tableData = json_decode($this->input->post('tableData'), true);
 
-		$tableData=$this->input->post('tableData');
+		if (!is_array($tableData)) {
+			$tableData = [];  // avoid crashes
+		}
+		// $tableData=$this->input->post('tableData');
 		$orderdate=$this->input->post('orderdate');
 		$discounttotal=$this->input->post('discounttotal');
 		$vat=$this->input->post('vat');
@@ -1088,7 +1092,7 @@
 		$recordID = $this->input->post('recordID');
 		$comapnyID=$_SESSION['company_id'];
 	
-		$this->db->select('tbl_print_porder.*, tbl_print_porder_detail.*, tbl_supplier.*, tbl_order_type.*, tbl_measurements.*, tbl_print_material_info.*, tbl_machine.*, tbl_service_type.*, spare_parts.*, tbl_print_porder_detail.unitprice AS detail_unitprice');
+		$this->db->select('tbl_print_porder.*, tbl_print_porder_detail.*, tbl_supplier.*, tbl_order_type.*, tbl_measurements.*, tbl_print_material_info.*, tbl_machine.*, tbl_service_type.*, spare_parts.*, tbl_print_porder_detail.unitprice AS detail_unitprice, tbl_print_porder.tbl_supplier_idtbl_supplier AS supplierID, tbl_supplier.suppliername AS suppliername');
 		$this->db->from('tbl_print_porder');
 		$this->db->join('tbl_print_porder_detail', 'tbl_print_porder.idtbl_print_porder = tbl_print_porder_detail.tbl_print_porder_idtbl_print_porder', 'left');
 		$this->db->join('tbl_supplier', 'tbl_supplier.idtbl_supplier = tbl_print_porder.tbl_supplier_idtbl_supplier', 'left');
@@ -1108,7 +1112,8 @@
 		$obj->id = $respond->row(0)->idtbl_print_porder;
 		$obj->requestid = $respond->row(0)->tbl_print_porder_req_idtbl_print_porder_req ;
 		$obj->orderdate = $respond->row(0)->orderdate;
-		$obj->supplier = $respond->row(0)->idtbl_supplier;
+		$obj->supplier = $respond->row(0)->supplierID;
+		$obj->supplier_name = $respond->row(0)->suppliername;
 		$obj->type = $respond->row(0)->idtbl_order_type;
 	
 		$items = array();
