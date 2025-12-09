@@ -1135,44 +1135,57 @@ include "include/topnavbar.php";
     function viewFunc(id)
     {
         $.ajax({
-            url: base_url + 'MachineService/fetchIssuedServiceItems/'+id,
+            url: base_url + 'MachineService/fetchIssuedServiceItems/' + id,
             type: 'post',
             dataType: 'json',
             success:function(data) {
+
                 let res_table = "<div class='table-responsive mt-3'>";
                 res_table += '<table class="table table-striped table-sm" id="viewTable">';
-                let res_tr = '<thead><tr><th>Service Item</th> <th> Allocated Quantity </th> <th>Issued Quantity</th> <th>Unit Price</th> </tr></thead> <tbody>';
+                let res_tr = '<thead><tr><th>Service Item</th> <th>Allocated Quantity</th> <th>Issued Quantity</th> <th>Unit Price</th></tr></thead><tbody>';
+
                 let response = data.sc_det;
                 let total = 0;
+
                 $.each(response, function(index, value) {
+
+                    // --- FIX: Handle NULL values ---
+                    let allocated = value.allocated_qty ? parseFloat(value.allocated_qty) : 0;
+                    let issued = value.issued_qty ? parseFloat(value.issued_qty) : 0;
+                    let unitprice = value.unitprice ? parseFloat(value.unitprice) : 0;
+
+                    // Calculate total safely
+                    total += (issued * unitprice);
+
                     res_tr += '<tr>' +
                         '<td>' + value.sp_name + '</td>' +
-                        '<td>' + value.allocated_qty + '</td>' +
-                        '<td>' + value.issued_qty + '</td>' +
-                        '<td style="text-align: right">' + value.unitprice + '</td>' +
+                        '<td>' + allocated + '</td>' +
+                        '<td>' + issued + '</td>' +
+                        '<td style="text-align: right">' + unitprice.toFixed(2) + '</td>' +
                         '</tr>';
-                    total += (parseFloat(value.issued_qty)) * ( parseFloat(value.unitprice));
                 });
+
                 res_table += res_tr + '</tbody>';
 
+                // Footer Total
                 res_table += '<tfoot>';
-                res_table += '<tr> ' +
-                    '<td> </td>' +
-                    '<td> </td>' +
-                    '<th style="text-align: right"> Total </th>' +
-                    '<th style="text-align: right"> '+ total.toFixed(2) +' </th>' +
+                res_table += '<tr>' +
+                    '<td></td>' +
+                    '<td></td>' +
+                    '<th style="text-align: right">Total</th>' +
+                    '<th style="text-align: right">' + total.toFixed(2) + '</th>' +
                     '</tr>';
                 res_table += '</tfoot>';
 
                 res_table += '</table>';
                 res_table += '</div>';
 
-                let machine_type_name = data.main_data.service_no;
-                $('#machine_type_name').html(machine_type_name);
+                // Set Modal Header Value
+                $('#machine_type_name').html(data.main_data.service_no);
 
+                // Load into modal
                 $("#viewModal .modal-body #viewResponse").html(res_table);
                 $('#viewTable').DataTable();
-
             }
         });
     }
