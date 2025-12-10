@@ -18,7 +18,7 @@ class Model_machine_repairs_created extends CI_Model
             LEFT JOIN machine_ins m on ms.machine_in_id = m.id
             LEFT JOIN machine_types mt on m.machine_type_id = mt.id
             LEFT JOIN employees e on msd.repair_done_by = e.id 
-            WHERE msd.id = ?";
+            WHERE msd.repair_id = ?";
             $query = $this->db->query($sql, array($id));
             return $query->row_array();
         }
