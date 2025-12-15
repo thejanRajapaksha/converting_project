@@ -38,6 +38,11 @@ class Newpurchaserequest extends CI_Controller
 		$this->load->model('Newpurchaserequestinfo');
 		$result = $this->Newpurchaserequestinfo->Newpurchaserequestcheckstatus();
 	}
+	public function DeleteNewPurchaseOrderRequest($x, $y)
+	{
+		$this->load->model('Newpurchaserequestinfo');
+		$result = $this->Newpurchaserequestinfo->DeleteNewPurchaseOrderRequest($x, $y);
+	}
 	public function Newpurchaserequestreject()
 	{
 		$this->load->model('Newpurchaserequestinfo');

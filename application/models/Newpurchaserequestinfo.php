@@ -494,6 +494,59 @@
 				echo json_encode($obj);
 			}
 	}
+	public function DeleteNewPurchaseOrderRequest($x, $y){
+		$this->db->trans_begin();
+
+		$userID=$_SESSION['id'];
+		$recordID=$x;
+		$type=$y;
+		$updatedatetime=date('Y-m-d H:i:s');
+
+		if($type==3) {
+			$data=array('status'=> '3',
+				'tbl_user_idtbl_user'=> $userID,
+				'updatedatetime'=> $updatedatetime);
+
+			$this->db->where('idtbl_print_porder_req', $recordID);
+			$this->db->update('tbl_print_porder_req', $data);
+
+			$this->db->trans_complete();
+
+			if ($this->db->trans_status()===TRUE) {
+				$this->db->trans_commit();
+
+				$actionObj=new stdClass();
+				$actionObj->icon='fas fa-trash-alt';
+				$actionObj->title='';
+				$actionObj->message='Record Remove Successfully';
+				$actionObj->url='';
+				$actionObj->target='_blank';
+				$actionObj->type='danger';
+
+				$actionJSON=json_encode($actionObj);
+
+				$this->session->set_flashdata('msg', $actionJSON);
+				redirect('Newpurchaserequest');
+			}
+
+			else {
+				$this->db->trans_rollback();
+
+				$actionObj=new stdClass();
+				$actionObj->icon='fas fa-warning';
+				$actionObj->title='';
+				$actionObj->message='Record Error';
+				$actionObj->url='';
+				$actionObj->target='_blank';
+				$actionObj->type='danger';
+
+				$actionJSON=json_encode($actionObj);
+
+				$this->session->set_flashdata('msg', $actionJSON);
+				redirect('Newpurchaserequest');
+			}
+		}
+	}
 
 		public function Newpurchaserequestcheckstatus() {
 		$this->db->trans_begin();
