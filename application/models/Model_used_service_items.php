@@ -27,7 +27,7 @@ class Model_used_service_items extends CI_Model
             }
 
             if($date_from && $date_to != '') {
-                $sql .= " AND ms.service_date BETWEEN '$date_from' AND '$date_to' ";
+                $sql .= " AND ms.service_date_from BETWEEN '$date_from' AND '$date_to' ";
             }
 
         $sql .= " GROUP BY msdi.spare_part_id

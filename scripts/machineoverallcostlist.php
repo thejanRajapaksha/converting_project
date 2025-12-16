@@ -29,7 +29,7 @@ SELECT
     sd.transport_charge,
     NULL AS repair_charge,
     NULL AS repair_type,
-    DATE(s.created_at) AS used_date,       -- ★ ADD THIS
+    DATE(s.service_date_from) AS used_date,       -- ★ ADD THIS
     (sd.sub_total + sd.service_charge + sd.transport_charge) AS total
 FROM machine_services AS s
 INNER JOIN machine_service_details AS sd ON s.id = sd.service_id
@@ -49,7 +49,7 @@ SELECT
     NULL AS transport_charge,
     rd.repair_charge AS repair_charge,
     rd.repair_type AS repair_type,
-    DATE(r.created_at) AS used_date,       -- ★ ADD THIS
+    DATE(r.repair_in_date) AS used_date,       -- ★ ADD THIS
     (rd.sub_total + rd.repair_charge) AS total
 FROM machine_repairs AS r
 INNER JOIN machine_repair_details AS rd ON r.id = rd.repair_id

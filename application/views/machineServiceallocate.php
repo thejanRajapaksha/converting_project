@@ -616,14 +616,14 @@ include_once "include/topnavbar.php";
                 res_table += "<div class='table-responsive mt-3'>" +
                     " ";
                 res_table += '<table class="table table-striped table-sm" id="viewTable">';
-                let res_tr1 = '<thead><tr><th>Service Item</th> <th> Allocated Quantity </th> <th>Unit Price</th> <th>Allocated At</th>  </tr></thead> <tbody>';
+                let res_tr1 = '<thead><tr><th>Service Item</th> <th> Allocated Quantity </th> <th>Unit Price</th> <th>Date</th>  </tr></thead> <tbody>';
                 let response1 = data.ac;
                 $.each(response1, function(index, value) {
                     res_tr1 += '<tr>' +
                         '<td>' + value.name + ' - ' + value.part_no + '</td>' +
                         '<td>' + value.qty + '</td>' +
                         '<td>' + value.unitprice + '</td>' +
-                        '<td>' + value.created_at + '</td>' +
+                        '<td>' + value.service_date + '</td>' +
                         '</tr>';
                 });
                 res_table += res_tr1 + '</tbody> ';

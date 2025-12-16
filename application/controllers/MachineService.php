@@ -285,9 +285,10 @@ class MachineService extends CI_Controller
     $query = $this->db->query($sql);
     $data['sc'] = $query->result_array();
 
-    $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei.created_at, 
+    $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei.created_at, DATE(ms.service_date_from) AS service_date, 
                     msei2.qty as estimated_qty, tps.unitprice
-            FROM machine_service_allocated_items msei 
+            FROM machine_services ms
+            LEFT JOIN machine_service_allocated_items msei ON msei.machine_service_id = ms.id
             LEFT JOIN machine_service_estimated_items msei2 
                    ON msei2.id = msei.estimate_id
             LEFT JOIN (
@@ -944,8 +945,9 @@ class MachineService extends CI_Controller
     public function fetchIssuedServiceItems($service_id)
     {
 
-        $sql = "SELECT sp.*, msei.qty, msei.id as issue_id, msai.qty as allocated_qty, msei.unitprice, msei.created_at as issued_at
-                    FROM machine_service_issued_items msei 
+        $sql = "SELECT sp.*, msei.qty, msei.id as issue_id, msai.qty as allocated_qty, msei.unitprice, msei.created_at as issued_at, DATE(ms.service_date_from) AS service_date
+                    FROM machine_services ms
+                    LEFT JOIN machine_service_issued_items msei ON msei.machine_service_id = ms.id
                     LEFT JOIN machine_service_allocated_items msai ON msai.id = msei.a_id
                     LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
                     WHERE msei.machine_service_id = '$service_id' 
@@ -1379,8 +1381,9 @@ class MachineService extends CI_Controller
     public function fetchReceivedServiceItems($service_id)
     {
 
-        $sql = "SELECT sp.*, msei.qty, msai.unitprice, msei.id as receive_id, msai.qty as issued_qty, msei.created_at as received_at
-                    FROM machine_service_received_items msei 
+        $sql = "SELECT sp.*, ms.service_date_from, msei.qty, msai.unitprice, msei.id as receive_id, msai.qty as issued_qty, msei.created_at as received_at, DATE(service_date_from) AS service_date
+                    FROM machine_services ms 
+                    LEFT JOIN machine_service_received_items msei ON msei.machine_service_id = ms.id
                     LEFT JOIN machine_service_issued_items msai ON msai.id = msei.issue_id
                     LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
                     WHERE msei.machine_service_id = '$service_id' 
