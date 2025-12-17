@@ -448,26 +448,22 @@ include "include/topnavbar.php";
             </div><!-- /.modal -->
 
             <div class="modal fade" tabindex="-1" role="dialog" id="viewModal">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">View Issued Service Items : <strong> <span id="machine_type_name"></span></strong></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="viewMsg"></div>
-                            <div id="viewResponse"></div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
-                        </div>
-
-
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div><!-- /.modal -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">View Issued Service Items : <strong><span id="machine_type_name"></span></strong></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="viewMsg"></div>
+                        <div id="viewResponse"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
         </main>
         <?php include "include/footerbar.php"; ?>
     </div>
@@ -1133,62 +1129,100 @@ include "include/topnavbar.php";
     });
 
     function viewFunc(id)
-    {
-        $.ajax({
-            url: base_url + 'MachineService/fetchIssuedServiceItems/' + id,
-            type: 'post',
-            dataType: 'json',
-            success:function(data) {
+{
+    $.ajax({
+        url: base_url + 'MachineServicesCalendar/fetchIssuedServiceItems/' + id,
+        type: 'post',
+        dataType: 'json',
+        success:function(data) {
 
-                let res_table = "<div class='table-responsive mt-3'>";
-                res_table += '<table class="table table-striped table-sm" id="viewTable">';
-                let res_tr = '<thead><tr><th>Service Item</th> <th>Allocated Quantity</th> <th>Issued Quantity</th> <th>Unit Price</th></tr></thead><tbody>';
+            // build table html
+            let res_table = "<div class='table-responsive mt-3'>";
+            res_table += '<table class="table table-striped table-sm" id="viewTable">';
+            let res_tr = '<thead><tr>' +
+                            '<th>Service Item</th>' +
+                            '<th style="width:110px">Quantity</th>' +
+                            '<th style="width:130px">Unit Price</th>' +
+                            '<th style="width:140px">Total</th>' +
+                        '</tr></thead><tbody>';
 
-                let response = data.sc_det;
-                let total = 0;
+            let response = data.sc_det || [];
+            let total = 0;
 
+            if (response.length === 0) {
+                res_tr += '<tr><td colspan="4" class="text-center">No items found</td></tr>';
+            } else {
                 $.each(response, function(index, value) {
 
-                    // --- FIX: Handle NULL values ---
-                    let allocated = value.allocated_qty ? parseFloat(value.allocated_qty) : 0;
-                    let issued = value.issued_qty ? parseFloat(value.issued_qty) : 0;
-                    let unitprice = value.unitprice ? parseFloat(value.unitprice) : 0;
+                    // safe parsing
+                    let qty = isNaN(parseFloat(value.quantity)) ? 0 : parseFloat(value.quantity);
+                    let price = isNaN(parseFloat(value.price)) ? 0 : parseFloat(value.price);
+                    let row_total = qty * price;
 
-                    // Calculate total safely
-                    total += (issued * unitprice);
+                    total += row_total;
 
+                    // use classes for alignment
                     res_tr += '<tr>' +
-                        '<td>' + value.sp_name + '</td>' +
-                        '<td>' + allocated + '</td>' +
-                        '<td>' + issued + '</td>' +
-                        '<td style="text-align: right">' + unitprice.toFixed(2) + '</td>' +
-                        '</tr>';
+                                '<td>' + (value.spare_part_name || '') + '</td>' +
+                                '<td class="text-right nowrap">' + qty.toFixed(2) + '</td>' +
+                                '<td class="text-right nowrap">' + price.toFixed(2) + '</td>' +
+                                '<td class="text-right nowrap">' + row_total.toFixed(2) + '</td>' +
+                              '</tr>';
                 });
-
-                res_table += res_tr + '</tbody>';
-
-                // Footer Total
-                res_table += '<tfoot>';
-                res_table += '<tr>' +
-                    '<td></td>' +
-                    '<td></td>' +
-                    '<th style="text-align: right">Total</th>' +
-                    '<th style="text-align: right">' + total.toFixed(2) + '</th>' +
-                    '</tr>';
-                res_table += '</tfoot>';
-
-                res_table += '</table>';
-                res_table += '</div>';
-
-                // Set Modal Header Value
-                $('#machine_type_name').html(data.main_data.service_no);
-
-                // Load into modal
-                $("#viewModal .modal-body #viewResponse").html(res_table);
-                $('#viewTable').DataTable();
             }
-        });
-    }
+
+            res_table += res_tr + '</tbody>';
+
+            // Footer Total (inside table)
+            res_table += '<tfoot><tr>' +
+                        '<td></td>' +
+                        '<td></td>' +
+                        '<th class="text-right">Total</th>' +
+                        '<th class="text-right nowrap">' + total.toFixed(2) + '</th>' +
+                        '</tr></tfoot>';
+
+            res_table += '</table></div>';
+
+            // Set header
+            $('#machine_type_name').text('Service #' + id);
+
+            // Inject and initialize DataTable safely
+            const $container = $("#viewModal .modal-body #viewResponse");
+            $container.html(res_table);
+
+            // If a DataTable instance exists, destroy it first
+            if ($.fn.DataTable.isDataTable('#viewTable')) {
+                $('#viewTable').DataTable().destroy();
+            }
+
+            // Initialize DataTable with options that avoid layout shifting
+            $('#viewTable').DataTable({
+                ordering: false,
+                searching: false,
+                paging: false,
+                info: false,
+                autoWidth: false,
+                responsive: true,
+                columnDefs: [
+                    { targets: [1,2,3], className: 'text-right' } // align numeric cols
+                ],
+                // make columns size stable
+                createdRow: function( row, data, dataIndex ) {
+                    $(row).find('td').addClass('align-middle');
+                }
+            });
+
+            // Show the modal (if you open it programmatically)
+            $('#viewModal').modal('show');
+        },
+        error: function(xhr, status, err) {
+            console.error('AJAX error', status, err);
+            $("#viewModal .modal-body #viewResponse").html('<div class="text-danger">Failed to load items.</div>');
+            $('#viewModal').modal('show');
+        }
+    });
+}
+
 
 </script>
 <?php include "include/footer.php"; ?>
