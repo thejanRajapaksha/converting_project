@@ -433,6 +433,29 @@ class MachineServicesCalendar extends CI_Controller
 
     }
 
+    public function fetchIssuedServiceItems($service_id)
+    {
+        $main_sql = "SELECT * 
+                    FROM machine_service_details
+                    WHERE service_id = ? AND is_deleted = 0";
 
+        $main_data = $this->db->query($main_sql, array($service_id))->row_array();
+
+        $items_sql = "SELECT 
+                        msdi.*, 
+                        sp.name AS spare_part_name
+                    FROM machine_service_details_items msdi
+                    LEFT JOIN spare_parts sp ON sp.id = msdi.spare_part_id
+                    LEFT JOIN machine_service_details msd ON msd.id = msdi.machine_service_details_id
+                    WHERE msd.service_id = ?
+                    AND msdi.is_deleted = 0";
+
+        $items = $this->db->query($items_sql, array($service_id))->result_array();
+
+        echo json_encode([
+            'main_data' => $main_data,
+            'sc_det' => $items
+        ]);
+    }
 
 }
