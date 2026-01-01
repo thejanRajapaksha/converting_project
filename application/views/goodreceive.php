@@ -683,112 +683,110 @@ $(document).ready(function() {
             $('#totalcost').val(sum);
         }
     });
+$('#btncreateorder').click(function () {
 
-    $('#btncreateorder').click(function() { //alert('IN');
-        $('#btncreateorder').prop('disabled', true).html(
-            '<i class="fas fa-circle-notch fa-spin mr-2"></i> Create Good Receive Note')
-        var tbody = $("#tableorder tbody");
+    $('#btncreateorder')
+        .prop('disabled', true)
+        .html('<i class="fas fa-circle-notch fa-spin mr-2"></i> Creating GRN');
 
-        if (tbody.children().length > 0) {
-            jsonObj = [];
-            $("#tableorder tbody tr").each(function() {
-                item = {}
-                $(this).find('td').each(function(col_idx) {
-                    item["col_" + (col_idx + 1)] = $(this).text();
-                });
-                jsonObj.push(item);
-            });
-            // console.log(jsonObj);
+    let tableData = [];
 
-            var grndate = $('#grndate').val();
-            var remark = $('#remark').val();
-            var total = $('#modeltotalpayment').val();
-            var vatamount = $('#vatamount').val();
-            var location = $('#location').val();
-            var porder = $('#porder').val();
-            var batchno = $('#batchno').val();
-            var supplier = $('#supplier').val();
-            var invoice = $('#invoice').val();
-            var vat_type = $('#vat_type').val();
-            var grntype = $('#grntype').val();
-            var discount = $('#discount').val();
-            var vat = $('#vat').val();
-            var subtotal = $('#hiddenfulltotal').val();
-            var branch_id = $('#f_branch_id').val();
-        	var company_id = $('#f_company_id').val();
-
-            Swal.fire({
-    		title: "",
-    		html: '<div class="div-spinner"><div class="custom-loader"></div></div>',
-    		allowOutsideClick: false,
-    		showConfirmButton: false,
-    		backdrop: "rgba(255, 255, 255, 0.5)",
-    		customClass: {
-    			popup: "fullscreen-swal"
-    		},
-    		didOpen: () => {
-    			document.body.style.overflow = "hidden";
-
-                $.ajax({
-                    type: "POST",
-                    data: {
-                        tableData: jsonObj,
-                        grndate: grndate,
-                        total: total,
-                        remark: remark,
-                        vatamount: vatamount,
-                        location: location,
-                        porder: porder,
-                        invoice: invoice,
-                        subtotal: subtotal,
-                        batchno: batchno,
-                        supplier: supplier,
-                        grntype: grntype,
-                        discount: discount,
-                        vat: vat,
-                        company_id: company_id,
-                        branch_id: branch_id,
-                        vat_type: vat_type
-                    },
-                    url: 'Goodreceive/Goodreceiveinsertupdate',
-    				success: function (result) {
-    					Swal.close();
-    					document.body.style.overflow = "auto";
-
-    					var response = JSON.parse(result);
-    					if (response.status == 1) {
-    						Swal.fire({
-    							icon: "success",
-    							title: "Order Created!",
-    							text: "Good Receive Note created successfully!",
-    							timer: 2000,
-    							showConfirmButton: false
-    						}).then(() => {
-    							window.location.reload();
-    						});
-    					} else {
-    						Swal.fire({
-    							icon: "error",
-    							title: "Error",
-    							text: "Something went wrong. Please try again later.",
-    						});
-    					}
-    				},
-    				error: function () {
-    					Swal.close();
-    					document.body.style.overflow = "auto";
-    					Swal.fire({
-    						icon: "error",
-    						title: "Error",
-    						text: "Something went wrong. Please try again later.",
-    					});
-    				}
-    			});
-    		},
-    	});
-        }
-
+    $("#tableorder tbody tr").each(function () {
+        let row = {};
+        $(this).find('td').each(function (i) {
+            row['col_' + (i + 1)] = $(this).text().trim();
+        });
+        tableData.push(row);
     });
+
+    if (tableData.length === 0) {
+        Swal.fire('Error', 'No items added', 'error');
+        $('#btncreateorder')
+            .prop('disabled', false)
+            .html('Create Good Receive Note');
+        return;
+    }
+
+    const payload = {
+        tableData: tableData,
+        grndate: $('#grndate').val(),
+        remark: $('#remark').val(),
+        total: $('#modeltotalpayment').val(),
+        vatamount: $('#vatamount').val(),
+        location: $('#location').val(),
+        porder: $('#porder').val(),
+        batchno: $('#batchno').val(),
+        supplier: $('#supplier').val(),
+        invoice: $('#invoice').val(),
+        vat_type: $('#vat_type').val(),
+        grntype: $('#grntype').val(),
+        discount: $('#discount').val(),
+        vat: $('#vat').val(),
+        subtotal: $('#hiddenfulltotal').val(),
+        branch_id: $('#f_branch_id').val(),
+        company_id: $('#f_company_id').val()
+    };
+
+    Swal.fire({
+        html: '<div class="custom-loader"></div>',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        didOpen: () => {
+
+            $.ajax({
+                url: 'Goodreceive/Goodreceiveinsertupdate',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json', // ⭐ IMPORTANT
+                data: JSON.stringify(payload),
+
+                success: function (response) {
+
+                    Swal.close();
+
+                    $('#btncreateorder')
+                        .prop('disabled', false)
+                        .html('<i class="fas fa-save"></i> Create Good Receive Note');
+
+                    if (response.status === 1) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'GRN Created Successfully',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message || 'Something went wrong'
+                        });
+                    }
+                },
+
+                error: function () {
+
+                    Swal.close();
+
+                    $('#btncreateorder')
+                        .prop('disabled', false)
+                        .html('<i class="fas fa-save"></i> Create Good Receive Note');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Server Error',
+                        text: 'Please try again later'
+                    });
+                }
+            });
+        }
+    });
+});
+
+
 
     var tempsupplier;
     var tempgrntype;

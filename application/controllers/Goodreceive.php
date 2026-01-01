@@ -16,10 +16,14 @@ class Goodreceive extends CI_Controller {
 		$result['measurelist']=$this->Goodreceiveinfo->Getmeasuretype();
 		$this->load->view('goodreceive', $result);
 	}
-    public function Goodreceiveinsertupdate(){
+public function Goodreceiveinsertupdate()
+	{
 		$this->load->model('Goodreceiveinfo');
-        $result=$this->Goodreceiveinfo->Goodreceiveinsertupdate();
+
+		// Call model and echo response
+		echo $this->Goodreceiveinfo->Goodreceiveinsertupdate();
 	}
+
     public function Goodreceivestatus($x, $y, $z){
 		$this->load->model('Goodreceiveinfo');
         $result=$this->Goodreceiveinfo->Goodreceivestatus($x, $y, $z);

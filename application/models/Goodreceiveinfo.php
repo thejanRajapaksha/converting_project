@@ -65,318 +65,128 @@
 		echo json_encode($respond->result());
 	}
 
-	public function Goodreceiveinsertupdate() {
-		$this->db->trans_begin();
+public function Goodreceiveinsertupdate()
+{
+    $this->db->trans_begin();
 
-		$userID=$_SESSION['userid'];
+    // READ JSON BODY (IMPORTANT FIX)
+    $input = json_decode(file_get_contents("php://input"), true);
 
-		$companyID=$_SESSION['company_id'];
+    if (!$input || empty($input['batchno'])) {
+        return json_encode([
+            'status' => 0,
+            'message' => 'Invalid request or data too large'
+        ]);
+    }
 
-		$tableData=$this->input->post('tableData');
-		$grndate=$this->input->post('grndate');
-		$total=$this->input->post('total');
-		$vatamount=$this->input->post('vatamount');
-		$remark=$this->input->post('remark');
-		$supplier=$this->input->post('supplier');
-		$location=$this->input->post('location');
-		$company_id=$this->input->post('company_id');
-		$branch_id=$this->input->post('branch_id');
-		$porder=$this->input->post('porder');
-		$batchno=$this->input->post('batchno');
-		$invoice=$this->input->post('invoice');
-		$discount=$this->input->post('discount');
-		$grntype=$this->input->post('grntype');
-		$vat_type=$this->input->post('vat_type');
-		$subtotal=$this->input->post('subtotal');
-		$vat=$this->input->post('vat');
+    $userID = $_SESSION['userid'];
+    $companyID = $_SESSION['company_id'];
+    $updatedatetime = date('Y-m-d H:i:s');
 
-		$updatedatetime=date('Y-m-d H:i:s');
+    $tableData = $input['tableData'];
 
-		$data=array(
-			'batchno'=> $batchno,
-			'grntype'=> $grntype,
-			'grndate'=> $grndate,
-			'total'=> $total,
-			'invoicenum'=> $invoice,
-			'discount'=> $discount,
-			'approvestatus'=> '0',
-			'subtotal'=> $subtotal, 
-			'vatamount'=> $vatamount, 
-			'remark'=> $remark, 
-			'vat'=> $vat, 
-			'vat_type'=> $vat_type, 
-			'tbl_company_idtbl_company'=> $company_id, 
-			'tbl_company_branch_idtbl_company_branch'=> $branch_id, 
-			'subtotalcost'=> $subtotal, 
-			'discountcost'=> $discount, 
-			'vatamountcost'=> $vatamount, 
-			'totalcost'=> $total, 
-			'status'=> '1',
-			'insertdatetime'=> $updatedatetime,
-			'tbl_user_idtbl_user'=> $userID,
-			'tbl_supplier_idtbl_supplier'=> $supplier,
-			'tbl_location_idtbl_location'=> $location,
-			'tbl_print_porder_idtbl_print_porder'=> $porder,
-			'tbl_order_type_idtbl_order_type'=> $grntype);
+    /* ================= MASTER INSERT ================= */
 
-		$this->db->insert('tbl_print_grn', $data);
+    $data = [
+        'batchno' => $input['batchno'],
+        'grntype' => $input['grntype'],
+        'grndate' => $input['grndate'],
+        'total' => $input['total'],
+        'invoicenum' => $input['invoice'],
+        'discount' => $input['discount'],
+        'approvestatus' => 0,
+        'subtotal' => $input['subtotal'],
+        'vatamount' => $input['vatamount'],
+        'remark' => $input['remark'],
+        'vat' => $input['vat'],
+        'vat_type' => $input['vat_type'],
+        'tbl_company_idtbl_company' => $input['company_id'],
+        'tbl_company_branch_idtbl_company_branch' => $input['branch_id'],
+        'subtotalcost' => $input['subtotal'],
+        'discountcost' => $input['discount'],
+        'vatamountcost' => $input['vatamount'],
+        'totalcost' => $input['total'],
+        'status' => 1,
+        'insertdatetime' => $updatedatetime,
+        'tbl_user_idtbl_user' => $userID,
+        'tbl_supplier_idtbl_supplier' => $input['supplier'],
+        'tbl_location_idtbl_location' => $input['location'],
+        'tbl_print_porder_idtbl_print_porder' => $input['porder'],
+        'tbl_order_type_idtbl_order_type' => $input['grntype']
+    ];
 
-		$grnID=$this->db->insert_id();
+    $this->db->insert('tbl_print_grn', $data);
+    $grnID = $this->db->insert_id();
 
-		if($grntype==3) {
-			foreach($tableData as $rowtabledata) {
-				$materialname=$rowtabledata['col_1'];
-				$comment=$rowtabledata['col_2'];
-				$materialID=$rowtabledata['col_3'];
-				$unit=$rowtabledata['col_4'];
-				$qty=$rowtabledata['col_5'];
-				$uom=$rowtabledata['col_6'];
-				$packetprice=$rowtabledata['col_7'];
-				$unit_discount=$rowtabledata['col_8'];
-				$uomID=$rowtabledata['col_9'];
-				$nettotal=$rowtabledata['col_10'];
-				$porderdetailsid=$rowtabledata['col_12'];
-				$pieces=$rowtabledata['col_13'];
+    /* ================= DETAIL INSERT ================= */
 
-				$dataone=array('date'=> $grndate,
-					'qty'=> $qty,
-					'pieces'=> $pieces,
-					'unitprice'=> $unit,
-					'packetprice'=> $packetprice,
-					'costunitprice'=> $unit,
-					'total'=> $nettotal,
-					'comment'=> $comment,
-					'tbl_measurements_idtbl_mesurements'=> $uomID,
-					'unit_discount'=> $unit_discount,
-					'expdate'=> '',
-					'quater'=> '',
-					'status'=> '1',
-					'insertdatetime'=> $updatedatetime,
-					'tbl_user_idtbl_user'=> $userID,
-					'tbl_print_grn_idtbl_print_grn'=> $grnID,
-					'tbl_print_material_info_idtbl_print_material_info'=> $materialID);
+    foreach ($tableData as $row) {
 
-				$this->db->insert('tbl_print_grndetail', $dataone);
+        $qty = (float)$row['col_5'];
+        $porderdetailsid = $row['col_11'] ?? $row['col_12'];
 
+        $detail = [
+            'date' => $input['grndate'],
+            'qty' => $qty,
+            'unitprice' => $row['col_4'],
+            'costunitprice' => $row['col_4'],
+            'total' => $row['col_8'],
+            'comment' => $row['col_2'],
+            'tbl_measurements_idtbl_mesurements' => $row['col_7'],
+            'status' => 1,
+            'insertdatetime' => $updatedatetime,
+            'tbl_user_idtbl_user' => $userID,
+            'tbl_print_grn_idtbl_print_grn' => $grnID
+        ];
 
+        // GRN TYPE HANDLING
+        if ($input['grntype'] == 3) {
+            $detail['tbl_print_material_info_idtbl_print_material_info'] = $row['col_3'];
+            $detail['pieces'] = $row['col_13'];
+        } elseif ($input['grntype'] == 4) {
+            $detail['tbl_machine_id'] = $row['col_3'];
+        } else {
+            $detail['tbl_sparepart_id'] = $row['col_3'];
+        }
 
-				$this->db->select('actual_qty');
-				$this->db->from('tbl_print_porder_detail');
-				$this->db->where('idtbl_print_porder_detail', $porderdetailsid);
+        $this->db->insert('tbl_print_grndetail', $detail);
 
-				$query = $this->db->get();
+        // UPDATE PO ACTUAL QTY (SAFE & FAST)
+        $this->db->set('actual_qty', 'actual_qty + ' . $qty, false);
+        $this->db->where('idtbl_print_porder_detail', $porderdetailsid);
+        $this->db->update('tbl_print_porder_detail');
+    }
 
-				$currentQuantity=0;
-				if ($query->num_rows() > 0) {
-					$row = $query->row();
-					$currentQuantity = $row->actual_qty;
-				} 
-				$newQuantity = $currentQuantity + $qty;
+    /* ================= GRN NUMBER ================= */
 
+    $yearDigit = substr(date('Y'), -2);
 
-				$data1=array(
-				'actual_qty'=> $newQuantity,);
+    $this->db->select('grn_no');
+    $this->db->where('tbl_company_idtbl_company', $companyID);
+    $this->db->order_by('grn_no', 'DESC');
+    $this->db->limit(1);
+    $q = $this->db->get('tbl_print_grn');
 
-			$this->db->where('idtbl_print_porder_detail', $porderdetailsid);
-			$this->db->update('tbl_print_porder_detail', $data1);
-			}
-		}
+    $count = ($q->num_rows() > 0) ? intval(substr($q->row()->grn_no, -4)) : 0;
+    $count++;
 
-		else if($grntype==4) {
-			foreach($tableData as $rowtabledata) {
-				$materialname=$rowtabledata['col_1'];
-				$comment=$rowtabledata['col_2'];
-				$materialID=$rowtabledata['col_3'];
-				$unit=$rowtabledata['col_4'];
-				$qty=$rowtabledata['col_5'];
-				$uom=$rowtabledata['col_6'];
-				$uomID=$rowtabledata['col_7'];
-				$nettotal=$rowtabledata['col_8'];
-				$porderdetailsid=$rowtabledata['col_11'];
+    $this->db->where('idtbl_print_grn', $grnID);
+    $this->db->update('tbl_print_grn', [
+        'grn_no' => 'GRN' . $yearDigit . sprintf('%04d', $count),
+        'updatedatetime' => $updatedatetime
+    ]);
 
+    /* ================= COMMIT ================= */
 
-				$dataone=array('date'=> $grndate,
-					'qty'=> $qty,
-					'unitprice'=> $unit,
-					'costunitprice'=> $unit,
-					'total'=> $nettotal,
-					'comment'=> $comment,
-					'tbl_measurements_idtbl_mesurements'=> $uomID,
-					'mfdate'=> '',
-					'expdate'=> '',
-					'quater'=> '',
-					'status'=> '1',
-					'insertdatetime'=> $updatedatetime,
-					'tbl_user_idtbl_user'=> $userID,
-					'tbl_print_grn_idtbl_print_grn'=> $grnID,
-					'tbl_machine_id'=> $materialID);
+    if ($this->db->trans_status() === TRUE) {
+        $this->db->trans_commit();
+        return json_encode(['status' => 1]);
+    } else {
+        $this->db->trans_rollback();
+        return json_encode(['status' => 0, 'message' => 'Database error']);
+    }
+}
 
-				$this->db->insert('tbl_print_grndetail', $dataone);
-
-				$this->db->select('actual_qty');
-				$this->db->from('tbl_print_porder_detail');
-				$this->db->where('idtbl_print_porder_detail', $porderdetailsid);
-
-				$query = $this->db->get();
-
-				$currentQuantity=0;
-				if ($query->num_rows() > 0) {
-					$row = $query->row();
-					$currentQuantity = $row->actual_qty;
-				} 
-				$newQuantity = $currentQuantity + $qty;
-
-
-				$data1=array(
-				'actual_qty'=> $newQuantity,);
-
-			$this->db->where('idtbl_print_porder_detail', $porderdetailsid);
-			$this->db->update('tbl_print_porder_detail', $data1);
-			}
-		}
-
-		else if($grntype==1) {
-			foreach($tableData as $rowtabledata) {
-				$materialname=$rowtabledata['col_1'];
-				$comment=$rowtabledata['col_2'];
-				$materialID=$rowtabledata['col_3'];
-				$unit=$rowtabledata['col_4'];
-				$qty=$rowtabledata['col_5'];
-				$uom=$rowtabledata['col_6'];
-				$uomID=$rowtabledata['col_7'];
-				$nettotal=$rowtabledata['col_8'];
-				$porderdetailsid=$rowtabledata['col_11'];
-
-				$dataone=array('date'=> $grndate,
-					'qty'=> $qty,
-					'unitprice'=> $unit,
-					'costunitprice'=> $unit,
-					'total'=> $nettotal,
-					'comment'=> $comment,
-					'tbl_measurements_idtbl_mesurements'=> $uomID,
-					'mfdate'=> '',
-					'expdate'=> '',
-					'quater'=> '',
-					'status'=> '1',
-					'insertdatetime'=> $updatedatetime,
-					'tbl_user_idtbl_user'=> $userID,
-					'tbl_print_grn_idtbl_print_grn'=> $grnID,
-					'tbl_sparepart_id'=> $materialID);
-
-				$this->db->insert('tbl_print_grndetail', $dataone);
-
-				$this->db->select('actual_qty');
-				$this->db->from('tbl_print_porder_detail');
-				$this->db->where('idtbl_print_porder_detail', $porderdetailsid);
-
-				$query = $this->db->get();
-
-				$currentQuantity=0;
-				if ($query->num_rows() > 0) {
-					$row = $query->row();
-					$currentQuantity = $row->actual_qty;
-				} 
-				$newQuantity = $currentQuantity + $qty;
-
-
-				$data1=array(
-				'actual_qty'=> $newQuantity,);
-
-			$this->db->where('idtbl_print_porder_detail', $porderdetailsid);
-			$this->db->update('tbl_print_porder_detail', $data1);
-			}
-		}
-
-		// Generate the GRN NO
-		
-		$currentYear = date("Y", strtotime($grndate));
-		$currentMonth = date("m", strtotime($grndate));
-	
-		if ($currentMonth < 4) { //03
-			$startDate = $currentYear."-04-01";
-			$startDate = date('Y-m-d',  strtotime($startDate.'-1 year'));
-			$endDate = $currentYear."-03-31";
-		} else {
-			$startDate = $currentYear."-04-01";
-			$endDate = $currentYear."-03-31";
-			$endDate = date('Y-m-d',  strtotime($endDate.'+1 year'));
-		}
-	
-		$fromyear = date("Y-m-d", strtotime($startDate));
-		$toyear = date("Y-m-d", strtotime($endDate));
-
-		$this->db->select('grn_no');
-		$this->db->from('tbl_print_grn');
-		$this->db->where('tbl_company_idtbl_company', $companyID);
-        $this->db->where("DATE(insertdatetime) >=", $fromyear);
-        $this->db->where("DATE(insertdatetime) <=", $toyear);
-		$this->db->order_by('grn_no', 'DESC');
-		$this->db->limit(1);
-		$respond = $this->db->get();
-		
-		if ($respond->num_rows() > 0) {
-			$last_grn_no = $respond->row()->grn_no;
-			$grn_number = intval(substr($last_grn_no, -4));
-			$count = $grn_number;
-		} else {
-			$count = 0;
-		}
-
-		$count++; 
-		$countPrefix = sprintf('%04d', $count);
-
-		$yearDigit = substr(date("Y", strtotime($fromyear)), -2);
-
-		$reqno = 'GRN' . $yearDigit . $countPrefix;
-
-		$datadetail = array(
-			'grn_no'=> $reqno, 
-			'updatedatetime'=> $updatedatetime
-		);
-
-		$this->db->where('idtbl_print_grn', $grnID);
-		$this->db->update('tbl_print_grn', $datadetail);
-
-		if ($this->db->trans_status()===TRUE) {
-			$this->db->trans_commit();
-
-			$actionObj=new stdClass();
-			$actionObj->icon='fas fa-save';
-			$actionObj->title='';
-			$actionObj->message='Record Added Successfully';
-			$actionObj->url='';
-			$actionObj->target='_blank';
-			$actionObj->type='success';
-
-			$actionJSON=json_encode($actionObj);
-
-			$obj=new stdClass();
-			$obj->status=1;
-			$obj->action=$actionJSON;
-
-			echo json_encode($obj);
-		}
-
-		else {
-			$this->db->trans_rollback();
-
-			$actionObj=new stdClass();
-			$actionObj->icon='fas fa-exclamation-triangle';
-			$actionObj->title='';
-			$actionObj->message='Record Error';
-			$actionObj->url='';
-			$actionObj->target='_blank';
-			$actionObj->type='danger';
-
-			$actionJSON=json_encode($actionObj);
-
-			$obj=new stdClass();
-			$obj->status=0;
-			$obj->action=$actionJSON;
-
-			echo json_encode($obj);
-		}
-	}
 
 	public function Goodreceiveview() {
 		$recordID=$this->input->post('recordID');

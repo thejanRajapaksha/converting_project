@@ -184,7 +184,7 @@ $(document).ready(function () {
 
 		"order": [[0, "desc"]],
 		columns: [
-				{ data: 'used_date', title: 'Used Date' },
+				{ data: 'used_date', title: 'Date' },
 				{ data: 'machine_type', title: 'Machine Type' },
 				{ data: 'machine_model', title: 'Machine Model' },
 				{ data: 'machine_name', title: 'Machine' },

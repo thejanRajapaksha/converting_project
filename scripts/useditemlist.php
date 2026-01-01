@@ -35,7 +35,7 @@ SELECT
     mi.bar_code AS bar_code,
     mi.reference AS machine_name,
     'Repair' AS source,
-    DATE(dri.created_at) AS used_date
+    DATE(r.repair_in_date) AS used_date
 FROM machine_repair_details_items AS dri
 INNER JOIN machine_repair_details AS dr ON dri.machine_repair_details_id = dr.id
 INNER JOIN machine_repairs AS r ON dr.repair_id = r.id
@@ -60,7 +60,7 @@ SELECT
     mi.bar_code AS bar_code,
     mi.reference AS machine_name,
     'Service' AS source,
-    DATE(sri.created_at) AS used_date
+    DATE(s.service_date_from) AS used_date
 FROM machine_service_received_items AS sri
 INNER JOIN machine_services AS s ON sri.machine_service_id = s.id
 INNER JOIN machine_service_issued_items AS si ON s.id = si.machine_service_id
