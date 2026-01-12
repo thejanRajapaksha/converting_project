@@ -102,8 +102,12 @@ $recordsFiltered = $filteredResult ? intval($filteredResult->fetch_assoc()['cnt'
 
 $dataQuery = "SELECT * FROM ($baseQuery) AS combined
               $where
-              ORDER BY combined.used_date DESC, combined.source ASC, combined.machine_name ASC
-              LIMIT $start, $length";
+              ORDER BY combined.used_date DESC, combined.source ASC, combined.machine_name ASC";
+
+if ($length != -1) {
+    $dataQuery .= " LIMIT $start, $length";
+}
+
 
 $dataResult = $conn->query($dataQuery);
 $data = [];

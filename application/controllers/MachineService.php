@@ -266,7 +266,7 @@ class MachineService extends CI_Controller
 
     public function fetchAllocatedServiceItems($service_id)
 {
-    $sql = "SELECT sp.*, msei.qty, msei.id as estimate_id, tps.unitprice
+    $sql = "SELECT sp.*, msei.qty, msei.id as estimate_id, COALESCE(tps.unitprice, sp.unit_price, 0) AS unitprice
             FROM machine_service_estimated_items msei 
             LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
             LEFT JOIN (
@@ -286,7 +286,7 @@ class MachineService extends CI_Controller
     $data['sc'] = $query->result_array();
 
     $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei.created_at, DATE(ms.service_date_from) AS service_date, 
-                    msei2.qty as estimated_qty, tps.unitprice
+                    msei2.qty as estimated_qty, COALESCE(tps.unitprice, sp.unit_price, 0) AS unitprice
             FROM machine_services ms
             LEFT JOIN machine_service_allocated_items msei ON msei.machine_service_id = ms.id
             LEFT JOIN machine_service_estimated_items msei2 
@@ -945,7 +945,7 @@ class MachineService extends CI_Controller
     public function fetchIssuedServiceItems($service_id)
     {
 
-        $sql = "SELECT sp.*, msei.qty, msei.id as issue_id, msai.qty as allocated_qty, msei.unitprice, msei.created_at as issued_at, DATE(ms.service_date_from) AS service_date
+        $sql = "SELECT sp.*, msei.qty, msei.id as issue_id, msai.qty as allocated_qty, COALESCE(msei.unitprice, sp.unit_price, 0) AS unitprice , msei.created_at as issued_at, DATE(ms.service_date_from) AS service_date
                     FROM machine_services ms
                     LEFT JOIN machine_service_issued_items msei ON msei.machine_service_id = ms.id
                     LEFT JOIN machine_service_allocated_items msai ON msai.id = msei.a_id
@@ -956,7 +956,7 @@ class MachineService extends CI_Controller
         $query = $this->db->query($sql);
         $data['sc'] = $query->result_array();
 
-        $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei2.qty as estimated_qty, tps.unitprice
+        $sql1 = "SELECT sp.*, msei.qty, msei.id as allocate_id, msei2.qty as estimated_qty, COALESCE(tps.unitprice, sp.unit_price, 0) AS unitprice
                     FROM machine_service_allocated_items msei 
                     LEFT JOIN machine_service_estimated_items msei2 ON msei2.id = msei.estimate_id
                     LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
@@ -997,7 +997,7 @@ class MachineService extends CI_Controller
                 'sp_id' => $d['id'],
                 'a_id' => $d['allocate_id'],
                 'allocated_qty' => $d['qty'],
-                'unitprice' => $d['unitprice'],
+                'unitprice' => $d['unitprice'] ?? 0,
                 'issued_qty' => $issue_qty,
             );
             array_push($data_main, $sub_arr);
@@ -1380,58 +1380,93 @@ class MachineService extends CI_Controller
 
     public function fetchReceivedServiceItems($service_id)
     {
+ $sql = "
+        SELECT 
+            sp.*,
+            msei.qty,
+            COALESCE(tps.unitprice, sp.unit_price, 0) AS unitprice,
+            msei.id AS receive_id,
+            msai.qty AS issued_qty,
+            DATE(ms.service_date_from) AS service_date
+        FROM machine_services ms
+        LEFT JOIN machine_service_received_items msei 
+               ON msei.machine_service_id = ms.id
+        LEFT JOIN machine_service_issued_items msai 
+               ON msai.id = msei.issue_id
+        LEFT JOIN spare_parts sp 
+               ON sp.id = msei.spare_part_id
+        LEFT JOIN (
+            SELECT t1.tbl_sparepart_id, t1.unitprice
+            FROM tbl_print_stock t1
+            WHERE t1.qty > 0
+              AND t1.idtbl_print_stock = (
+                    SELECT MIN(t2.idtbl_print_stock)
+                    FROM tbl_print_stock t2
+                    WHERE t2.tbl_sparepart_id = t1.tbl_sparepart_id
+                      AND t2.qty > 0
+              )
+        ) tps ON tps.tbl_sparepart_id = msei.spare_part_id
+        WHERE msei.machine_service_id = ?
+        AND msei.is_deleted = 0
+    ";
+    $query = $this->db->query($sql, [$service_id]);
+    $data['sc'] = $query->result_array();
 
-        $sql = "SELECT sp.*, ms.service_date_from, msei.qty, msai.unitprice, msei.id as receive_id, msai.qty as issued_qty, msei.created_at as received_at, DATE(service_date_from) AS service_date
-                    FROM machine_services ms 
-                    LEFT JOIN machine_service_received_items msei ON msei.machine_service_id = ms.id
-                    LEFT JOIN machine_service_issued_items msai ON msai.id = msei.issue_id
-                    LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
-                    WHERE msei.machine_service_id = '$service_id' 
-                    AND msei.is_deleted = 0
-                    ";
-        $query = $this->db->query($sql);
-        $data['sc'] = $query->result_array();
 
-        $sql1 = "SELECT sp.*, msei.qty, msei.unitprice, msei.id as issue_id, msei.created_at 
-                    FROM machine_service_issued_items msei  
-                    LEFT JOIN spare_parts sp ON sp.id = msei.spare_part_id 
-                    WHERE msei.machine_service_id = '$service_id' 
-                    AND msei.is_deleted = 0
-                    ";
-        $query1 = $this->db->query($sql1);
-        $data['ic'] = $query1->result_array();
+    $sql1 = "
+        SELECT 
+            sp.*,
+            msei.qty,
+            COALESCE(tps.unitprice, sp.unit_price, 0) AS unitprice,
+            msei.id AS issue_id
+        FROM machine_service_issued_items msei
+        LEFT JOIN spare_parts sp 
+               ON sp.id = msei.spare_part_id
+        LEFT JOIN (
+            SELECT t1.tbl_sparepart_id, t1.unitprice
+            FROM tbl_print_stock t1
+            WHERE t1.qty > 0
+              AND t1.idtbl_print_stock = (
+                    SELECT MIN(t2.idtbl_print_stock)
+                    FROM tbl_print_stock t2
+                    WHERE t2.tbl_sparepart_id = t1.tbl_sparepart_id
+                      AND t2.qty > 0
+              )
+        ) tps ON tps.tbl_sparepart_id = msei.spare_part_id
+        WHERE msei.machine_service_id = ?
+        AND msei.is_deleted = 0
+    ";
+    $query1 = $this->db->query($sql1, [$service_id]);
+    $issuedItems = $query1->result_array();
 
-        $data_main = array();
+    $data_main = [];
 
-        foreach ($data['ic'] as $d) {
-            //get received count
-            $issue_id = $d['issue_id'];
-            $sql2 = "SELECT SUM(msai.qty) as receive_qty
-                FROM machine_service_received_items msai 
-                WHERE msai.issue_id = '$issue_id'
-                AND msai.is_deleted = 0
-                GROUP BY msai.issue_id
-                ";
-            $query2 = $this->db->query($sql2);
-            $data2 = $query2->row_array();
-            $received_qty = $data2['receive_qty'] ?? 0;
+    foreach ($issuedItems as $d) {
 
-            $sub_arr = array(
-                'sp_name' => $d['name'] . ' - ' . $d['part_no'],
-                'sp_id' => $d['id'],
-                'issue_id' => $d['issue_id'],
-                'issued_qty' => $d['qty'],
-                'unitprice' => $d['unitprice'],
-                'received_qty' => $received_qty,
-            );
-            array_push($data_main, $sub_arr);
+        $sql2 = "
+            SELECT SUM(qty) AS receive_qty
+            FROM machine_service_received_items
+            WHERE issue_id = ?
+            AND is_deleted = 0
+        ";
+        $query2 = $this->db->query($sql2, [$d['issue_id']]);
+        $row = $query2->row_array();
 
-        }
-        $data['rc_det'] = $data_main;
+        $data_main[] = [
+            'sp_name'      => $d['name'] . ' - ' . $d['part_no'],
+            'sp_id'        => $d['id'],
+            'issue_id'     => $d['issue_id'],
+            'issued_qty'   => $d['qty'],
+            'received_qty' => $row['receive_qty'] ?? 0,
+            'unitprice'    => $d['unitprice'] ?? 0,
+        ];
+    }
 
-        $data['main_data'] = $this->Model_machine_services->getMachineServicesData($service_id);
+    $data['rc_det']    = $data_main;
+    $data['main_data'] = $this->Model_machine_services
+                               ->getMachineServicesData($service_id);
 
-        echo json_encode($data);
+    echo json_encode($data);
     }
 
     public function update_receive()

@@ -593,9 +593,12 @@ include_once "include/topnavbar.php";
                         '<td>' + value.sp_name + '</td>' +
                         '<td>' + value.estimate_qty + '</td>' +
                         '<td>' + value.allocated_qty + '</td>' +
-                        '<td style="text-align: right">' + value.unitprice + '</td>' +
+                        '<td style="text-align: right">' + (parseFloat(value.unitprice) || 0).toFixed(2) + '</td>'+
                         '</tr>';
-                    total += (parseFloat(value.allocated_qty)) * ( parseFloat(value.unitprice));
+                    let qty = parseFloat(value.allocated_qty) || 0;
+                    let price = parseFloat(value.unitprice) || 0;
+                    total += qty * price;
+
                 });
 
                 res_table += res_tr + '</tbody> ';

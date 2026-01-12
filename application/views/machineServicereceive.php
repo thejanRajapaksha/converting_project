@@ -575,68 +575,103 @@ include_once "include/topnavbar.php";
         }
     }
 
-    function viewFunc(id)
-    {
-        $.ajax({
-            url: base_url + 'MachineService/fetchReceivedServiceItems/'+id,
-            type: 'post',
-            dataType: 'json',
-            success:function(data) {
-                let res_table = "<div class='table-responsive mt-3'>";
-                res_table += '<table class="table table-striped table-sm" id="viewTable">';
-                let res_tr = '<thead><tr><th>Service Item</th> <th> Issued Quantity </th> <th>Received Quantity</th> <th>Unit Price</th>  </tr></thead> <tbody>';
-                let response = data.rc_det;
-                let total = 0;
-                $.each(response, function(index, value) {
-                    res_tr += '<tr>' +
-                        '<td>' + value.sp_name + '</td>' +
-                        '<td>' + value.issued_qty + '</td>' +
-                        '<td>' + value.received_qty + '</td>' +
-                        '<td style="text-align: right">' + value.unitprice + '</td>' +
-                        '</tr>';
-                    total += (parseFloat(value.received_qty)) * ( parseFloat(value.unitprice));
-                });
-                res_table += res_tr + '</tbody> ';
+function viewFunc(id)
+{
+    $.ajax({
+        url: base_url + 'MachineService/fetchReceivedServiceItems/' + id,
+        type: 'post',
+        dataType: 'json',
+        success: function (data) {
 
-                res_table += '<tfoot>';
-                res_table += '<tr> ' +
-                    '<td> </td>' +
-                    '<td> </td>' +
-                    '<th style="text-align: right"> Total </th>' +
-                    '<th style="text-align: right"> '+ total.toFixed(2) +' </th>' +
-                    '</tr>';
-                res_table += '</tfoot>';
+            let res_table = "<div class='table-responsive mt-3'>";
+            res_table += '<table class="table table-striped table-sm" id="viewTable">';
 
-                res_table += '</table>';
+            let res_tr = `
+                <thead>
+                    <tr>
+                        <th>Service Item</th>
+                        <th>Issued Quantity</th>
+                        <th>Received Quantity</th>
+                        <th style="text-align:right">Unit Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
 
-                res_table += '</div> <hr>' +
-                    '<h4> Received Records </h4>';
+            let total = 0;
 
-                res_table += "<div class='table-responsive mt-3'>" +
-                    " ";
-                res_table += '<table class="table table-striped table-sm" id="viewTable">';
-                let res_tr1 = '<thead><tr><th>Service Item</th> <th> Received Quantity </th> <th>Unit Price</th> <th>Date</th>  </tr></thead> <tbody>';
-                let response1 = data.sc;
-                $.each(response1, function(index, value) {
-                    res_tr1 += '<tr>' +
-                        '<td>' + value.name + ' - ' + value.part_no + '</td>' +
-                        '<td>' + value.qty + '</td>' +
-                        '<td>' + value.unitprice + '</td>' +
-                        '<td>' + value.service_date + '</td>' +
-                        '</tr>';
-                });
-                res_table += res_tr1 + '</tbody> </table>';
-                res_table += '</div>';
+            $.each(data.rc_det, function (index, value) {
 
-                let machine_type_name = data.main_data.service_no;
-                $('#machine_type_name').html(machine_type_name);
+                let issuedQty   = parseFloat(value.issued_qty) || 0;
+                let receivedQty = parseFloat(value.received_qty) || 0;
+                let price       = parseFloat(value.unitprice) || 0;
 
-                $("#viewModal .modal-body #viewResponse").html(res_table);
-                $('#viewTable').DataTable();
+                res_tr += `
+                    <tr>
+                        <td>${value.sp_name}</td>
+                        <td>${issuedQty}</td>
+                        <td>${receivedQty}</td>
+                        <td style="text-align:right">${price.toFixed(2)}</td>
+                    </tr>
+                `;
 
-            }
-        });
-    }
+                total += receivedQty * price;
+            });
+
+            res_tr += '</tbody>';
+
+            res_table += res_tr;
+            res_table += `
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <th style="text-align:right">Total</th>
+                        <th style="text-align:right">${total.toFixed(2)}</th>
+                    </tr>
+                </tfoot>
+            `;
+
+            res_table += '</table></div>';
+            res_table += '<hr><h4>Received Records</h4>';
+
+            /* Received history */
+            res_table += "<div class='table-responsive mt-3'>";
+            res_table += '<table class="table table-striped table-sm">';
+            res_table += `
+                <thead>
+                    <tr>
+                        <th>Service Item</th>
+                        <th>Received Qty</th>
+                        <th style="text-align:right">Unit Price</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            $.each(data.sc, function (index, value) {
+                let price = parseFloat(value.unitprice) || 0;
+
+                res_table += `
+                    <tr>
+                        <td>${value.name} - ${value.part_no}</td>
+                        <td>${value.qty}</td>
+                        <td style="text-align:right">${price.toFixed(2)}</td>
+                        <td>${value.service_date}</td>
+                    </tr>
+                `;
+            });
+
+            res_table += '</tbody></table></div>';
+
+            $('#machine_type_name').html(data.main_data.service_no);
+            $("#viewModal .modal-body #viewResponse").html(res_table);
+            $('#viewTable').DataTable();
+        }
+    });
+}
+
 
 
 </script>
